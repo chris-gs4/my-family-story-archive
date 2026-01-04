@@ -22,11 +22,13 @@ This product matters because it democratizes the storytelling process, allowing 
 3. Validate product-market fit with early adopters through measurable engagement metrics.
 
 ### Key Performance Indicators (KPIs)
-- 100 completed family story projects within the first 6 months.
-- Revenue of $10-20K from early adopters in the first year.
-- User testimonials highlighting emotional impact and satisfaction.
-- A growing waitlist driven by word-of-mouth referrals.
-- Number of audiobooks generated with voice cloning.
+- **MVP Phase:** 50-100 completed written narratives within the first 6 months.
+- **Revenue Target:** $10-20K from early adopters in the first year.
+- **User Satisfaction:** Testimonials highlighting emotional impact and satisfaction with narrative quality.
+- **Engagement:** Average time from project creation to completion <7 days.
+- **Technical Quality:** <5% error rate in transcription and narrative generation.
+- **Growth:** A growing waitlist driven by word-of-mouth referrals.
+- **Post-MVP:** Number of audiobooks generated (standard TTS and voice cloning).
 
 ### Success Criteria for MVP Launch
 - Successful completion and delivery of at least 50-100 paid projects.
@@ -71,6 +73,44 @@ This product matters because it democratizes the storytelling process, allowing 
   - System provides a preview of the final narrative.
 - **Priority:** P0
 
+### Feature 3a: Project State Management
+- **Description:** Track project progress through defined workflow states (draft → recording → transcribing → generating → complete).
+- **User Story:** As a user, I want to see where my project is in the process so that I know what to do next and when it will be complete.
+- **Acceptance Criteria:**
+  - Clear visual indicators of current project state.
+  - Users can only perform actions valid for the current state.
+  - System provides estimated time remaining for async operations.
+- **Priority:** P0
+
+### Feature 3b: Async Job Processing
+- **Description:** Handle long-running operations (transcription, narrative generation) asynchronously with progress tracking.
+- **User Story:** As a user, I want to see real-time progress updates for long-running tasks so that I know the system is working and can come back later if needed.
+- **Acceptance Criteria:**
+  - Jobs process in the background without blocking the UI.
+  - Users receive progress updates (e.g., "Transcribing... 45% complete").
+  - Failed jobs provide clear error messages and retry options.
+  - Email notifications when long-running jobs complete.
+- **Priority:** P0
+
+### Feature 3c: Secure File Upload
+- **Description:** Enable users to upload large audio files (50MB+) securely and efficiently using direct-to-S3 upload.
+- **User Story:** As a user, I want to upload my interview recordings quickly and reliably, even for long interviews.
+- **Acceptance Criteria:**
+  - Support for audio files up to 500MB.
+  - Progress indicator during upload.
+  - Resume capability for interrupted uploads.
+  - Automatic audio format validation.
+- **Priority:** P0
+
+### Feature 3d: Interviewee Information Management
+- **Description:** Collect and store information about the person being interviewed to personalize questions and narratives.
+- **User Story:** As a user, I want to provide context about my interviewee so that the AI can generate more relevant questions and a more personalized narrative.
+- **Acceptance Criteria:**
+  - Capture name, relationship, approximate age/generation, and key topics.
+  - Information is used to customize interview questions.
+  - Information influences narrative tone and style.
+- **Priority:** P0
+
 ### Feature 4: Voice Cloning and Audiobook Creation
 - **Description:** Uses ElevenLabs technology to create audiobooks with voice cloning.
 - **User Story:** As a user, I want to create an audiobook with my interviewee's voice so that the story feels personal and authentic.
@@ -78,27 +118,56 @@ This product matters because it democratizes the storytelling process, allowing 
   - Voice cloning accurately replicates the interviewee's voice.
   - Audiobook is generated without noticeable audio artifacts.
   - Completed audiobook is shareable via multiple platforms.
-- **Priority:** P0
+- **Priority:** P1 (Post-MVP)
+- **Notes:** Voice cloning adds significant complexity and cost. MVP will focus on written narratives. Standard TTS audiobook generation can be added in Phase 2, with voice cloning as a premium feature in Phase 3.
 
 ## User Flows
 
-### Primary User Journey: Creating a Family Story Project
+### Primary User Journey: Creating a Family Story Project (MVP)
 1. **Entry Point:** User logs into the web application and creates a new project.
-2. **Step 1:** User inputs basic information about the interviewee and selects the relationship.
-3. **Step 2:** AI generates initial interview questions.
-4. **Step 3:** User conducts the interview, with AI suggesting follow-up questions.
-5. **Step 4:** Audio is transcribed into text using Whisper API.
-6. **Step 5:** AI generates a written narrative from the transcription.
-7. **Step 6:** User reviews and edits the narrative.
-8. **Step 7:** Voice cloning technology creates an audiobook.
-9. **Exit Point:** User downloads or shares the completed audiobook.
+2. **Step 1:** User inputs basic information about the interviewee (name, relationship, age/generation, topics of interest).
+3. **Step 2:** AI generates a structured set of interview questions based on the interviewee profile.
+4. **Step 3:** User conducts the interview using the question guide (offline recording).
+5. **Step 4:** User uploads the audio recording via secure file upload.
+6. **Step 5:** System transcribes audio into text using Whisper API (async job with progress tracking).
+7. **Step 6:** AI generates a written narrative from the transcription (multi-phase: cleanup → structure → narrative).
+8. **Step 7:** User reviews and edits the narrative using rich text editor.
+9. **Step 8:** User finalizes the narrative.
+10. **Exit Point:** User downloads the written narrative as PDF or shares digitally.
+
+### Post-MVP User Journey Extensions
+- **Phase 2:** After Step 8, system generates audiobook with standard TTS voice.
+- **Phase 3:** Option to upgrade to voice-cloned audiobook using interviewee's voice ($20-50 premium feature).
 
 ## Technical Considerations
 
-- **Platform Requirements:** Must be accessible via web browsers on desktop and mobile devices.
-- **Integration Needs:** Integration with Whisper API for transcription and ElevenLabs for voice cloning.
-- **Scalability Considerations:** Infrastructure must handle simultaneous transcription and audiobook generation requests.
-- **Performance Requirements:** Real-time processing for interview question adaptation; audiobook generation within a reasonable timeframe.
+- **Platform Requirements:** Must be accessible via web browsers on desktop and mobile devices (responsive web design).
+- **Integration Needs:**
+  - Whisper API for audio transcription
+  - OpenAI API for AI-guided questions and narrative generation
+  - S3 for secure file storage
+  - Inngest for async job queue management
+  - Stripe for payment processing
+  - NextAuth.js for authentication
+  - (Post-MVP) ElevenLabs for voice cloning
+- **Scalability Considerations:**
+  - Job queue system (Inngest) to handle simultaneous transcription and generation requests
+  - S3 for cost-effective storage of large audio files
+  - Database indexes for efficient project and user lookups
+- **Performance Requirements:**
+  - Transcription completion: <5 minutes for 60-minute audio
+  - Narrative generation: <2 minutes
+  - API response time: <500ms for 95th percentile
+  - Uptime: 99.5% target
+- **State Management:**
+  - Project workflow state machine (draft → recording_info → questions_generated → audio_uploaded → transcribing → transcription_complete → generating_narrative → narrative_complete → complete)
+  - Valid state transitions enforced at API level
+- **Security & Privacy:**
+  - Database encryption at rest
+  - HTTPS only (encryption in transit)
+  - Secure file upload via presigned S3 URLs
+  - GDPR and CCPA compliance requirements
+  - Clear data retention and deletion policies
 
 ## Success Criteria
 
@@ -118,10 +187,24 @@ This product matters because it democratizes the storytelling process, allowing 
 
 ## Out of Scope (for MVP)
 
-- Mobile application development.
-- Advanced editing tools for narrative customization.
-- Integration with genealogy platforms.
-- Multi-language support.
+### Deferred to Phase 2
+- Standard TTS audiobook generation (non-voice-cloned)
+- Real-time AI interview question adaptation
+- Email notifications for job completion
+- Advanced narrative editing tools (version control, regenerate sections)
+
+### Deferred to Phase 3
+- Voice cloning and voice-cloned audiobook creation
+- Multiple interview sessions per project
+- Speaker diarization (identifying who said what in multi-person interviews)
+
+### Future Considerations
+- Native mobile application development
+- Integration with genealogy platforms (Ancestry.com, FamilySearch)
+- Multi-language support for non-English interviews
+- Collaborative editing (multiple family members contributing)
+- Photo/video integration with narratives
+- Physical book printing service
 
 ---
 
