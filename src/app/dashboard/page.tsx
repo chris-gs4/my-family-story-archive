@@ -9,7 +9,7 @@ import {
   StoryCardFooter,
   StatusBadge,
 } from "@/components/ui"
-import { Plus } from "lucide-react"
+import { Plus, Clock, FileText } from "lucide-react"
 
 export default function DashboardPage() {
   return (
@@ -34,7 +34,7 @@ export default function DashboardPage() {
           subtitle="Preserve your family's stories for generations"
           action={
             <PrimaryButton icon={<Plus className="w-4 h-4" />}>
-              + New Project
+              New Project
             </PrimaryButton>
           }
         />
@@ -48,16 +48,23 @@ export default function DashboardPage() {
               <StatusBadge status="complete" />
             </StoryCardHeader>
             <StoryCardContent>
-              <p className="text-muted-foreground mb-2">
-                Status: Audiobook Ready
-              </p>
-              <p className="text-sm text-muted-foreground">
-                Created: Dec 15, 2025
-              </p>
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <FileText className="w-4 h-4" />
+                  <span>8,245 words • 45 min read</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <Clock className="w-4 h-4" />
+                  <span>Created Dec 15, 2025</span>
+                </div>
+                <p className="text-sm text-muted-foreground mt-3">
+                  Stories about growing up in small-town America during the 1960s
+                </p>
+              </div>
             </StoryCardContent>
             <StoryCardFooter>
               <SecondaryButton variant="outline" size="sm">
-                Download
+                Download PDF
               </SecondaryButton>
             </StoryCardFooter>
           </StoryCard>
@@ -65,155 +72,112 @@ export default function DashboardPage() {
           {/* Project 2 - Complete */}
           <StoryCard interactive variant="elevated">
             <StoryCardHeader>
-              <StoryCardTitle>Dad's Military Service</StoryCardTitle>
-              <StatusBadge status="complete">Audiobook Ready</StatusBadge>
+              <StoryCardTitle>Dad's Career Journey</StoryCardTitle>
+              <StatusBadge status="complete" />
             </StoryCardHeader>
             <StoryCardContent>
-              <p className="text-muted-foreground mb-2">
-                Status: Audiobook Ready
-              </p>
-              <p className="text-sm text-muted-foreground">
-                Created: Dec 10, 2025
-              </p>
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <FileText className="w-4 h-4" />
+                  <span>12,150 words • 60 min read</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <Clock className="w-4 h-4" />
+                  <span>Created Dec 10, 2025</span>
+                </div>
+                <p className="text-sm text-muted-foreground mt-3">
+                  From first job to retirement - 40 years of engineering excellence
+                </p>
+              </div>
             </StoryCardContent>
             <StoryCardFooter>
               <SecondaryButton variant="outline" size="sm">
-                Download
+                Download PDF
               </SecondaryButton>
             </StoryCardFooter>
           </StoryCard>
 
-          {/* Project 3 - Draft */}
-          <StoryCard interactive variant="default">
+          {/* Project 3 - Processing */}
+          <StoryCard variant="default">
             <StoryCardHeader>
               <StoryCardTitle>Grandma's Immigration Story</StoryCardTitle>
-              <StatusBadge status="draft">Ready to Start</StatusBadge>
-            </StoryCardHeader>
-            <StoryCardContent>
-              <p className="text-muted-foreground mb-2">
-                Status: Ready to Start
-              </p>
-              <p className="text-sm text-muted-foreground">
-                Created: Dec 22, 2025
-              </p>
-            </StoryCardContent>
-            <StoryCardFooter>
-              <PrimaryButton size="sm">Start</PrimaryButton>
-            </StoryCardFooter>
-          </StoryCard>
-
-          {/* Project 4 - Processing */}
-          <StoryCard variant="default">
-            <StoryCardHeader>
-              <StoryCardTitle>Uncle John's Stories</StoryCardTitle>
-              <StatusBadge status="processing">Processing</StatusBadge>
-            </StoryCardHeader>
-            <StoryCardContent>
-              <p className="text-muted-foreground mb-2">
-                Transcribing audio...
-              </p>
-              <div className="w-full bg-muted rounded-full h-2 mt-3">
-                <div className="bg-primary h-2 rounded-full" style={{ width: "65%" }} />
-              </div>
-              <p className="text-xs text-muted-foreground mt-1">65% complete</p>
-            </StoryCardContent>
-          </StoryCard>
-
-          {/* Project 5 - In Progress */}
-          <StoryCard variant="default">
-            <StoryCardHeader>
-              <StoryCardTitle>Family Holiday Traditions</StoryCardTitle>
-              <StatusBadge status="recording">In Progress</StatusBadge>
-            </StoryCardHeader>
-            <StoryCardContent>
-              <p className="text-muted-foreground mb-2">
-                Interview in progress
-              </p>
-              <p className="text-sm text-muted-foreground">
-                Created: Jan 5, 2026
-              </p>
-            </StoryCardContent>
-            <StoryCardFooter>
-              <PrimaryButton size="sm">Continue</PrimaryButton>
-            </StoryCardFooter>
-          </StoryCard>
-
-          {/* Project 6 - Error */}
-          <StoryCard variant="default">
-            <StoryCardHeader>
-              <StoryCardTitle>Grandpa's War Stories</StoryCardTitle>
-              <StatusBadge status="error">Error</StatusBadge>
-            </StoryCardHeader>
-            <StoryCardContent>
-              <p className="text-destructive mb-2">
-                Transcription failed
-              </p>
-              <p className="text-sm text-muted-foreground">
-                Audio file format not supported
-              </p>
-            </StoryCardContent>
-            <StoryCardFooter>
-              <SecondaryButton variant="outline" size="sm">
-                Re-upload Audio
-              </SecondaryButton>
-            </StoryCardFooter>
-          </StoryCard>
-        </div>
-
-        {/* Component Showcase Section */}
-        <div className="mt-12 border-t border-border pt-12">
-          <h2 className="text-2xl font-bold mb-6">Component Showcase</h2>
-
-          {/* Buttons */}
-          <div className="mb-8">
-            <h3 className="text-lg font-semibold mb-4">Buttons</h3>
-            <div className="flex flex-wrap gap-4">
-              <PrimaryButton size="sm">Small Primary</PrimaryButton>
-              <PrimaryButton size="md">Medium Primary</PrimaryButton>
-              <PrimaryButton size="lg">Large Primary</PrimaryButton>
-              <PrimaryButton loading>Loading</PrimaryButton>
-              <SecondaryButton variant="outline">Outline</SecondaryButton>
-              <SecondaryButton variant="ghost">Ghost</SecondaryButton>
-              <SecondaryButton variant="soft">Soft</SecondaryButton>
-            </div>
-          </div>
-
-          {/* Status Badges */}
-          <div className="mb-8">
-            <h3 className="text-lg font-semibold mb-4">Status Badges</h3>
-            <div className="flex flex-wrap gap-3">
-              <StatusBadge status="draft" />
-              <StatusBadge status="recording" />
               <StatusBadge status="processing" />
-              <StatusBadge status="complete" />
-              <StatusBadge status="error" />
-            </div>
-          </div>
+            </StoryCardHeader>
+            <StoryCardContent>
+              <div className="space-y-2">
+                <p className="text-sm text-muted-foreground">
+                  Generating narrative from interview transcript...
+                </p>
+                <div className="w-full bg-muted rounded-full h-2 mt-3">
+                  <div className="bg-primary h-2 rounded-full transition-all" style={{ width: "75%" }} />
+                </div>
+                <p className="text-xs text-muted-foreground mt-1">75% complete</p>
+              </div>
+            </StoryCardContent>
+          </StoryCard>
 
-          {/* Cards */}
-          <div>
-            <h3 className="text-lg font-semibold mb-4">Card Variants</h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <StoryCard variant="default">
-                <StoryCardTitle>Default Card</StoryCardTitle>
-                <StoryCardContent>
-                  <p className="mt-2">With border and subtle background</p>
-                </StoryCardContent>
-              </StoryCard>
-              <StoryCard variant="elevated">
-                <StoryCardTitle>Elevated Card</StoryCardTitle>
-                <StoryCardContent>
-                  <p className="mt-2">With shadow for depth</p>
-                </StoryCardContent>
-              </StoryCard>
-              <StoryCard variant="outlined">
-                <StoryCardTitle>Outlined Card</StoryCardTitle>
-                <StoryCardContent>
-                  <p className="mt-2">With heavier border, transparent bg</p>
-                </StoryCardContent>
-              </StoryCard>
-            </div>
-          </div>
+          {/* Project 4 - In Progress */}
+          <StoryCard interactive variant="default">
+            <StoryCardHeader>
+              <StoryCardTitle>Uncle Joe's Military Service</StoryCardTitle>
+              <StatusBadge status="recording" />
+            </StoryCardHeader>
+            <StoryCardContent>
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <Clock className="w-4 h-4" />
+                  <span>Started Jan 8, 2026</span>
+                </div>
+                <p className="text-sm text-muted-foreground mt-3">
+                  Recording interviews about Vietnam War experiences
+                </p>
+              </div>
+            </StoryCardContent>
+            <StoryCardFooter>
+              <PrimaryButton size="sm">Continue Interview</PrimaryButton>
+            </StoryCardFooter>
+          </StoryCard>
+
+          {/* Project 5 - Draft */}
+          <StoryCard interactive variant="default">
+            <StoryCardHeader>
+              <StoryCardTitle>Aunt Marie's Teaching Years</StoryCardTitle>
+              <StatusBadge status="draft" />
+            </StoryCardHeader>
+            <StoryCardContent>
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <Clock className="w-4 h-4" />
+                  <span>Created Jan 10, 2026</span>
+                </div>
+                <p className="text-sm text-muted-foreground mt-3">
+                  35 years of teaching elementary school - ready to start
+                </p>
+              </div>
+            </StoryCardContent>
+            <StoryCardFooter>
+              <PrimaryButton size="sm">Start Project</PrimaryButton>
+            </StoryCardFooter>
+          </StoryCard>
+
+          {/* Project 6 - Processing (Transcription) */}
+          <StoryCard variant="default">
+            <StoryCardHeader>
+              <StoryCardTitle>Grandpa's Woodworking Legacy</StoryCardTitle>
+              <StatusBadge status="processing" />
+            </StoryCardHeader>
+            <StoryCardContent>
+              <div className="space-y-2">
+                <p className="text-sm text-muted-foreground">
+                  Transcribing 90-minute interview...
+                </p>
+                <div className="w-full bg-muted rounded-full h-2 mt-3">
+                  <div className="bg-primary h-2 rounded-full transition-all" style={{ width: "45%" }} />
+                </div>
+                <p className="text-xs text-muted-foreground mt-1">45% complete • 3 min remaining</p>
+              </div>
+            </StoryCardContent>
+          </StoryCard>
         </div>
       </main>
     </div>
