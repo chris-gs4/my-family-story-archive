@@ -1,0 +1,217 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* ======================
+       FAMILY ARCHIVE COLOR SYSTEM
+       ====================== */
+
+    /* Base Surfaces - Warm neutrals for comfort */
+    --background: 0 0% 98%;              /* #FAFAFA - Soft off-white */
+    --foreground: 222.2 84% 4.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+
+    /* Primary Accent - Trustworthy blue */
+    --primary: 232 91% 66%;              /* #4F6FFF */
+    --primary-foreground: 0 0% 100%;
+
+    /* Secondary Accent - Warm success/completion */
+    --secondary: 160 84% 39%;            /* #10B981 */
+    --secondary-foreground: 0 0% 100%;
+
+    /* Muted */
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    /* Accent */
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    /* Destructive */
+    --destructive: 0 84.2% 60.2%;        /* #EF4444 */
+    --destructive-foreground: 210 40% 98%;
+
+    /* Border */
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 232 91% 66%;
+
+    /* Radius */
+    --radius: 0.5rem;
+
+    /* Custom Design Tokens */
+    --surface: 0 0% 100%;
+    --surface-elevated: 0 0% 100%;
+    --surface-subtle: 0 0% 96%;
+
+    --text-primary: 222 47% 11%;
+    --text-secondary: 215 14% 34%;
+    --text-tertiary: 215 16% 47%;
+    --text-disabled: 214 14% 61%;
+
+    --border-subtle: 210 17% 95%;
+    --border-focus: 232 91% 66%;
+
+    --success: 160 84% 39%;
+    --success-bg: 152 76% 90%;
+    --success-border: 149 80% 67%;
+
+    --warning: 38 92% 50%;
+    --warning-bg: 48 96% 89%;
+    --warning-border: 48 96% 72%;
+
+    --error: 0 84% 60%;
+    --error-bg: 0 86% 95%;
+    --error-border: 0 86% 79%;
+
+    --info: 221 83% 53%;
+    --info-bg: 214 95% 93%;
+    --info-border: 213 97% 77%;
+
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+
+    /* Spacing */
+    --space-1: 0.25rem;
+    --space-2: 0.5rem;
+    --space-3: 0.75rem;
+    --space-4: 1rem;
+    --space-5: 1.25rem;
+    --space-6: 1.5rem;
+    --space-8: 2rem;
+    --space-10: 2.5rem;
+    --space-12: 3rem;
+    --space-16: 4rem;
+
+    /* Typography */
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+    --text-xs: 0.75rem;
+    --text-sm: 0.875rem;
+    --text-base: 1rem;
+    --text-lg: 1.125rem;
+    --text-xl: 1.25rem;
+    --text-2xl: 1.5rem;
+    --text-3xl: 1.875rem;
+    --text-4xl: 2.25rem;
+
+    --leading-tight: 1.25;
+    --leading-snug: 1.375;
+    --leading-normal: 1.5;
+    --leading-relaxed: 1.625;
+
+    --font-normal: 400;
+    --font-medium: 500;
+    --font-semibold: 600;
+    --font-bold: 700;
+
+    /* Transitions */
+    --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-base: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 232 91% 66%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 160 84% 39%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 232 91% 66%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+@layer utilities {
+  /* Container Utilities */
+  .container-narrow {
+    max-width: 640px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: var(--space-4);
+    padding-right: var(--space-4);
+  }
+
+  .container-medium {
+    max-width: 768px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: var(--space-4);
+    padding-right: var(--space-4);
+  }
+
+  .container-wide {
+    max-width: 1024px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: var(--space-6);
+    padding-right: var(--space-6);
+  }
+
+  /* Focus Ring */
+  .focus-ring {
+    @apply outline-none transition-shadow duration-150;
+  }
+
+  .focus-ring:focus-visible {
+    @apply ring-2 ring-primary ring-offset-2;
+  }
+
+  /* Status Badge Variants */
+  .status-badge {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-medium;
+  }
+
+  .status-badge-draft {
+    @apply bg-muted text-muted-foreground;
+  }
+
+  .status-badge-recording {
+    @apply bg-yellow-100 text-yellow-800;
+  }
+
+  .status-badge-processing {
+    @apply bg-blue-100 text-blue-800;
+  }
+
+  .status-badge-complete {
+    @apply bg-green-100 text-green-800;
+  }
+
+  .status-badge-error {
+    @apply bg-red-100 text-red-800;
+  }
+}
