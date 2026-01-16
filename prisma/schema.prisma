@@ -1,0 +1,385 @@
+// Family Story Archive Database Schema
+// Based on implementation-plan.md data model
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ======================
+// USER & AUTHENTICATION
+// ======================
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String?
+  emailVerified DateTime?
+  image         String?
+  password      String?   // Hashed password for email/password auth
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  projects      Project[]
+  payments      Payment[]
+  jobs          Job[]
+  accounts      Account[]
+  sessions      Session[]
+
+  @@index([email])
+  @@map("users")
+}
+
+// NextAuth.js Account model
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+  @@map("accounts")
+}
+
+// NextAuth.js Session model
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("sessions")
+}
+
+// NextAuth.js Verification Token
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+// ======================
+// PROJECT & STORY
+// ======================
+
+enum ProjectStatus {
+  DRAFT
+  RECORDING_INFO
+  QUESTIONS_GENERATED
+  AUDIO_UPLOADED
+  TRANSCRIBING
+  TRANSCRIPTION_COMPLETE
+  GENERATING_NARRATIVE
+  NARRATIVE_COMPLETE
+  COMPLETE
+  ERROR
+
+  @@map("project_status")
+}
+
+model Project {
+  id        String        @id @default(cuid())
+  userId    String
+  title     String
+  status    ProjectStatus @default(DRAFT)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  // Relations
+  user              User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  interviewee       Interviewee?
+  questions         InterviewQuestion[]
+  sessions          InterviewSession[]
+  narrative         Narrative?
+  jobs              Job[]
+
+  @@index([userId])
+  @@index([status])
+  @@index([userId, status])
+  @@map("projects")
+}
+
+// ======================
+// INTERVIEWEE
+// ======================
+
+model Interviewee {
+  id         String   @id @default(cuid())
+  projectId  String   @unique
+  name       String
+  relationship String  // "parent", "grandparent", "friend", "other"
+  birthYear  Int?
+  generation String?  // "Greatest Generation", "Silent", "Boomer", "Gen X", etc.
+  topics     Json     // Array of topics: ["childhood", "career", "family"]
+  notes      String?  @db.Text
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  // Relations
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+  @@map("interviewees")
+}
+
+// ======================
+// INTERVIEW QUESTIONS
+// ======================
+
+model InterviewQuestion {
+  id               String   @id @default(cuid())
+  projectId        String
+  question         String   @db.Text
+  category         String   // "Early Life", "Career", "Family", etc.
+  order            Int
+  isFollowUp       Boolean  @default(false)
+  parentQuestionId String?
+  response         String?  @db.Text
+  createdAt        DateTime @default(now())
+
+  // Relations
+  project         Project             @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  parentQuestion  InterviewQuestion?  @relation("QuestionFollowUps", fields: [parentQuestionId], references: [id], onDelete: SetNull)
+  followUpQuestions InterviewQuestion[] @relation("QuestionFollowUps")
+
+  @@index([projectId])
+  @@index([projectId, order])
+  @@index([parentQuestionId])
+  @@map("interview_questions")
+}
+
+// ======================
+// INTERVIEW SESSION & TRANSCRIPTION
+// ======================
+
+enum SessionStatus {
+  UPLOADING
+  UPLOADED
+  PROCESSING
+  COMPLETE
+  ERROR
+
+  @@map("session_status")
+}
+
+model InterviewSession {
+  id            String        @id @default(cuid())
+  projectId     String
+  audioUrl      String?       // Presigned S3 URL
+  audioFileKey  String        // S3 object key
+  duration      Int?          // Duration in seconds
+  fileSize      Int?          // File size in bytes
+  status        SessionStatus @default(UPLOADING)
+  uploadedAt    DateTime?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  // Relations
+  project       Project        @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  transcription Transcription?
+
+  @@index([projectId])
+  @@index([status])
+  @@map("interview_sessions")
+}
+
+model Transcription {
+  id             String   @id @default(cuid())
+  sessionId      String   @unique
+  text           String   @db.Text
+  wordTimings    Json?    // Word-level timestamps for future features
+  accuracy       Float?
+  speakerLabels  Json?    // For multi-speaker support (Phase 3)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  // Relations
+  session InterviewSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId])
+  @@map("transcriptions")
+}
+
+// ======================
+// NARRATIVE
+// ======================
+
+enum NarrativeStatus {
+  GENERATING
+  DRAFT
+  FINAL
+  ERROR
+
+  @@map("narrative_status")
+}
+
+model Narrative {
+  id        String          @id @default(cuid())
+  projectId String          @unique
+  content   String          @db.Text
+  structure Json            // Chapter/section metadata
+  version   Int             @default(1)
+  status    NarrativeStatus @default(GENERATING)
+  wordCount Int?
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+
+  // Relations
+  project   Project    @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  audiobook Audiobook?
+
+  @@index([projectId])
+  @@index([status])
+  @@map("narratives")
+}
+
+// ======================
+// AUDIOBOOK (Post-MVP)
+// ======================
+
+model Audiobook {
+  id             String   @id @default(cuid())
+  narrativeId    String   @unique
+  audioUrl       String?  // Presigned S3 URL
+  audioFileKey   String   // S3 object key
+  voiceId        String?  // ElevenLabs voice ID
+  voiceProvider  String   // "openai" or "elevenlabs"
+  duration       Int?     // Duration in seconds
+  isVoiceCloned  Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  // Relations
+  narrative Narrative @relation(fields: [narrativeId], references: [id], onDelete: Cascade)
+
+  @@index([narrativeId])
+  @@map("audiobooks")
+}
+
+// ======================
+// JOB QUEUE
+// ======================
+
+enum JobType {
+  TRANSCRIBE_AUDIO
+  GENERATE_NARRATIVE
+  GENERATE_QUESTIONS
+  CREATE_AUDIOBOOK
+  SEND_NOTIFICATION
+
+  @@map("job_type")
+}
+
+enum JobStatus {
+  PENDING
+  RUNNING
+  COMPLETED
+  FAILED
+  CANCELLED
+
+  @@map("job_status")
+}
+
+model Job {
+  id          String    @id @default(cuid())
+  projectId   String
+  userId      String
+  type        JobType
+  status      JobStatus @default(PENDING)
+  input       Json      // Job input parameters
+  output      Json?     // Job output/results
+  progress    Int       @default(0)
+  error       String?   @db.Text
+  startedAt   DateTime?
+  completedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  // Relations
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+  @@index([userId])
+  @@index([status])
+  @@index([type])
+  @@index([projectId, type, status])
+  @@map("jobs")
+}
+
+// ======================
+// PAYMENTS
+// ======================
+
+enum PaymentStatus {
+  PENDING
+  PROCESSING
+  SUCCEEDED
+  FAILED
+  REFUNDED
+
+  @@map("payment_status")
+}
+
+model Payment {
+  id                    String        @id @default(cuid())
+  userId                String
+  projectId             String?
+  amount                Int           // Amount in cents
+  currency              String        @default("usd")
+  status                PaymentStatus @default(PENDING)
+  stripePaymentIntentId String        @unique
+  metadata              Json?
+  createdAt             DateTime      @default(now())
+  updatedAt             DateTime      @updatedAt
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([stripePaymentIntentId])
+  @@index([status])
+  @@map("payments")
+}
+
+// ======================
+// AUDIT LOG (Optional but recommended)
+// ======================
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  userId     String
+  action     String   // "PROJECT_CREATED", "DATA_EXPORTED", etc.
+  resource   String   // "project", "user_data", etc.
+  resourceId String?
+  ipAddress  String?
+  userAgent  String?  @db.Text
+  metadata   Json?
+  timestamp  DateTime @default(now())
+
+  @@index([userId])
+  @@index([action])
+  @@index([timestamp])
+  @@map("audit_logs")
+}
