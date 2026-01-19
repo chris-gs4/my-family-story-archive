@@ -102,7 +102,7 @@ export default function ProjectSetupPage({ params }: { params: { id: string } })
         <div className="max-w-3xl mx-auto">
           <PageHeading
             title="Tell Us About Your Interviewee"
-            description="Help us understand who you'll be interviewing so we can generate personalized questions."
+            subtitle="Help us understand who you'll be interviewing so we can generate personalized questions."
           />
 
           {error && (

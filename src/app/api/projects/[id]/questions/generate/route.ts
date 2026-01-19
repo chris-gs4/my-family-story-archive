@@ -3,7 +3,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
-import { inngest } from '@/lib/inngest/client';
+import { mockOpenAI } from '@/lib/services/mock/openai';
+import type { ProjectStatus } from '@prisma/client';
 
 export async function POST(
   req: NextRequest,
@@ -54,20 +55,76 @@ export async function POST(
       },
     });
 
-    // Trigger Inngest function
-    await inngest.send({
-      name: 'interview/questions.generate',
-      data: {
-        projectId: params.id,
-      },
-    });
+    // For MVP: Run job directly using mock OpenAI service
+    // In production, this would be handled by Inngest background jobs
+    try {
+      // Delete existing questions first (for regeneration)
+      await prisma.interviewQuestion.deleteMany({
+        where: { projectId: params.id },
+      });
 
-    console.log(`[API] Question generation job triggered for project: ${params.id}`);
+      // Generate questions using mock OpenAI
+      const questions = await mockOpenAI.generateQuestions(
+        {
+          name: project.interviewee.name,
+          relationship: project.interviewee.relationship,
+          birthYear: project.interviewee.birthYear || undefined,
+          generation: project.interviewee.generation || undefined,
+          topics: project.interviewee.topics as string[],
+        },
+        3
+      );
 
-    return NextResponse.json({
-      jobId: job.id,
-      message: 'Question generation started',
-    });
+      // Save questions to database
+      await prisma.interviewQuestion.createMany({
+        data: questions.map((q) => ({
+          projectId: params.id,
+          question: q.question,
+          category: q.category,
+          order: q.order,
+          batch: 1, // Initial batch
+          isFollowUp: false,
+        })),
+      });
+
+      // Update project status
+      await prisma.project.update({
+        where: { id: params.id },
+        data: { status: 'QUESTIONS_GENERATED' as ProjectStatus },
+      });
+
+      // Update job status
+      await prisma.job.update({
+        where: { id: job.id },
+        data: {
+          status: 'COMPLETED',
+          progress: 100,
+          completedAt: new Date(),
+          output: {
+            questionsGenerated: questions.length,
+          },
+        },
+      });
+
+      console.log(`[API] Generated ${questions.length} questions for project: ${params.id}`);
+
+      return NextResponse.json({
+        jobId: job.id,
+        message: 'Questions generated successfully',
+        questionsGenerated: questions.length,
+      });
+    } catch (jobError) {
+      // Update job with error
+      await prisma.job.update({
+        where: { id: job.id },
+        data: {
+          status: 'FAILED',
+          error: jobError instanceof Error ? jobError.message : 'Unknown error',
+        },
+      });
+
+      throw jobError;
+    }
   } catch (error) {
     console.error('[API] Error generating questions:', error);
     return NextResponse.json(

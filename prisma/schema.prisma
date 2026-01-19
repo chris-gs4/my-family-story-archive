@@ -153,6 +153,7 @@ model InterviewQuestion {
   question         String   @db.Text
   category         String   // "Early Life", "Career", "Family", etc.
   order            Int
+  batch            Int      @default(1) // Tracks which round/batch this question belongs to
   isFollowUp       Boolean  @default(false)
   parentQuestionId String?
   response         String?  @db.Text
@@ -165,6 +166,7 @@ model InterviewQuestion {
 
   @@index([projectId])
   @@index([projectId, order])
+  @@index([projectId, batch])
   @@index([parentQuestionId])
   @@map("interview_questions")
 }

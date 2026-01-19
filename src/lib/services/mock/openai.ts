@@ -13,7 +13,14 @@ interface GeneratedQuestion {
   question: string;
   category: string;
   order: number;
+  batch?: number;
   followUps?: string[];
+}
+
+interface QuestionWithResponse {
+  question: string;
+  response: string;
+  category: string;
 }
 
 interface TranscriptionResult {
@@ -59,6 +66,47 @@ class MockOpenAIService {
 
     console.log(`[Mock OpenAI] Generated ${questions.length} personalized questions`);
     return questions;
+  }
+
+  /**
+   * Generate smart follow-up questions based on previous responses
+   */
+  async generateFollowUpQuestions(
+    context: IntervieweeContext,
+    previousQuestions: QuestionWithResponse[],
+    currentBatch: number
+  ): Promise<GeneratedQuestion[]> {
+    console.log(`[Mock OpenAI] Generating follow-up questions for batch ${currentBatch + 1}`);
+    console.log(`[Mock OpenAI] Analyzing ${previousQuestions.length} previous responses`);
+
+    // Simulate API delay
+    await this.delay(2000);
+
+    // Determine batch size (gradual increase: 3 → 4 → 5 → 6)
+    const batchSize = Math.min(3 + currentBatch, 6);
+
+    // Extract themes and keywords from previous responses
+    const themes = this.extractThemes(previousQuestions);
+    console.log(`[Mock OpenAI] Detected themes:`, themes);
+
+    // Get question templates and personalize them
+    const questionTemplates = this.getFollowUpTemplates(themes, context);
+    const personalizedQuestions: GeneratedQuestion[] = [];
+
+    let order = previousQuestions.length + 1;
+
+    for (let i = 0; i < Math.min(batchSize, questionTemplates.length); i++) {
+      const template = questionTemplates[i];
+      personalizedQuestions.push({
+        question: this.personalizeFollowUpQuestion(template.question, previousQuestions, context),
+        category: template.category,
+        order: order++,
+        batch: currentBatch + 1,
+      });
+    }
+
+    console.log(`[Mock OpenAI] Generated ${personalizedQuestions.length} follow-up questions for batch ${currentBatch + 1}`);
+    return personalizedQuestions;
   }
 
   /**
@@ -127,6 +175,169 @@ class MockOpenAIService {
       .replace('[NAME]', context.name)
       .replace('[RELATIONSHIP]', context.relationship)
       .replace('[GENERATION]', context.generation || 'your generation');
+  }
+
+  /**
+   * Extract themes and keywords from previous responses
+   */
+  private extractThemes(previousQuestions: QuestionWithResponse[]): string[] {
+    const themes = new Set<string>();
+    const commonWords = new Set(['the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'from', 'was', 'were', 'is', 'are', 'been', 'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'could', 'should', 'may', 'might', 'can', 'i', 'you', 'he', 'she', 'it', 'we', 'they', 'my', 'your', 'his', 'her', 'its', 'our', 'their', 'this', 'that', 'these', 'those', 'there', 'here', 'when', 'where', 'why', 'how', 'what', 'which', 'who', 'whom']);
+
+    previousQuestions.forEach((qr) => {
+      // Extract keywords from responses (words longer than 4 chars, not common words)
+      const words = qr.response.toLowerCase().match(/\b\w{5,}\b/g) || [];
+      words.forEach((word) => {
+        if (!commonWords.has(word)) {
+          themes.add(word);
+        }
+      });
+
+      // Add category as a theme
+      themes.add(qr.category.toLowerCase());
+    });
+
+    return Array.from(themes).slice(0, 10); // Return top 10 themes
+  }
+
+  /**
+   * Get follow-up question templates based on themes
+   */
+  private getFollowUpTemplates(themes: string[], context: IntervieweeContext): GeneratedQuestion[] {
+    const templates: GeneratedQuestion[] = [];
+
+    // Deep-dive questions based on common themes
+    if (themes.some((t) => t.includes('child') || t.includes('family') || t.includes('parent'))) {
+      templates.push(
+        {
+          question: 'You mentioned [THEME]. Can you tell me more about how [THEME] shaped your early years?',
+          category: 'Early Life & Childhood',
+          order: 0,
+        },
+        {
+          question: 'What specific memories stand out when you think about [THEME]?',
+          category: 'Early Life & Childhood',
+          order: 0,
+        }
+      );
+    }
+
+    if (themes.some((t) => t.includes('work') || t.includes('career') || t.includes('job'))) {
+      templates.push(
+        {
+          question: 'How did your experience with [THEME] influence your career path?',
+          category: 'Career & Work Life',
+          order: 0,
+        },
+        {
+          question: 'Looking back, what would you tell your younger self about [THEME]?',
+          category: 'Career & Work Life',
+          order: 0,
+        }
+      );
+    }
+
+    if (themes.some((t) => t.includes('school') || t.includes('learn') || t.includes('educat'))) {
+      templates.push(
+        {
+          question: 'What lessons from [THEME] do you still carry with you today?',
+          category: 'Life Lessons & Values',
+          order: 0,
+        }
+      );
+    }
+
+    // Generic deep-dive questions
+    templates.push(
+      {
+        question: 'Can you share a specific moment or story that really captures [THEME]?',
+        category: 'Life Experiences',
+        order: 0,
+      },
+      {
+        question: 'How did [THEME] change or evolve over time in your life?',
+        category: 'Life Journey',
+        order: 0,
+      },
+      {
+        question: 'Were there any challenges or obstacles related to [THEME] that you had to overcome?',
+        category: 'Challenges & Growth',
+        order: 0,
+      },
+      {
+        question: 'What emotions do you feel when you think back on [THEME]?',
+        category: 'Reflections',
+        order: 0,
+      },
+      {
+        question: 'Is there a particular person who played an important role in your experience with [THEME]?',
+        category: 'Relationships & Family',
+        order: 0,
+      },
+      {
+        question: 'How do you think [THEME] influenced the person you became?',
+        category: 'Personal Growth',
+        order: 0,
+      },
+      {
+        question: 'What advice would you give someone today about [THEME]?',
+        category: 'Wisdom & Advice',
+        order: 0,
+      }
+    );
+
+    return templates;
+  }
+
+  /**
+   * Personalize follow-up question by replacing placeholders with actual content
+   */
+  private personalizeFollowUpQuestion(
+    template: string,
+    previousQuestions: QuestionWithResponse[],
+    context: IntervieweeContext
+  ): string {
+    // First, do basic personalization
+    let question = this.personalizeQuestion(template, context);
+
+    // Replace [THEME] with actual content from responses
+    if (question.includes('[THEME]')) {
+      // Extract a meaningful phrase or keyword from the most recent response
+      const lastResponse = previousQuestions[previousQuestions.length - 1];
+      const theme = this.extractMeaningfulPhrase(lastResponse.response);
+      question = question.replace(/\[THEME\]/g, theme);
+    }
+
+    return question;
+  }
+
+  /**
+   * Extract a meaningful phrase from response text
+   */
+  private extractMeaningfulPhrase(response: string): string {
+    // Look for key phrases or nouns
+    const sentences = response.split(/[.!?]+/).filter((s) => s.trim().length > 0);
+    if (sentences.length === 0) return 'that experience';
+
+    // Get first sentence and extract key phrase
+    const firstSentence = sentences[0].trim();
+
+    // Try to find a noun phrase (simple approach)
+    const words = firstSentence.split(/\s+/);
+    const commonStarters = ['i', 'my', 'the', 'a', 'an', 'we', 'our', 'when', 'where'];
+
+    // Find first meaningful multi-word phrase (2-4 words)
+    for (let i = 0; i < words.length - 1; i++) {
+      if (!commonStarters.includes(words[i].toLowerCase())) {
+        const phrase = words.slice(i, Math.min(i + 3, words.length)).join(' ');
+        if (phrase.length > 5 && phrase.length < 50) {
+          return phrase.toLowerCase();
+        }
+      }
+    }
+
+    // Fallback: return first few words
+    return words.slice(0, 3).join(' ').toLowerCase() || 'that experience';
   }
 
   private getQuestionTemplates(context: IntervieweeContext): GeneratedQuestion[] {
@@ -415,6 +626,7 @@ export const mockOpenAI = new MockOpenAIService();
 export type {
   IntervieweeContext,
   GeneratedQuestion,
+  QuestionWithResponse,
   TranscriptionResult,
   NarrativeResult,
 };
