@@ -103,6 +103,16 @@ model Project {
   userId    String
   title     String
   status    ProjectStatus @default(DRAFT)
+
+  // Module tracking
+  currentModuleNumber   Int     @default(1)
+  totalModulesCompleted Int     @default(0)
+
+  // Book compilation
+  bookTitle   String?
+  bookStatus  String? // "DRAFT", "COMPILING", "COMPLETE"
+  compiledBookUrl String?
+
   createdAt DateTime      @default(now())
   updatedAt DateTime      @updatedAt
 
@@ -113,6 +123,7 @@ model Project {
   sessions          InterviewSession[]
   narrative         Narrative?
   jobs              Job[]
+  modules           Module[]
 
   @@index([userId])
   @@index([status])
@@ -141,6 +152,97 @@ model Interviewee {
 
   @@index([projectId])
   @@map("interviewees")
+}
+
+// ======================
+// MODULES
+// ======================
+
+enum ModuleStatus {
+  DRAFT                   // Module created, no questions yet
+  QUESTIONS_GENERATED     // Questions generated and ready
+  IN_PROGRESS            // User answering questions
+  GENERATING_CHAPTER     // AI generating chapter
+  CHAPTER_GENERATED      // Chapter created, awaiting approval
+  APPROVED               // User approved, module complete
+
+  @@map("module_status")
+}
+
+model Module {
+  id           String       @id @default(cuid())
+  projectId    String
+  moduleNumber Int          // 1, 2, 3...
+  title        String?      // e.g., "Early Childhood", "First Job"
+  status       ModuleStatus @default(DRAFT)
+  theme        String?      // Optional theme/focus for this module
+
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  approvedAt DateTime?
+
+  // Relations
+  project   Project          @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  questions ModuleQuestion[]
+  chapters  ModuleChapter[]
+
+  @@unique([projectId, moduleNumber])
+  @@index([projectId])
+  @@index([projectId, status])
+  @@index([projectId, moduleNumber])
+  @@map("modules")
+}
+
+model ModuleQuestion {
+  id       String @id @default(cuid())
+  moduleId String
+  question String @db.Text
+  category String // "Early Life", "Career", "Relationships", etc.
+  order    Int
+
+  // User response
+  response     String?   @db.Text
+  respondedAt  DateTime?
+
+  // Context tracking (for follow-up questions)
+  contextSource   String?   // "initial" or "module_1", "module_2", etc.
+  contextKeywords String[]  @default([]) // Keywords from previous modules
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  module Module @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+
+  @@index([moduleId])
+  @@index([moduleId, order])
+  @@map("module_questions")
+}
+
+model ModuleChapter {
+  id       String @id @default(cuid())
+  moduleId String
+  content  String @db.Text // The narrative text
+  wordCount Int?
+  version  Int    @default(1) // 1, 2, 3... (for regenerations)
+
+  // Generation settings
+  narrativePerson String? // "first-person" or "third-person"
+  narrativeTone   String? // "warm", "formal", "conversational"
+  narrativeStyle  String? // "descriptive", "concise", "poetic"
+
+  // Metadata
+  structure Json? // { sections: [{ title, startParagraph }] }
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  module Module @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+
+  @@index([moduleId])
+  @@index([moduleId, version])
+  @@map("module_chapters")
 }
 
 // ======================
@@ -289,6 +391,11 @@ enum JobType {
   GENERATE_QUESTIONS
   CREATE_AUDIOBOOK
   SEND_NOTIFICATION
+
+  // Module-specific jobs
+  GENERATE_MODULE_QUESTIONS
+  GENERATE_MODULE_CHAPTER
+  COMPILE_BOOK
 
   @@map("job_type")
 }

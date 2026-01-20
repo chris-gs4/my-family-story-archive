@@ -301,9 +301,227 @@ export const generateNarrativeJob = inngest.createFunction(
   }
 );
 
+/**
+ * Job 4: Generate Module Questions
+ */
+export const generateModuleQuestionsJob = inngest.createFunction(
+  {
+    id: 'generate-module-questions',
+    name: 'Generate Module Questions',
+    retries: 2,
+  },
+  { event: 'module/questions.generate' },
+  async ({ event, step }) => {
+    const { moduleId, projectId, moduleNumber, theme, previousModules, intervieweeContext } = event.data;
+
+    console.log(`[Inngest] Generating questions for module ${moduleNumber}`);
+
+    // Step 1: Update progress
+    await step.run('update-progress-25', async () => {
+      await prisma.job.updateMany({
+        where: {
+          projectId,
+          type: 'GENERATE_MODULE_QUESTIONS',
+          status: 'RUNNING',
+        },
+        data: { progress: 25 },
+      });
+    });
+
+    // Step 2: Generate questions
+    const questions = await step.run('generate-questions', async () => {
+      if (moduleNumber === 1) {
+        // First module - foundational questions
+        return await mockOpenAI.generateQuestions(intervieweeContext, 18);
+      } else {
+        // Follow-up module - contextual questions
+        const previousQuestionsWithResponses = previousModules.flatMap((m: any) =>
+          m.questions
+            .filter((q: any) => q.response)
+            .map((q: any) => ({
+              question: q.question,
+              response: q.response,
+              category: q.category,
+            }))
+        );
+
+        return await mockOpenAI.generateFollowUpQuestions(
+          intervieweeContext,
+          previousQuestionsWithResponses,
+          moduleNumber - 1
+        );
+      }
+    });
+
+    // Step 3: Update progress
+    await step.run('update-progress-75', async () => {
+      await prisma.job.updateMany({
+        where: {
+          projectId,
+          type: 'GENERATE_MODULE_QUESTIONS',
+          status: 'RUNNING',
+        },
+        data: { progress: 75 },
+      });
+    });
+
+    // Step 4: Save questions
+    await step.run('save-questions', async () => {
+      await prisma.moduleQuestion.createMany({
+        data: questions.map((q) => ({
+          moduleId,
+          question: q.question,
+          category: q.category,
+          order: q.order,
+          contextSource: moduleNumber === 1 ? 'initial' : `module_${moduleNumber - 1}`,
+        })),
+      });
+    });
+
+    // Step 5: Update module status
+    await step.run('update-module-status', async () => {
+      await prisma.module.update({
+        where: { id: moduleId },
+        data: { status: 'QUESTIONS_GENERATED' },
+      });
+    });
+
+    // Step 6: Complete job
+    await step.run('complete-job', async () => {
+      await prisma.job.updateMany({
+        where: {
+          projectId,
+          type: 'GENERATE_MODULE_QUESTIONS',
+          status: 'RUNNING',
+        },
+        data: {
+          status: 'COMPLETED',
+          progress: 100,
+          completedAt: new Date(),
+          output: {
+            questionsGenerated: questions.length,
+          },
+        },
+      });
+    });
+
+    console.log(`[Inngest] Generated ${questions.length} questions for module ${moduleNumber}`);
+    return { success: true, questionsGenerated: questions.length };
+  }
+);
+
+/**
+ * Job 5: Generate Module Chapter
+ */
+export const generateModuleChapterJob = inngest.createFunction(
+  {
+    id: 'generate-module-chapter',
+    name: 'Generate Module Chapter',
+    retries: 2,
+  },
+  { event: 'module/chapter.generate' },
+  async ({ event, step }) => {
+    const { moduleId, chapterId, projectId, questions, settings, feedback, previousChapter, isRegeneration, intervieweeName } = event.data;
+
+    console.log(`[Inngest] Generating chapter for module ${moduleId}`);
+
+    // Step 1: Update progress
+    await step.run('update-progress-25', async () => {
+      await prisma.job.updateMany({
+        where: {
+          projectId,
+          type: 'GENERATE_MODULE_CHAPTER',
+          status: 'RUNNING',
+        },
+        data: { progress: 25 },
+      });
+    });
+
+    // Step 2: Generate chapter
+    const chapter = await step.run('generate-chapter', async () => {
+      // Build transcript from questions/responses
+      const transcript = questions.map((q: any) =>
+        `Q: ${q.question}\nA: ${q.response}`
+      ).join('\n\n');
+
+      // Determine style based on settings
+      const style = settings.narrativePerson === 'third-person' ? 'third-person' : 'first-person';
+
+      // Generate narrative
+      const result = await mockOpenAI.generateNarrative(transcript, style);
+
+      // If regeneration with feedback, append feedback context
+      if (isRegeneration && feedback) {
+        console.log(`[Inngest] Regenerating with feedback: ${feedback}`);
+        // In a real implementation, the AI would consider this feedback
+        // For now, we just regenerate with the same settings
+      }
+
+      return result;
+    });
+
+    // Step 3: Update progress
+    await step.run('update-progress-75', async () => {
+      await prisma.job.updateMany({
+        where: {
+          projectId,
+          type: 'GENERATE_MODULE_CHAPTER',
+          status: 'RUNNING',
+        },
+        data: { progress: 75 },
+      });
+    });
+
+    // Step 4: Save chapter
+    await step.run('save-chapter', async () => {
+      await prisma.moduleChapter.update({
+        where: { id: chapterId },
+        data: {
+          content: chapter.content,
+          wordCount: chapter.wordCount,
+          structure: chapter.structure,
+        },
+      });
+    });
+
+    // Step 5: Update module status
+    await step.run('update-module-status', async () => {
+      await prisma.module.update({
+        where: { id: moduleId },
+        data: { status: 'CHAPTER_GENERATED' },
+      });
+    });
+
+    // Step 6: Complete job
+    await step.run('complete-job', async () => {
+      await prisma.job.updateMany({
+        where: {
+          projectId,
+          type: 'GENERATE_MODULE_CHAPTER',
+          status: 'RUNNING',
+        },
+        data: {
+          status: 'COMPLETED',
+          progress: 100,
+          completedAt: new Date(),
+          output: {
+            wordCount: chapter.wordCount,
+            chaptersCount: chapter.structure.chapters.length,
+          },
+        },
+      });
+    });
+
+    console.log(`[Inngest] Chapter generated: ${chapter.wordCount} words`);
+    return { success: true, wordCount: chapter.wordCount };
+  }
+);
+
 // Export all functions as an array
 export const functions = [
   generateQuestionsJob,
   transcribeAudioJob,
   generateNarrativeJob,
+  generateModuleQuestionsJob,
+  generateModuleChapterJob,
 ];
