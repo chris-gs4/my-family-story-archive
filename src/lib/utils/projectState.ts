@@ -16,22 +16,22 @@ export const PROJECT_STATES: Record<ProjectStatus, { label: string; description:
   },
   QUESTIONS_GENERATED: {
     label: 'Questions Ready',
-    description: 'Interview questions have been generated',
+    description: 'Ready to answer interview questions',
     color: 'indigo',
   },
   AUDIO_UPLOADED: {
     label: 'Audio Uploaded',
-    description: 'Audio file has been uploaded',
+    description: 'Processing audio',
     color: 'purple',
   },
   TRANSCRIBING: {
     label: 'Transcribing',
-    description: 'Audio is being transcribed',
+    description: 'Converting audio to text',
     color: 'yellow',
   },
   TRANSCRIPTION_COMPLETE: {
-    label: 'Transcription Complete',
-    description: 'Transcription is ready',
+    label: 'Ready to Generate',
+    description: 'Ready to generate your story',
     color: 'green',
   },
   GENERATING_NARRATIVE: {

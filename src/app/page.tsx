@@ -22,9 +22,9 @@ export default function Home() {
               </PrimaryButton>
             </Link>
             <Link href="/auth/signin">
-              <SecondaryButton variant="outline" size="lg">
+              <button className="h-12 px-6 text-lg font-medium rounded-lg border-2 border-primary text-primary hover:bg-primary hover:text-white transition-all duration-150 active:scale-[0.98]">
                 Sign In
-              </SecondaryButton>
+              </button>
             </Link>
           </div>
         </div>

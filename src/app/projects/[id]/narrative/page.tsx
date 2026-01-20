@@ -96,13 +96,13 @@ export default function NarrativePage({ params }: { params: { id: string } }) {
         setJobProgress(100);
       }
 
-      // Check if transcription exists
-      const hasTranscription = data.data.sessions?.some(
-        (session: any) => session.transcription
+      // Check if responses exist
+      const hasResponses = data.data.questions?.some(
+        (question: any) => question.response
       );
 
-      if (!hasTranscription && !loading) {
-        showToast('No transcription found. Please upload and transcribe audio first.', 'warning');
+      if (!hasResponses && !loading) {
+        showToast('No responses found. Please answer interview questions first.', 'warning');
       }
     } catch (err) {
       showToast(err instanceof Error ? err.message : 'An error occurred', 'error');
@@ -201,12 +201,12 @@ export default function NarrativePage({ params }: { params: { id: string } }) {
     }
   };
 
-  const handleBackToUpload = () => {
-    router.push(`/projects/${params.id}/upload`);
-  };
-
   const handleBackToDashboard = () => {
     router.push('/dashboard');
+  };
+
+  const handleBackToQuestions = () => {
+    router.push(`/projects/${params.id}/questions`);
   };
 
   const handleEditNarrative = () => {
@@ -552,8 +552,8 @@ export default function NarrativePage({ params }: { params: { id: string } }) {
 
               {/* Actions */}
               <div className="flex justify-between items-center">
-                <SecondaryButton onClick={handleBackToUpload}>
-                  ← Back to Audio
+                <SecondaryButton onClick={handleBackToQuestions}>
+                  ← Back to Questions
                 </SecondaryButton>
                 <div className="flex gap-3">
                   <SecondaryButton onClick={handleGenerateNarrative}>
@@ -570,8 +570,8 @@ export default function NarrativePage({ params }: { params: { id: string } }) {
           {/* Back button when no narrative exists */}
           {!narrative && !generating && (
             <div className="mt-8">
-              <SecondaryButton onClick={handleBackToUpload}>
-                ← Back to Audio Upload
+              <SecondaryButton onClick={handleBackToQuestions}>
+                ← Back to Questions
               </SecondaryButton>
             </div>
           )}

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
+import { useSession, signOut } from 'next-auth/react';
 import { PrimaryButton } from '@/components/ui/primary-button';
 import { SecondaryButton } from '@/components/ui/secondary-button';
 import { PageHeading } from '@/components/ui/page-heading';
@@ -32,6 +32,11 @@ export default function DashboardPage() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [creatingProject, setCreatingProject] = useState(false);
+  const [editingProjectId, setEditingProjectId] = useState<string | null>(null);
+  const [editingTitle, setEditingTitle] = useState('');
+  const [deletingProjectId, setDeletingProjectId] = useState<string | null>(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showProfileDropdown, setShowProfileDropdown] = useState(false);
 
   useEffect(() => {
     if (sessionStatus === 'unauthenticated') {
@@ -43,6 +48,21 @@ export default function DashboardPage() {
       fetchProjects();
     }
   }, [sessionStatus, router]);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (showProfileDropdown && !target.closest('.relative')) {
+        setShowProfileDropdown(false);
+      }
+    };
+
+    if (showProfileDropdown) {
+      document.addEventListener('click', handleClickOutside);
+      return () => document.removeEventListener('click', handleClickOutside);
+    }
+  }, [showProfileDropdown]);
 
   const fetchProjects = async () => {
     try {
@@ -96,6 +116,87 @@ export default function DashboardPage() {
     }
   };
 
+  const handleStartEdit = (project: Project, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setEditingProjectId(project.id);
+    setEditingTitle(project.title);
+  };
+
+  const handleCancelEdit = () => {
+    setEditingProjectId(null);
+    setEditingTitle('');
+  };
+
+  const handleSaveTitle = async (projectId: string, e: React.FormEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!editingTitle.trim()) {
+      showToast('Project title cannot be empty', 'error');
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/projects/${projectId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title: editingTitle.trim() }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update title');
+      }
+
+      // Update local state
+      setProjects(projects.map(p =>
+        p.id === projectId ? { ...p, title: editingTitle.trim() } : p
+      ));
+
+      setEditingProjectId(null);
+      setEditingTitle('');
+      showToast('Title updated successfully!', 'success');
+    } catch (err) {
+      showToast(err instanceof Error ? err.message : 'Failed to update title', 'error');
+    }
+  };
+
+  const handleStartDelete = (projectId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setDeletingProjectId(projectId);
+    setShowDeleteModal(true);
+  };
+
+  const handleCancelDelete = () => {
+    setDeletingProjectId(null);
+    setShowDeleteModal(false);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!deletingProjectId) return;
+
+    try {
+      const response = await fetch(`/api/projects/${deletingProjectId}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete project');
+      }
+
+      // Remove from local state
+      setProjects(projects.filter(p => p.id !== deletingProjectId));
+      setShowDeleteModal(false);
+      setDeletingProjectId(null);
+      showToast('Project deleted successfully', 'success');
+    } catch (err) {
+      showToast(err instanceof Error ? err.message : 'Failed to delete project', 'error');
+    }
+  };
+
+  const handleLogout = async () => {
+    await signOut({ callbackUrl: '/' });
+  };
+
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -126,21 +227,86 @@ export default function DashboardPage() {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="bg-white border-b border-gray-200">
-        <div className="container-custom py-4 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <h2 className="text-xl font-semibold text-text-primary">Family Story Archive</h2>
-          <div className="flex items-center gap-4">
-            <span className="text-sm text-text-secondary">{session?.user?.name || session?.user?.email}</span>
-            <div className="w-8 h-8 rounded-full bg-primary-100 flex items-center justify-center">
-              <span className="text-sm font-medium text-primary-700">
-                {session?.user?.name?.charAt(0) || 'U'}
-              </span>
-            </div>
+          <div className="relative">
+            <button
+              onClick={() => setShowProfileDropdown(!showProfileDropdown)}
+              className="flex items-center gap-3 hover:bg-gray-50 rounded-lg px-3 py-2 transition-colors"
+            >
+              <span className="text-sm text-text-secondary">{session?.user?.name || session?.user?.email}</span>
+              <div className="w-8 h-8 rounded-full bg-primary-100 flex items-center justify-center">
+                <span className="text-sm font-medium text-primary-700">
+                  {session?.user?.name?.charAt(0) || 'U'}
+                </span>
+              </div>
+            </button>
+
+            {/* Profile Dropdown */}
+            {showProfileDropdown && (
+              <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-xl border border-gray-200 z-10">
+                <div className="py-2">
+                  <button
+                    onClick={() => {
+                      setShowProfileDropdown(false);
+                      router.push('/profile');
+                    }}
+                    className="w-full px-4 py-2 text-left hover:bg-gray-50 flex items-center gap-3 text-text-primary transition-colors"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                    <span>My Profile</span>
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setShowProfileDropdown(false);
+                      router.push('/settings');
+                    }}
+                    className="w-full px-4 py-2 text-left hover:bg-gray-50 flex items-center gap-3 text-text-primary transition-colors"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    <span>Account Settings</span>
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setShowProfileDropdown(false);
+                      router.push('/payment');
+                    }}
+                    className="w-full px-4 py-2 text-left hover:bg-gray-50 flex items-center gap-3 text-text-primary transition-colors"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                    </svg>
+                    <span>Payment Info</span>
+                  </button>
+
+                  <div className="border-t border-gray-200 my-2"></div>
+
+                  <button
+                    onClick={handleLogout}
+                    className="w-full px-4 py-2 text-left hover:bg-gray-50 flex items-center gap-3 text-red-600 transition-colors"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    </svg>
+                    <span>Log Out</span>
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </header>
 
       {/* Main Content */}
       <main className="container-custom py-8">
+        <div className="max-w-6xl mx-auto px-6">
         <div className="flex justify-between items-center mb-8">
           <div>
             <h1 className="text-3xl font-display font-bold text-text-primary mb-2">My Story Projects</h1>
@@ -195,11 +361,36 @@ export default function DashboardPage() {
               return (
                 <div
                   key={project.id}
-                  className="card-elevated p-6 hover:shadow-lg transition-all cursor-pointer"
+                  className="bg-white border border-gray-200 rounded-lg shadow-sm p-6 hover:shadow-md hover:border-gray-300 transition-all cursor-pointer"
                   onClick={() => handleContinueProject(project)}
                 >
                   <div className="flex justify-between items-start mb-4">
-                    <h3 className="text-lg font-semibold text-text-primary flex-1 pr-4">{project.title}</h3>
+                    {editingProjectId === project.id ? (
+                      <form onSubmit={(e) => handleSaveTitle(project.id, e)} className="flex-1 pr-4">
+                        <input
+                          type="text"
+                          value={editingTitle}
+                          onChange={(e) => setEditingTitle(e.target.value)}
+                          onBlur={() => handleSaveTitle(project.id, { preventDefault: () => {}, stopPropagation: () => {} } as any)}
+                          autoFocus
+                          className="w-full text-lg font-semibold text-text-primary border border-primary-600 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-primary-600"
+                          onClick={(e) => e.stopPropagation()}
+                        />
+                      </form>
+                    ) : (
+                      <div className="flex-1 pr-4 group flex items-center gap-2">
+                        <h3 className="text-lg font-semibold text-text-primary">{project.title}</h3>
+                        <button
+                          onClick={(e) => handleStartEdit(project, e)}
+                          className="opacity-0 group-hover:opacity-100 transition-opacity text-gray-400 hover:text-primary-600"
+                          title="Edit title"
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                          </svg>
+                        </button>
+                      </div>
+                    )}
                     <StatusBadge status={badgeStatus} />
                   </div>
 
@@ -223,23 +414,69 @@ export default function DashboardPage() {
 
                   <p className="text-sm text-text-secondary mb-4">{stateInfo.description}</p>
 
-                  {nextStep && (
+                  <div className="flex items-center gap-2">
+                    {nextStep && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleContinueProject(project);
+                        }}
+                        className="flex-1 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-lg transition-colors"
+                      >
+                        {nextStep.label}
+                      </button>
+                    )}
                     <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleContinueProject(project);
-                      }}
-                      className="w-full px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-lg transition-colors"
+                      onClick={(e) => handleStartDelete(project.id, e)}
+                      className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                      title="Delete project"
                     >
-                      {nextStep.label}
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
                     </button>
-                  )}
+                  </div>
                 </div>
               );
             })}
           </div>
         )}
+        </div>
       </main>
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={handleCancelDelete}>
+          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-start gap-4">
+              <div className="flex-shrink-0">
+                <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
+                  <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                  </svg>
+                </div>
+              </div>
+              <div className="flex-1">
+                <h3 className="text-lg font-semibold text-text-primary mb-2">Delete Project?</h3>
+                <p className="text-sm text-text-secondary mb-6">
+                  Are you sure you want to delete this project? All associated data including questions, responses, and narratives will be permanently deleted. This action cannot be undone.
+                </p>
+                <div className="flex justify-end gap-3">
+                  <SecondaryButton onClick={handleCancelDelete}>
+                    Cancel
+                  </SecondaryButton>
+                  <button
+                    onClick={handleConfirmDelete}
+                    className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-colors"
+                  >
+                    Delete Project
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
