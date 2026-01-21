@@ -1,13 +1,15 @@
 // Project Setup Page - Interviewee Information Form
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { PrimaryButton } from '@/components/ui/primary-button';
 import { SecondaryButton } from '@/components/ui/secondary-button';
 import { PageHeading } from '@/components/ui/page-heading';
+import { TopicButton } from '@/components/ui/topic-button';
 
 const RELATIONSHIPS = [
+  'myself',
   'parent',
   'grandparent',
   'sibling',
@@ -18,13 +20,31 @@ const RELATIONSHIPS = [
 ];
 
 const GENERATIONS = [
-  'Greatest Generation (1901-1927)',
-  'Silent Generation (1928-1945)',
-  'Baby Boomer (1946-1964)',
-  'Generation X (1965-1980)',
-  'Millennial (1981-1996)',
-  'Generation Z (1997-2012)',
+  { label: 'Greatest Generation (1901-1927)', minYear: 1901, maxYear: 1927 },
+  { label: 'Silent Generation (1928-1945)', minYear: 1928, maxYear: 1945 },
+  { label: 'Baby Boomer (1946-1964)', minYear: 1946, maxYear: 1964 },
+  { label: 'Generation X (1965-1980)', minYear: 1965, maxYear: 1980 },
+  { label: 'Millennial (1981-1996)', minYear: 1981, maxYear: 1996 },
+  { label: 'Generation Z (1997-2012)', minYear: 1997, maxYear: 2012 },
 ];
+
+// Helper function to determine generation from birth year
+function getGenerationFromBirthYear(year: number): string {
+  const birthYear = parseInt(year.toString());
+  if (isNaN(birthYear)) return '';
+
+  for (const gen of GENERATIONS) {
+    if (birthYear >= gen.minYear && birthYear <= gen.maxYear) {
+      return gen.label;
+    }
+  }
+
+  // Handle years outside defined ranges
+  if (birthYear < 1901) return 'Greatest Generation (1901-1927)';
+  if (birthYear > 2012) return 'Generation Z (1997-2012)';
+
+  return '';
+}
 
 const COMMON_TOPICS = [
   'childhood',
@@ -53,6 +73,19 @@ export default function ProjectSetupPage({ params }: { params: { id: string } })
     notes: '',
   });
 
+  // Auto-populate generation when birth year changes
+  useEffect(() => {
+    if (formData.birthYear) {
+      const year = parseInt(formData.birthYear);
+      if (!isNaN(year)) {
+        const autoGeneration = getGenerationFromBirthYear(year);
+        if (autoGeneration && autoGeneration !== formData.generation) {
+          setFormData((prev) => ({ ...prev, generation: autoGeneration }));
+        }
+      }
+    }
+  }, [formData.birthYear]);
+
   const handleTopicToggle = (topic: string) => {
     setFormData((prev) => ({
       ...prev,
@@ -69,7 +102,7 @@ export default function ProjectSetupPage({ params }: { params: { id: string } })
 
     try {
       // Save interviewee information
-      const response = await fetch(`/api/projects/${params.id}/interviewee`, {
+      const intervieweeResponse = await fetch(`/api/projects/${params.id}/interviewee`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -82,13 +115,28 @@ export default function ProjectSetupPage({ params }: { params: { id: string } })
         }),
       });
 
-      if (!response.ok) {
-        const data = await response.json();
+      if (!intervieweeResponse.ok) {
+        const data = await intervieweeResponse.json();
         throw new Error(data.error || 'Failed to save interviewee information');
       }
 
-      // Redirect to questions page
-      router.push(`/projects/${params.id}/questions`);
+      // Automatically create the first module
+      const moduleResponse = await fetch(`/api/projects/${params.id}/modules`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ theme: '' }),
+      });
+
+      if (!moduleResponse.ok) {
+        const data = await moduleResponse.json();
+        throw new Error(data.error || 'Failed to create module');
+      }
+
+      const moduleData = await moduleResponse.json();
+      const moduleId = moduleData.data.module.id;
+
+      // Redirect directly to questions page (will show loading state)
+      router.push(`/projects/${params.id}/modules/${moduleId}/questions`);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
@@ -183,8 +231,8 @@ export default function ProjectSetupPage({ params }: { params: { id: string } })
                     >
                       <option value="">Select generation...</option>
                       {GENERATIONS.map((gen) => (
-                        <option key={gen} value={gen}>
-                          {gen}
+                        <option key={gen.label} value={gen.label}>
+                          {gen.label}
                         </option>
                       ))}
                     </select>
@@ -204,18 +252,12 @@ export default function ProjectSetupPage({ params }: { params: { id: string } })
 
               <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                 {COMMON_TOPICS.map((topic) => (
-                  <button
+                  <TopicButton
                     key={topic}
-                    type="button"
+                    label={topic}
+                    selected={formData.topics.includes(topic)}
                     onClick={() => handleTopicToggle(topic)}
-                    className={`px-4 py-3 rounded-lg border-2 transition-all ${
-                      formData.topics.includes(topic)
-                        ? 'border-primary-500 bg-primary-50 text-primary-700 font-medium'
-                        : 'border-border-light bg-white text-text-secondary hover:border-primary-200'
-                    }`}
-                  >
-                    {topic.charAt(0).toUpperCase() + topic.slice(1)}
-                  </button>
+                  />
                 ))}
               </div>
             </div>
@@ -250,7 +292,7 @@ export default function ProjectSetupPage({ params }: { params: { id: string } })
               </SecondaryButton>
 
               <PrimaryButton type="submit" disabled={loading}>
-                {loading ? 'Saving...' : 'Continue to Questions →'}
+                {loading ? 'Setting up your story...' : 'Start My Story →'}
               </PrimaryButton>
             </div>
           </form>

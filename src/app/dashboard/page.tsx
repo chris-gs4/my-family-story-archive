@@ -98,7 +98,7 @@ export default function DashboardPage() {
       }
 
       const data = await response.json();
-      showToast('Project created successfully!', 'success');
+      // Redirect directly to setup without showing toast
       router.push(`/projects/${data.data.id}/setup`);
     } catch (err) {
       showToast(err instanceof Error ? err.message : 'Failed to create project', 'error');
@@ -107,13 +107,8 @@ export default function DashboardPage() {
   };
 
   const handleContinueProject = (project: Project) => {
-    const nextStep = getNextStep(project.status);
-    if (nextStep) {
-      router.push(`/projects/${project.id}/${nextStep.path}`);
-    } else {
-      // If no next step, just go to project overview
-      router.push(`/projects/${project.id}/narrative`);
-    }
+    // New module-based workflow: always go to modules page
+    router.push(`/projects/${project.id}/modules`);
   };
 
   const handleStartEdit = (project: Project, e: React.MouseEvent) => {
@@ -415,17 +410,15 @@ export default function DashboardPage() {
                   <p className="text-sm text-text-secondary mb-4">{stateInfo.description}</p>
 
                   <div className="flex items-center gap-2">
-                    {nextStep && (
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleContinueProject(project);
-                        }}
-                        className="flex-1 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-lg transition-colors"
-                      >
-                        {nextStep.label}
-                      </button>
-                    )}
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleContinueProject(project);
+                      }}
+                      className="flex-1 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-lg transition-colors"
+                    >
+                      Continue Project
+                    </button>
                     <button
                       onClick={(e) => handleStartDelete(project.id, e)}
                       className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"

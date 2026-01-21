@@ -41,15 +41,30 @@ export async function GET(
       )
     }
 
-    // Get latest chapter
-    const chapter = await prisma.moduleChapter.findFirst({
+    // Get module with latest chapter
+    const module = await prisma.module.findFirst({
       where: {
-        moduleId: params.moduleId,
+        id: params.moduleId,
+        projectId: params.id,
       },
-      orderBy: {
-        version: "desc",
+      include: {
+        chapters: {
+          orderBy: {
+            version: "desc",
+          },
+          take: 1,
+        },
       },
     })
+
+    if (!module) {
+      return NextResponse.json(
+        { error: "Module not found" },
+        { status: 404 }
+      )
+    }
+
+    const chapter = module.chapters[0]
 
     if (!chapter) {
       return NextResponse.json(
@@ -59,7 +74,17 @@ export async function GET(
     }
 
     return NextResponse.json({
-      data: chapter,
+      data: {
+        chapter,
+        module: {
+          id: module.id,
+          moduleNumber: module.moduleNumber,
+          title: module.title,
+          status: module.status,
+          theme: module.theme,
+          approvedAt: module.approvedAt,
+        },
+      },
     })
 
   } catch (error) {

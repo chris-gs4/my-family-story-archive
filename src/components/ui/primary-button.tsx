@@ -31,8 +31,8 @@ const PrimaryButton = React.forwardRef<HTMLButtonElement, PrimaryButtonProps>(
           "focus-ring",
 
           // Colors
-          "bg-primary text-primary-foreground",
-          "hover:bg-primary/90",
+          "bg-blue-600 text-white",
+          "hover:bg-blue-700",
 
           // Rounded corners
           "rounded-lg",
@@ -47,7 +47,7 @@ const PrimaryButton = React.forwardRef<HTMLButtonElement, PrimaryButtonProps>(
           // Disabled
           "disabled:opacity-50",
           "disabled:cursor-not-allowed",
-          "disabled:hover:bg-primary",
+          "disabled:hover:bg-blue-600",
           "disabled:hover:shadow-sm",
 
           // Sizes

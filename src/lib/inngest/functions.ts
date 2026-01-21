@@ -332,7 +332,7 @@ export const generateModuleQuestionsJob = inngest.createFunction(
     const questions = await step.run('generate-questions', async () => {
       if (moduleNumber === 1) {
         // First module - foundational questions
-        return await mockOpenAI.generateQuestions(intervieweeContext, 18);
+        return await mockOpenAI.generateQuestions(intervieweeContext, 15);
       } else {
         // Follow-up module - contextual questions
         const previousQuestionsWithResponses = previousModules.flatMap((m: any) =>
