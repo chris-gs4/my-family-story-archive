@@ -510,7 +510,7 @@ function BookCoverCard({ module }: { module: any }) {
     <div
       className="rounded-3xl transition-all duration-300 cursor-pointer overflow-hidden relative flex flex-col"
       style={{
-        height: '480px',
+        height: '520px',
         backgroundColor: '#FFFFFF',
         boxShadow: '0 12px 32px rgba(17, 24, 39, 0.08)',
         border: '1px solid rgba(17, 24, 39, 0.08)',
@@ -529,16 +529,17 @@ function BookCoverCard({ module }: { module: any }) {
         className="relative flex flex-col items-center justify-center text-center"
         style={{
           backgroundColor: module.coverColor,
-          height: '200px',
-          padding: '56px 20px 20px 20px', // Extra top padding for badges
+          height: '210px',
+          padding: '62px 20px 28px 20px', // More breathing room - top and bottom
           position: 'relative',
         }}
       >
-        {/* Nested frame lines (signature motif) */}
+        {/* Nested frame lines (signature motif) - z-index: 1 */}
         <div
           className="absolute inset-3 rounded-lg pointer-events-none"
           style={{
             border: '1px solid rgba(17, 24, 39, 0.18)',
+            zIndex: 1,
           }}
         />
         <div
@@ -549,38 +550,61 @@ function BookCoverCard({ module }: { module: any }) {
             right: '22px',
             bottom: '22px',
             border: '1px solid rgba(17, 24, 39, 0.18)',
+            zIndex: 1,
           }}
         />
 
         {/* Chapter number badge (volume label) */}
         <div
-          className="absolute top-3 left-3 w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm z-20"
+          className="absolute top-3 left-3 w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm"
           style={{
             backgroundColor: '#2F6F5E',
             boxShadow: '0 2px 4px rgba(17, 24, 39, 0.12)',
+            zIndex: 20,
           }}
         >
           {module.moduleNumber}
         </div>
 
-        {/* Status badge (top-right) */}
-        <div
-          className="absolute top-3 right-3 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium z-20"
-          style={{
-            backgroundColor: 'rgba(47, 111, 94, 0.10)',
-            color: '#2F6F5E',
-          }}
-        >
-          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-          </svg>
-          <span className="hidden sm:inline">{isNotStarted ? 'Not started' : 'Capturing'}</span>
+        {/* Status pill with notch effect */}
+        <div className="absolute top-3 right-3">
+          {/* Mask rectangle behind pill - z-index: 2 - hides frame lines */}
+          <div
+            className="absolute rounded-full pointer-events-none"
+            style={{
+              top: '-3px',
+              left: '-6px',
+              right: '-6px',
+              bottom: '-3px',
+              backgroundColor: module.coverColor,
+              zIndex: 2,
+            }}
+          />
+
+          {/* Status pill - z-index: 3 - more "printed" feel */}
+          <div
+            className="relative inline-flex items-center gap-1.5 rounded-full font-medium"
+            style={{
+              backgroundColor: module.coverColor,
+              color: '#2F6F5E',
+              padding: '5px 10px',
+              border: '1px solid rgba(17, 24, 39, 0.12)',
+              fontSize: '12px',
+              letterSpacing: '0.2px',
+              zIndex: 3,
+            }}
+          >
+            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+            </svg>
+            <span className="hidden sm:inline">{isNotStarted ? 'Not started' : 'Capturing'}</span>
+          </div>
         </div>
 
         {/* Cover typography - now with safe spacing from badges */}
         <div className="relative z-10 max-w-full px-2">
           <p
-            className="uppercase tracking-wider mb-1.5"
+            className="uppercase tracking-wider mb-2.5"
             style={{
               fontSize: '11px',
               fontWeight: 500,
@@ -597,14 +621,14 @@ function BookCoverCard({ module }: { module: any }) {
               fontSize: '22px',
               color: '#111827',
               lineHeight: '1.25',
-              marginBottom: '8px',
+              marginBottom: '10px',
             }}
           >
             {module.title}
           </h3>
           {module.theme && (
             <p
-              className="mt-2 px-3 py-1 rounded-full inline-block text-xs"
+              className="mt-3.5 px-3 py-1 rounded-full inline-block text-xs"
               style={{
                 backgroundColor: 'rgba(47, 111, 94, 0.10)',
                 color: '#2F6F5E',
@@ -622,8 +646,8 @@ function BookCoverCard({ module }: { module: any }) {
           className="rounded-xl flex items-center justify-center flex-col text-center"
           style={{
             height: '150px',
-            backgroundColor: '#F3F4F6',
-            border: '1px solid rgba(17, 24, 39, 0.18)',
+            backgroundColor: 'rgba(17, 24, 39, 0.02)',
+            border: '1px dashed rgba(17, 24, 39, 0.18)',
           }}
         >
           <svg
@@ -645,61 +669,72 @@ function BookCoverCard({ module }: { module: any }) {
           </p>
         </div>
 
-        {/* 3) Progress (bookmark style - text only) */}
+        {/* 3) Progress stats + bar */}
         <div className="mt-auto pt-4">
           <p className="text-sm font-medium mb-1" style={{ color: '#111827' }}>
             {module.completedQuestions} memories saved
           </p>
-          <p className="text-xs" style={{ color: 'rgba(17, 24, 39, 0.60)' }}>
+          <p className="text-xs mb-3" style={{ color: 'rgba(17, 24, 39, 0.60)' }}>
             {module.totalQuestions - module.completedQuestions} prompts remaining · {progressPercent}% complete
           </p>
+
+          {/* Progress bar - proper component inside card */}
+          <div className="relative">
+            <div
+              className="w-full rounded-full h-1.5 overflow-hidden relative"
+              style={{
+                backgroundColor: 'rgba(17, 24, 39, 0.08)',
+              }}
+            >
+              {/* Filled portion */}
+              <div
+                className="h-full transition-all duration-500 relative"
+                style={{
+                  width: `${progressPercent}%`,
+                  backgroundColor: '#2F6F5E',
+                }}
+              >
+                {/* Subtle page segments overlay */}
+                <div
+                  className="absolute inset-0"
+                  style={{
+                    backgroundImage: 'repeating-linear-gradient(90deg, transparent, transparent 9%, rgba(255,255,255,0.12) 9%, rgba(255,255,255,0.12) 10%)',
+                  }}
+                />
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Bookmark meter (vertical bar on right edge) */}
-      <div
-        className="absolute right-0 top-0 bottom-0 rounded-r-3xl overflow-hidden"
-        style={{
-          width: '6px',
-          backgroundColor: 'rgba(47, 111, 94, 0.12)',
-        }}
-      >
+      {/* 4) Footer - dedicated container with proper spacing */}
+      <div className="px-6" style={{ paddingBottom: '32px' }}>
         <div
-          className="transition-all duration-500 rounded-full"
-          style={{
-            width: '100%',
-            height: `${progressPercent}%`,
-            backgroundColor: '#2F6F5E',
-          }}
-        />
-      </div>
-
-      {/* 4) Footer */}
-      <div
-        className="px-6 pb-6 flex items-center justify-between"
-        style={{ borderTop: '1px solid rgba(17, 24, 39, 0.06)' }}
-      >
-        <span className="text-xs" style={{ color: 'rgba(17, 24, 39, 0.60)' }}>
-          Started {new Date(module.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-        </span>
-
-        <button
-          className="px-4 py-2 rounded-xl text-sm font-semibold text-white transition-all duration-200"
-          style={{
-            backgroundColor: '#2F6F5E',
-            height: '40px',
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = '#275D4F';
-            e.currentTarget.style.boxShadow = '0 2px 8px rgba(47, 111, 94, 0.2)';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = '#2F6F5E';
-            e.currentTarget.style.boxShadow = 'none';
-          }}
+          className="flex items-center justify-between"
+          style={{ marginTop: '20px' }}
         >
-          {isNotStarted ? 'Start writing' : 'Continue'}
-        </button>
+          <span className="text-xs" style={{ color: 'rgba(17, 24, 39, 0.60)' }}>
+            Started {new Date(module.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+          </span>
+
+          <button
+            className="px-4 py-2 rounded-xl text-sm font-semibold text-white transition-all duration-200"
+            style={{
+              backgroundColor: '#2F6F5E',
+              height: '40px',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = '#275D4F';
+              e.currentTarget.style.boxShadow = '0 2px 8px rgba(47, 111, 94, 0.2)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = '#2F6F5E';
+              e.currentTarget.style.boxShadow = 'none';
+            }}
+          >
+            {isNotStarted ? 'Start writing' : 'Continue writing'}
+          </button>
+        </div>
       </div>
     </div>
   );
