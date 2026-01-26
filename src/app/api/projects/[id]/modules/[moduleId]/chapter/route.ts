@@ -14,9 +14,10 @@ const updateSchema = z.object({
  */
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string; moduleId: string } }
+  context: { params: Promise<{ id: string; moduleId: string }> | { id: string; moduleId: string } }
 ) {
   try {
+    const params = await Promise.resolve(context.params);
     const session = await getServerSession(authOptions)
 
     if (!session?.user?.id) {
@@ -102,9 +103,10 @@ export async function GET(
  */
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string; moduleId: string } }
+  context: { params: Promise<{ id: string; moduleId: string }> | { id: string; moduleId: string } }
 ) {
   try {
+    const params = await Promise.resolve(context.params);
     const session = await getServerSession(authOptions)
 
     if (!session?.user?.id) {

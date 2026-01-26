@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { PrimaryButton } from '@/components/ui/primary-button';
 import { SecondaryButton } from '@/components/ui/secondary-button';
@@ -27,18 +27,20 @@ export default function QuestionsPage({
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [saving, setSaving] = useState(false);
   const [generatingChapter, setGeneratingChapter] = useState(false);
+  const hasInitializedQuestionIndex = useRef(false);
 
   useEffect(() => {
     fetchQuestions();
   }, [params.id, params.moduleId]);
 
-  // Set initial question index to first unanswered question
+  // Set initial question index to first unanswered question (only once on load)
   useEffect(() => {
-    if (questions.length > 0) {
-      const firstUnanswered = questions.findIndex((q) => !q.response);
+    if (questions.length > 0 && !hasInitializedQuestionIndex.current) {
+      const firstUnanswered = questions.findIndex((q) => !q.respondedAt);
       if (firstUnanswered !== -1) {
         setCurrentQuestionIndex(firstUnanswered);
       }
+      hasInitializedQuestionIndex.current = true;
     }
   }, [questions]);
 
@@ -159,7 +161,7 @@ export default function QuestionsPage({
     }
   };
 
-  const completedCount = questions.filter((q) => q.response).length;
+  const completedCount = questions.filter((q) => q.respondedAt).length;
   const totalCount = questions.length;
   const progressPercent = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
   const canGenerateChapter = completedCount >= Math.ceil(totalCount * 0.5);
@@ -252,7 +254,7 @@ export default function QuestionsPage({
           {/* Current Question */}
           {currentQuestion && (
             <div className="space-y-6">
-              <div className={`card-elevated p-8 ${currentQuestion.response ? 'border-l-4 border-l-green-500' : ''}`}>
+              <div className={`card-elevated p-8 ${currentQuestion.respondedAt ? 'border-l-4 border-l-green-500' : ''}`}>
                 <div className="flex items-start justify-between mb-6">
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-3">
@@ -267,7 +269,7 @@ export default function QuestionsPage({
                       {currentQuestion.question}
                     </h3>
                   </div>
-                  {currentQuestion.response && (
+                  {currentQuestion.respondedAt && (
                     <span className="flex items-center gap-1 text-green-600 text-sm font-medium">
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />

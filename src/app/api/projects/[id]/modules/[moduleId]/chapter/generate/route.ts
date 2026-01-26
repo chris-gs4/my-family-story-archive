@@ -17,9 +17,12 @@ const generateSchema = z.object({
  */
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string; moduleId: string } }
+  context: { params: Promise<{ id: string; moduleId: string }> | { id: string; moduleId: string } }
 ) {
   try {
+    // Await params if it's a Promise (Next.js 15+)
+    const params = await Promise.resolve(context.params);
+
     const session = await getServerSession(authOptions)
 
     if (!session?.user?.id) {

@@ -21,6 +21,7 @@ const SecondaryButton = React.forwardRef<HTMLButtonElement, SecondaryButtonProps
     return (
       <button
         ref={ref}
+        type="button"
         className={cn(
           // Base
           "relative inline-flex items-center justify-center gap-2",
