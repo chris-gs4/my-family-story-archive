@@ -56,6 +56,70 @@ The MVP includes AI-guided interview questions, audio transcription, narrative g
 - Server-side rendering for SEO and performance
 - State management via React context or Zustand for lightweight state
 
+## Module-Based Architecture ⭐ KEY INNOVATION
+
+### Overview
+Family Story Archive uses a **module-based workflow** where users build their family story incrementally, one chapter at a time. This architecture solves two critical UX problems:
+1. **Prevents overwhelm** - Users complete bite-sized modules instead of facing a massive upfront interview
+2. **Enables AI learning** - Each module's questions build upon previous responses, creating deeper narratives
+
+### How It Works
+```
+Project
+  ├─ Module 1: "Early Life" → Chapter 1
+  ├─ Module 2: "Career Journey" → Chapter 2 (AI references Module 1 responses)
+  ├─ Module 3: "Family Life" → Chapter 3 (AI references Modules 1 & 2)
+  └─ Module N... → Chapter N
+        ↓
+  Final Book: Compilation of all approved chapters
+```
+
+### Module Lifecycle
+1. **Create Module** - User defines theme/topic or accepts AI suggestion
+2. **Generate Questions** - AI creates 15-20 questions (async job)
+   - Module 1: Based on interviewee profile only
+   - Module 2+: Analyzes all previous responses for context
+3. **Answer Questions** - User responds over multiple sessions (auto-save)
+4. **Generate Chapter** - AI converts Q&A into narrative (async job)
+5. **Review & Refine** - User can regenerate with feedback
+6. **Approve** - Marks module complete, locks chapter
+
+### Context Learning System
+**Module 1 (Foundational):**
+- Questions generated from interviewee metadata (relationship, age, topics)
+- Covers life stages: early life, adolescence, career, relationships, values, legacy
+
+**Module 2+ (Context-Aware):**
+- AI analyzes all previous `ModuleQuestion.response` fields
+- Extracts `contextKeywords` (names, places, events, themes)
+- Generates questions that:
+  - Dive deeper into interesting topics
+  - Explore connections between themes
+  - Fill gaps in the narrative timeline
+  - Reference specific details from previous answers
+
+Example:
+- Module 1 response: "I grew up on a farm in Iowa during the Depression"
+- Module 2 question: "You mentioned growing up on a farm in Iowa during the Depression. What was a typical day like for your family during those difficult times?"
+
+### State Machine
+```typescript
+enum ModuleStatus {
+  DRAFT = 'draft',                           // Created, no questions yet
+  QUESTIONS_GENERATED = 'questions_generated', // Questions ready to answer
+  IN_PROGRESS = 'in_progress',               // User answering questions
+  GENERATING_CHAPTER = 'generating_chapter', // AI creating narrative
+  CHAPTER_GENERATED = 'chapter_generated',   // Chapter ready for review
+  APPROVED = 'approved'                      // User approved, module complete
+}
+```
+
+### Benefits
+- **Flexible pacing**: Users can take days/weeks between modules
+- **Better narratives**: Context-aware questions yield richer stories
+- **Natural structure**: Each module = one chapter (clear organization)
+- **Reduced abandonment**: Smaller commitments = higher completion rates
+
 ### Data Model
 
 #### Entity Relationship Diagram (Text)
@@ -64,13 +128,19 @@ The MVP includes AI-guided interview questions, audio transcription, narrative g
   │                        │
   │                        ├─── 1:1 ──→ [Interviewee]
   │                        │
-  │                        ├─── 1:M ──→ [InterviewQuestion]
+  │                        ├─── 1:M ──→ [Module] ⭐ NEW
+  │                        │                  │
+  │                        │                  ├─── 1:M ──→ [ModuleQuestion] ⭐ NEW
+  │                        │                  │
+  │                        │                  └─── 1:M ──→ [ModuleChapter] ⭐ NEW (versioned)
   │                        │
-  │                        ├─── 1:M ──→ [InterviewSession]
+  │                        ├─── 1:M ──→ [InterviewQuestion] (Legacy)
+  │                        │
+  │                        ├─── 1:M ──→ [InterviewSession] (Future - audio)
   │                        │                  │
   │                        │                  └─── 1:1 ──→ [Transcription]
   │                        │
-  │                        ├─── 1:1 ──→ [Narrative]
+  │                        ├─── 1:1 ──→ [Narrative] (Legacy)
   │                        │                  │
   │                        │                  └─── 1:1 ──→ [Audiobook] (Post-MVP)
   │                        │
@@ -78,6 +148,8 @@ The MVP includes AI-guided interview questions, audio transcription, narrative g
   │
   └──────────────M [Payment]
 ```
+
+**Note:** The system currently has both the **new module-based tables** (Module, ModuleQuestion, ModuleChapter) and **legacy tables** (InterviewQuestion, Narrative) from the previous linear workflow. The module architecture is the active implementation.
 
 #### Core Entities
 
@@ -88,11 +160,30 @@ The MVP includes AI-guided interview questions, audio transcription, narrative g
   - Notes: Using NextAuth.js schema conventions
 
 - **Project**
-  - Fields: id (uuid), userId (uuid, FK), title (string), status (enum), createdAt (timestamp), updatedAt (timestamp)
-  - Status Enum: 'draft', 'recording_info', 'questions_generated', 'audio_uploaded', 'transcribing', 'transcription_complete', 'generating_narrative', 'narrative_complete', 'complete', 'error'
-  - Relationships: belongs_to User, has_one Interviewee, has_many InterviewQuestions, has_many InterviewSessions, has_one Narrative, has_many Jobs
-  - Indexes: userId, status, (userId, status) composite for dashboard queries
-  - Constraints: Status transitions must follow state machine rules
+  - Fields: id (uuid), userId (uuid, FK), title (string), currentModuleNumber (int), totalModulesCompleted (int), createdAt (timestamp), updatedAt (timestamp)
+  - Relationships: belongs_to User, has_one Interviewee, has_many Modules, has_many InterviewQuestions (legacy), has_many InterviewSessions, has_one Narrative (legacy), has_many Jobs
+  - Indexes: userId, (userId, createdAt) composite for dashboard queries
+  - Notes: Project no longer has a single status - instead tracks modules and their individual states
+
+- **Module** ⭐ NEW
+  - Fields: id (uuid), projectId (uuid, FK), moduleNumber (int), title (string), description (text), status (enum), theme (string), createdAt (timestamp), updatedAt (timestamp)
+  - Status Enum: 'draft', 'questions_generated', 'in_progress', 'generating_chapter', 'chapter_generated', 'approved'
+  - Relationships: belongs_to Project, has_many ModuleQuestions, has_many ModuleChapters (versioned)
+  - Indexes: projectId, (projectId, moduleNumber) unique, status
+  - Constraints: Status transitions must follow module state machine rules
+
+- **ModuleQuestion** ⭐ NEW
+  - Fields: id (uuid), moduleId (uuid, FK), question (text), category (string), order (int), response (text nullable), contextSource (string nullable), contextKeywords (json nullable), respondedAt (timestamp nullable), createdAt (timestamp)
+  - Relationships: belongs_to Module
+  - Indexes: moduleId, (moduleId, order) unique
+  - Notes: contextSource indicates which previous module(s) informed this question. contextKeywords stores extracted themes for future context learning.
+
+- **ModuleChapter** ⭐ NEW
+  - Fields: id (uuid), moduleId (uuid, FK), version (int), content (text), wordCount (int), settings (json), feedback (text nullable), status (enum), createdAt (timestamp), updatedAt (timestamp)
+  - Status Enum: 'generating', 'draft', 'approved'
+  - Relationships: belongs_to Module
+  - Indexes: moduleId, (moduleId, version) unique
+  - Notes: settings stores narrative preferences (person, tone, style). Multiple versions support regeneration with feedback. Only one chapter per module can have status='approved'.
 
 - **Interviewee**
   - Fields: id (uuid), projectId (uuid, FK, unique), name (string), relationship (string), birthYear (int), generation (string), topics (json), notes (text), createdAt (timestamp), updatedAt (timestamp)
@@ -193,7 +284,71 @@ The MVP includes AI-guided interview questions, audio transcription, narrative g
   - Create/update interviewee information
   - Body: `{ name: string, relationship: string, birthYear?: number, topics: string[] }`
   - Response: `{ data: Interviewee }`
-  - Side effect: Transitions project status to 'recording_info'
+  - Side effect: Creates interviewee record for the project
+
+#### Module Routes ⭐ NEW
+
+- `POST /api/projects/:id/modules`
+  - Create a new module for the project
+  - Body: `{ title?: string, description?: string, theme?: string }`
+  - Response: `{ data: Module, message: string }`
+  - Side effect: Creates module with status='draft', triggers question generation job, increments project.currentModuleNumber
+
+- `GET /api/projects/:id/modules`
+  - List all modules for a project
+  - Query params: `status` (filter by module status)
+  - Response: `{ data: Module[] }`
+
+- `GET /api/projects/:id/modules/:moduleId`
+  - Get single module with related data
+  - Response: `{ data: Module & { questions, chapters, project } }`
+
+- `PATCH /api/projects/:id/modules/:moduleId`
+  - Update module details
+  - Body: `{ title?: string, description?: string, status?: ModuleStatus }`
+  - Response: `{ data: Module }`
+  - Notes: Status transitions are validated
+
+- `POST /api/projects/:id/modules/:moduleId/approve`
+  - Approve the module and its final chapter
+  - Response: `{ data: Module }`
+  - Side effect: Sets module status to 'approved', increments project.totalModulesCompleted
+
+#### Module Question Routes ⭐ NEW
+
+- `POST /api/projects/:id/modules/:moduleId/questions`
+  - Manually create questions (admin/testing)
+  - Body: `{ questions: Array<{ question, category, order }> }`
+  - Response: `{ data: ModuleQuestion[] }`
+
+- `GET /api/projects/:id/modules/:moduleId/questions`
+  - Get all questions for a module
+  - Response: `{ data: ModuleQuestion[] }`
+
+- `PATCH /api/projects/:id/modules/:moduleId/questions/:questionId`
+  - Save/update question response
+  - Body: `{ response: string }`
+  - Response: `{ data: ModuleQuestion }`
+  - Side effect: If first response, transitions module to 'in_progress'; sets respondedAt timestamp
+
+#### Module Chapter Routes ⭐ NEW
+
+- `POST /api/projects/:id/modules/:moduleId/chapter/generate`
+  - Trigger chapter generation from module responses
+  - Body: `{ person?: '1st' | '3rd', tone?: string, style?: string }`
+  - Response: `{ jobId: string, message: string }`
+  - Side effect: Creates chapter generation job, transitions module to 'generating_chapter'
+
+- `GET /api/projects/:id/modules/:moduleId/chapter`
+  - Get the latest or approved chapter for a module
+  - Query params: `version` (optional - get specific version)
+  - Response: `{ data: ModuleChapter | null }`
+
+- `POST /api/projects/:id/modules/:moduleId/chapter/regenerate`
+  - Regenerate chapter with feedback
+  - Body: `{ feedback: string, person?: string, tone?: string, style?: string }`
+  - Response: `{ jobId: string, message: string }`
+  - Side effect: Creates new chapter generation job with feedback context, increments version number
 
 #### Interview Question Routes
 
@@ -457,9 +612,16 @@ Audio transcription, narrative generation, and audiobook creation are **long-run
 ```typescript
 // Job type definitions
 enum JobType {
+  // Module-based jobs (Active)
+  GENERATE_MODULE_QUESTIONS = 'generate_module_questions', ⭐ NEW
+  GENERATE_MODULE_CHAPTER = 'generate_module_chapter', ⭐ NEW
+
+  // Legacy jobs (Deprecated)
   GENERATE_QUESTIONS = 'generate_questions',
-  TRANSCRIBE_AUDIO = 'transcribe_audio',
   GENERATE_NARRATIVE = 'generate_narrative',
+
+  // Future features
+  TRANSCRIBE_AUDIO = 'transcribe_audio',
   CREATE_AUDIOBOOK = 'create_audiobook', // Post-MVP
   SEND_NOTIFICATION = 'send_notification'
 }
@@ -467,7 +629,179 @@ enum JobType {
 
 ### Job Implementations
 
-#### 1. Generate Questions Job
+#### New Module-Based Jobs ⭐ ACTIVE IMPLEMENTATION
+
+##### 1. Generate Module Questions Job (Module 1 - Foundational)
+
+```typescript
+export const generateModuleQuestions = inngest.createFunction(
+  { id: 'generate-module-questions', retries: 2 },
+  { event: 'module/questions.generate' },
+  async ({ event, step }) => {
+    const { moduleId, projectId } = event.data;
+
+    // Step 1: Get module and interviewee context
+    const context = await step.run('get-context', async () => {
+      const module = await db.module.findUnique({
+        where: { id: moduleId },
+        include: {
+          project: {
+            include: { interviewee: true }
+          }
+        }
+      });
+      return { module, interviewee: module.project.interviewee };
+    });
+
+    // Step 2: Check if this is Module 1 or Module 2+
+    const isFirstModule = context.module.moduleNumber === 1;
+
+    // Step 3: For Module 2+, get previous responses
+    const previousContext = !isFirstModule
+      ? await step.run('analyze-previous-modules', async () => {
+          const previousModules = await db.module.findMany({
+            where: {
+              projectId,
+              moduleNumber: { lt: context.module.moduleNumber }
+            },
+            include: {
+              questions: {
+                where: { response: { not: null } }
+              }
+            }
+          });
+
+          // Extract keywords and themes from responses
+          return await openai.chat.completions.create({
+            model: 'gpt-4',
+            messages: [{
+              role: 'system',
+              content: 'Extract key themes, names, places, and events from these interview responses.'
+            }, {
+              role: 'user',
+              content: JSON.stringify(previousModules)
+            }]
+          });
+        })
+      : null;
+
+    // Step 4: Generate questions based on context
+    const questions = await step.run('generate-questions', async () => {
+      const prompt = isFirstModule
+        ? buildFoundationalPrompt(context.interviewee)
+        : buildContextAwarePrompt(context.interviewee, previousContext);
+
+      return await openai.chat.completions.create({
+        model: 'gpt-4',
+        messages: prompt,
+      });
+    });
+
+    // Step 5: Save questions to database
+    await step.run('save-questions', async () => {
+      const parsedQuestions = JSON.parse(questions.choices[0].message.content);
+      return await db.moduleQuestion.createMany({
+        data: parsedQuestions.map((q, i) => ({
+          moduleId,
+          question: q.question,
+          category: q.category,
+          order: i,
+          contextSource: !isFirstModule ? `module_${context.module.moduleNumber - 1}` : null,
+          contextKeywords: q.keywords || null
+        }))
+      });
+    });
+
+    // Step 6: Update module status
+    await step.run('update-module', async () => {
+      return await db.module.update({
+        where: { id: moduleId },
+        data: { status: 'questions_generated' }
+      });
+    });
+  }
+);
+```
+
+##### 2. Generate Module Chapter Job
+
+```typescript
+export const generateModuleChapter = inngest.createFunction(
+  { id: 'generate-module-chapter', retries: 2 },
+  { event: 'module/chapter.generate' },
+  async ({ event, step }) => {
+    const { moduleId, settings, feedback, version } = event.data;
+
+    // Step 1: Get module with all responses
+    const moduleData = await step.run('get-module-data', async () => {
+      return await db.module.findUnique({
+        where: { id: moduleId },
+        include: {
+          questions: {
+            where: { response: { not: null } },
+            orderBy: { order: 'asc' }
+          },
+          project: {
+            include: { interviewee: true }
+          }
+        }
+      });
+    });
+
+    // Step 2: If regenerating, get previous chapter for context
+    const previousChapter = feedback
+      ? await step.run('get-previous-chapter', async () => {
+          return await db.moduleChapter.findFirst({
+            where: { moduleId, version: version - 1 }
+          });
+        })
+      : null;
+
+    // Step 3: Generate chapter
+    const chapter = await step.run('generate-chapter', async () => {
+      const prompt = feedback
+        ? buildRegenerationPrompt(moduleData, previousChapter, feedback, settings)
+        : buildChapterPrompt(moduleData, settings);
+
+      return await openai.chat.completions.create({
+        model: 'gpt-4',
+        messages: prompt,
+        temperature: 0.7
+      });
+    });
+
+    // Step 4: Save chapter
+    const savedChapter = await step.run('save-chapter', async () => {
+      const content = chapter.choices[0].message.content;
+      return await db.moduleChapter.create({
+        data: {
+          moduleId,
+          version: version || 1,
+          content,
+          wordCount: content.split(/\s+/).length,
+          settings,
+          feedback,
+          status: 'draft'
+        }
+      });
+    });
+
+    // Step 5: Update module status
+    await step.run('update-module', async () => {
+      return await db.module.update({
+        where: { id: moduleId },
+        data: { status: 'chapter_generated' }
+      });
+    });
+
+    return { chapterId: savedChapter.id };
+  }
+);
+```
+
+#### Legacy Jobs (Deprecated but still in code)
+
+##### 1. Generate Questions Job (Old linear workflow)
 
 ```typescript
 export const generateQuestions = inngest.createFunction(
