@@ -2494,6 +2494,15 @@ async function trackJobPerformance(
 ### Phase 6: Future Enhancements (Months 4-6)
 
 **Features Under Consideration:**
+- **AI-Generated Chapter Cover Images** ⭐ NEW PRIORITY
+  - Auto-generate visual cover art for each module/chapter
+  - Uses DALL-E 3 or Midjourney API to create hand-drawn style sketches
+  - Based on chapter title and theme (e.g., "Early Life & Childhood" → nostalgic childhood scene)
+  - Enhances book cover grid visual appeal
+  - Optional: Allow users to regenerate or upload their own photos
+  - **Estimated effort:** 1-2 weeks
+  - **API cost:** ~$0.04 per image (DALL-E 3) or $0.10 (Midjourney quality)
+  - **User value:** Makes dashboard beautiful, personalizes each chapter
 - Multi-session interview support (continue where you left off)
 - Real-time interview mode (AI suggests questions during recording)
 - Collaborative editing (family members can contribute)
@@ -2503,7 +2512,7 @@ async function trackJobPerformance(
 - Integration with genealogy platforms
 - White-label solution for professional storytellers/journalists
 
-**Prioritization:** Based on user feedback and engagement metrics from Phases 1-5
+**Prioritization:** Based on user feedback and engagement metrics from Phases 1-5. AI-Generated Cover Images fast-tracked due to high visual impact and immediate dashboard enhancement.
 
 ---
 
