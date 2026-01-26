@@ -510,7 +510,7 @@ function BookCoverCard({ module }: { module: any }) {
     <div
       className="rounded-3xl transition-all duration-300 cursor-pointer overflow-hidden relative flex flex-col"
       style={{
-        height: '520px',
+        height: '540px',
         backgroundColor: '#FFFFFF',
         boxShadow: '0 12px 32px rgba(17, 24, 39, 0.08)',
         border: '1px solid rgba(17, 24, 39, 0.08)',
@@ -708,7 +708,7 @@ function BookCoverCard({ module }: { module: any }) {
       </div>
 
       {/* 4) Footer - dedicated container with proper spacing */}
-      <div className="px-6" style={{ paddingBottom: '32px' }}>
+      <div className="px-6" style={{ paddingBottom: '40px' }}>
         <div
           className="flex items-center justify-between"
           style={{ marginTop: '20px' }}
