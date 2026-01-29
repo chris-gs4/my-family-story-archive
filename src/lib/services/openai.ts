@@ -382,11 +382,16 @@ Return ONLY the narrative text, no titles or formatting.`;
 
     this.totalCost += cost;
 
-    console.log(
-      `[OpenAI] Tokens: ${usage.total_tokens} (prompt: ${usage.prompt_tokens}, completion: ${usage.completion_tokens})`
-    );
-    console.log(`[OpenAI] Estimated cost: $${cost.toFixed(4)}`);
-    console.log(`[OpenAI] Total cost this session: $${this.totalCost.toFixed(4)}`);
+    // Enhanced logging with visual formatting
+    console.log('\n' + '='.repeat(60));
+    console.log('📊 OpenAI API Call Complete');
+    console.log('='.repeat(60));
+    console.log(`🎯 Tokens Used: ${usage.total_tokens.toLocaleString()}`);
+    console.log(`   └─ Prompt: ${usage.prompt_tokens.toLocaleString()}`);
+    console.log(`   └─ Completion: ${usage.completion_tokens.toLocaleString()}`);
+    console.log(`💰 Cost This Call: $${cost.toFixed(4)}`);
+    console.log(`📈 Session Total: $${this.totalCost.toFixed(4)}`);
+    console.log('='.repeat(60) + '\n');
   }
 
   private getErrorMessage(error: unknown): string {
