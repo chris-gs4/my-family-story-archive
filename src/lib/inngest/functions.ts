@@ -1,8 +1,12 @@
 // Inngest Job Functions
 import { inngest } from './client';
 import { prisma } from '@/lib/prisma';
-import { mockOpenAI } from '@/lib/services/mock/openai';
+import { openAIService } from '@/lib/services/openai';
+import { mockOpenAI } from '@/lib/services/mock/openai'; // Keep for fallback
 import type { ProjectStatus } from '@prisma/client';
+
+// Use real OpenAI if API key is configured, otherwise fall back to mock
+const aiService = process.env.OPENAI_API_KEY ? openAIService : mockOpenAI;
 
 /**
  * Job 1: Generate Interview Questions
@@ -330,9 +334,11 @@ export const generateModuleQuestionsJob = inngest.createFunction(
 
     // Step 2: Generate questions
     const questions = await step.run('generate-questions', async () => {
+      console.log(`[Inngest] Using ${process.env.OPENAI_API_KEY ? 'real' : 'mock'} AI service`);
+
       if (moduleNumber === 1) {
         // First module - foundational questions
-        return await mockOpenAI.generateQuestions(intervieweeContext, 15);
+        return await aiService.generateQuestions(intervieweeContext, 15);
       } else {
         // Follow-up module - contextual questions
         const previousQuestionsWithResponses = previousModules.flatMap((m: any) =>
@@ -345,10 +351,10 @@ export const generateModuleQuestionsJob = inngest.createFunction(
             }))
         );
 
-        return await mockOpenAI.generateFollowUpQuestions(
+        return await aiService.generateFollowUpQuestions(
           intervieweeContext,
           previousQuestionsWithResponses,
-          moduleNumber - 1
+          moduleNumber
         );
       }
     });
@@ -439,25 +445,38 @@ export const generateModuleChapterJob = inngest.createFunction(
 
     // Step 2: Generate chapter
     const chapter = await step.run('generate-chapter', async () => {
-      // Build transcript from questions/responses
+      console.log(`[Inngest] Using ${process.env.OPENAI_API_KEY ? 'real' : 'mock'} AI service for chapter generation`);
+
+      // Transform questions array to the expected format
+      const questionsWithResponses = questions.map((q: any) => ({
+        question: q.question,
+        response: q.response,
+        category: q.category,
+      }));
+
+      // If using real OpenAI
+      if (process.env.OPENAI_API_KEY && 'generateChapter' in aiService) {
+        const content = await aiService.generateChapter(questionsWithResponses, {
+          person: settings.narrativePerson === 'third-person' ? 'third' : 'first',
+          tone: settings.narrativeTone || 'warm',
+          style: settings.narrativeStyle || 'descriptive',
+        });
+
+        const wordCount = content.split(/\s+/).length;
+
+        return {
+          content,
+          wordCount,
+          structure: { chapters: [] }, // Real chapters don't have sub-chapters
+        };
+      }
+
+      // Fall back to mock service
       const transcript = questions.map((q: any) =>
         `Q: ${q.question}\nA: ${q.response}`
       ).join('\n\n');
-
-      // Determine style based on settings
       const style = settings.narrativePerson === 'third-person' ? 'third-person' : 'first-person';
-
-      // Generate narrative
-      const result = await mockOpenAI.generateNarrative(transcript, style);
-
-      // If regeneration with feedback, append feedback context
-      if (isRegeneration && feedback) {
-        console.log(`[Inngest] Regenerating with feedback: ${feedback}`);
-        // In a real implementation, the AI would consider this feedback
-        // For now, we just regenerate with the same settings
-      }
-
-      return result;
+      return await mockOpenAI.generateNarrative(transcript, style);
     });
 
     // Step 3: Update progress
