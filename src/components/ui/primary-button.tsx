@@ -1,3 +1,5 @@
+'use client';
+
 import * as React from "react"
 import { cn } from "@/lib/utils"
 
@@ -6,6 +8,7 @@ interface PrimaryButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
   fullWidth?: boolean
   loading?: boolean
   icon?: React.ReactNode
+  theme?: "default" | "paper-primary"
 }
 
 const PrimaryButton = React.forwardRef<HTMLButtonElement, PrimaryButtonProps>(
@@ -17,8 +20,11 @@ const PrimaryButton = React.forwardRef<HTMLButtonElement, PrimaryButtonProps>(
     icon,
     children,
     disabled,
+    theme = "default",
     ...props
   }, ref) => {
+    const isPaperPrimary = theme === "paper-primary"
+
     return (
       <button
         ref={ref}
@@ -28,19 +34,28 @@ const PrimaryButton = React.forwardRef<HTMLButtonElement, PrimaryButtonProps>(
           // Base styles
           "relative inline-flex items-center justify-center gap-2",
           "font-semibold",
-          "transition-all duration-150",
+          "transition-all duration-200",
           "focus-ring",
 
-          // Colors
-          "bg-blue-600 text-white",
-          "hover:bg-blue-700",
+          // Colors - Default theme
+          theme === "default" && [
+            "bg-blue-600 text-white",
+            "hover:bg-blue-700",
+            "disabled:hover:bg-blue-600",
+          ],
+
+          // Colors - Paper Primary theme
+          theme === "paper-primary" && [
+            "text-white",
+          ],
 
           // Rounded corners
-          "rounded-lg",
+          isPaperPrimary ? "rounded-xl" : "rounded-lg",
 
           // Subtle shadow
           "shadow-sm",
-          "hover:shadow-md",
+          isPaperPrimary && "hover:shadow-md",
+          !isPaperPrimary && "hover:shadow-md",
 
           // Active state
           "active:scale-[0.98]",
@@ -48,12 +63,11 @@ const PrimaryButton = React.forwardRef<HTMLButtonElement, PrimaryButtonProps>(
           // Disabled
           "disabled:opacity-50",
           "disabled:cursor-not-allowed",
-          "disabled:hover:bg-blue-600",
           "disabled:hover:shadow-sm",
 
           // Sizes
           size === "sm" && "h-9 px-3 text-sm",
-          size === "md" && "h-11 px-5 text-base",
+          size === "md" && (isPaperPrimary ? "h-10 px-4 text-sm" : "h-11 px-5 text-base"),
           size === "lg" && "h-12 px-6 text-lg",
 
           // Full width
@@ -61,6 +75,24 @@ const PrimaryButton = React.forwardRef<HTMLButtonElement, PrimaryButtonProps>(
 
           className
         )}
+        style={{
+          ...(isPaperPrimary && {
+            backgroundColor: '#2F6F5E',
+          }),
+          ...props.style,
+        }}
+        onMouseEnter={(e) => {
+          if (isPaperPrimary && !disabled && !loading) {
+            e.currentTarget.style.backgroundColor = '#275D4F'
+            e.currentTarget.style.boxShadow = '0 2px 8px rgba(47, 111, 94, 0.2)'
+          }
+        }}
+        onMouseLeave={(e) => {
+          if (isPaperPrimary && !disabled && !loading) {
+            e.currentTarget.style.backgroundColor = '#2F6F5E'
+            e.currentTarget.style.boxShadow = ''
+          }
+        }}
         {...props}
       >
         {loading && (

@@ -12,10 +12,11 @@ npm run build        # Build for production
 npm run lint         # Run linter
 npm run test         # Run tests
 
-# Database (if applicable)
-npm run db:generate  # Generate database migrations
-npm run db:migrate   # Run migrations
-npm run db:push      # Push schema changes
+# Database (Prisma)
+npx prisma generate      # Generate Prisma client
+npx prisma migrate dev   # Create and apply migrations
+npx prisma db push       # Push schema without migrations (dev)
+npx prisma studio        # Open database GUI
 ```
 
 ### Project Structure
@@ -47,7 +48,7 @@ web
 
 ## Tech Stack
 
-TypeScript, JavaScript, Next.js, React, Shadcn, Tailwind, shadcn/ui, Radix UI, React Hook Form, Zod, Drizzle, Stripe, Nextauth, Clerk, Aws, Vercel, DrizzleORM, NextAuth.js, Postgresql
+TypeScript, JavaScript, Next.js, React, Tailwind CSS, shadcn/ui, Radix UI, React Hook Form, Zod, Prisma ORM, NextAuth.js, Stripe, AWS S3, Vercel, PostgreSQL (Neon), Inngest (background jobs)
 
 ## Key Documentation
 

@@ -120,6 +120,54 @@
     --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
     --transition-base: 200ms cubic-bezier(0.4, 0, 0.2, 1);
     --transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+
+    /* ======================
+       PAPER PRIMARY DESIGN TOKENS
+       ====================== */
+
+    /* Paper Primary Colors - Memoir aesthetic */
+    --paper-bg: #FAF8F3;                    /* Warm off-white background */
+    --paper-primary: #2F6F5E;               /* Deep teal (primary brand) */
+    --paper-primary-hover: #275D4F;         /* Darker teal on hover */
+    --paper-sage: #EAF4EF;                  /* Sage green (book cover) */
+    --paper-powder: #BFD8E6;                /* Powder blue (book cover) */
+    --paper-blush: #E7C7C9;                 /* Blush pink (book cover) */
+    --paper-card: #FFFFFF;                  /* Clean white cards */
+
+    /* Paper Primary Typography */
+    --font-serif: Georgia, 'Times New Roman', serif;
+    --letter-spacing-tight: 0.2px;
+    --letter-spacing-loose: 0.3px;
+    --letter-spacing-wide: 0.06em;
+
+    /* Paper Primary Text Colors */
+    --paper-text-primary: #111827;          /* Rich black */
+    --paper-text-secondary: rgba(17, 24, 39, 0.60);
+    --paper-text-tertiary: rgba(17, 24, 39, 0.45);
+    --paper-text-muted: rgba(17, 24, 39, 0.25);
+
+    /* Paper Primary Borders */
+    --paper-border-subtle: rgba(17, 24, 39, 0.08);
+    --paper-border-frame: rgba(17, 24, 39, 0.18);
+    --paper-border-medium: rgba(17, 24, 39, 0.12);
+
+    /* Paper Primary Backgrounds (alpha) */
+    --paper-bg-subtle: rgba(17, 24, 39, 0.02);
+    --paper-bg-light: rgba(47, 111, 94, 0.08);
+    --paper-bg-medium: rgba(47, 111, 94, 0.10);
+    --paper-bg-strong: rgba(47, 111, 94, 0.12);
+
+    /* Paper Primary Shadows - Book-like depth */
+    --shadow-book: 0 12px 32px rgba(17, 24, 39, 0.08);
+    --shadow-book-hover: 0 16px 40px rgba(17, 24, 39, 0.12);
+    --shadow-cover: 0 2px 4px rgba(17, 24, 39, 0.12);
+    --shadow-button: 0 2px 8px rgba(47, 111, 94, 0.2);
+
+    /* Paper Primary Component Dimensions */
+    --book-card-height: 540px;
+    --book-cover-height: 210px;
+    --book-photo-height: 150px;
+    --book-badge-size: 40px;
   }
 
   .dark {
