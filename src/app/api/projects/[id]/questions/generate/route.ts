@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
-import { mockOpenAI } from '@/lib/services/mock/openai';
+import { openAIService } from '@/lib/services/openai';
 import type { ProjectStatus } from '@prisma/client';
 
 export async function POST(
@@ -63,8 +63,8 @@ export async function POST(
         where: { projectId: params.id },
       });
 
-      // Generate questions using mock OpenAI
-      const questions = await mockOpenAI.generateQuestions(
+      // Generate questions using OpenAI
+      const questions = await openAIService.generateQuestions(
         {
           name: project.interviewee.name,
           relationship: project.interviewee.relationship,

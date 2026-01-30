@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
-import { mockOpenAI } from "@/lib/services/mock/openai"
+import { openAIService } from "@/lib/services/openai"
 import { inngest } from "@/lib/inngest/client"
 import { z } from "zod"
 
@@ -103,30 +103,117 @@ export async function POST(
       },
     })
 
-    // Trigger Inngest job to generate questions
-    await inngest.send({
-      name: "module/questions.generate",
-      data: {
-        moduleId: module.id,
-        projectId: params.id,
-        moduleNumber: nextModuleNumber,
-        theme,
-        previousModules: project.modules,
-        intervieweeContext: {
+    // Try to use Inngest for background job processing
+    // If Inngest is not configured, fall back to direct OpenAI call for MVP testing
+    let useDirectCall = false
+
+    try {
+      await inngest.send({
+        name: "module/questions.generate",
+        data: {
+          moduleId: module.id,
+          projectId: params.id,
+          moduleNumber: nextModuleNumber,
+          theme,
+          previousModules: project.modules,
+          intervieweeContext: {
+            name: project.interviewee.name,
+            relationship: project.interviewee.relationship,
+            birthYear: project.interviewee.birthYear || undefined,
+            generation: project.interviewee.generation || undefined,
+            topics: (project.interviewee.topics as string[]) || [],
+          },
+        },
+      })
+
+      // Update job status
+      await prisma.job.update({
+        where: { id: job.id },
+        data: { status: "RUNNING" },
+      })
+    } catch (inngestError) {
+      console.warn("Inngest not configured, falling back to direct OpenAI call:", inngestError)
+      useDirectCall = true
+
+      // Generate questions directly (for MVP/testing without Inngest)
+      try {
+        await prisma.job.update({
+          where: { id: job.id },
+          data: { status: "RUNNING" },
+        })
+
+        const intervieweeContext = {
           name: project.interviewee.name,
           relationship: project.interviewee.relationship,
           birthYear: project.interviewee.birthYear || undefined,
           generation: project.interviewee.generation || undefined,
           topics: (project.interviewee.topics as string[]) || [],
-        },
-      },
-    })
+        }
 
-    // Update job status
-    await prisma.job.update({
-      where: { id: job.id },
-      data: { status: "RUNNING" },
-    })
+        let questions
+        if (nextModuleNumber === 1) {
+          // Module 1: Foundation questions
+          questions = await openAIService.generateQuestions(intervieweeContext, 15)
+        } else {
+          // Module 2+: Follow-up questions based on previous responses
+          const previousQuestions = project.modules.flatMap(m =>
+            m.questions
+              .filter(q => q.response)
+              .map(q => ({
+                question: q.question,
+                response: q.response!,
+                category: q.category,
+              }))
+          )
+          questions = await openAIService.generateFollowUpQuestions(
+            intervieweeContext,
+            previousQuestions,
+            nextModuleNumber
+          )
+        }
+
+        // Save questions to database
+        await prisma.moduleQuestion.createMany({
+          data: questions.map((q, index) => ({
+            moduleId: module.id,
+            question: q.question,
+            category: q.category,
+            order: index + 1,
+          })),
+        })
+
+        // Update module status
+        await prisma.module.update({
+          where: { id: module.id },
+          data: { status: "QUESTIONS_GENERATED" },
+        })
+
+        // Update job status
+        await prisma.job.update({
+          where: { id: job.id },
+          data: {
+            status: "COMPLETED",
+            progress: 100,
+            completedAt: new Date(),
+            output: { questionsGenerated: questions.length },
+          },
+        })
+
+        console.log(`[API] Generated ${questions.length} questions directly for module ${module.id}`)
+      } catch (openaiError) {
+        console.error("Failed to generate questions:", openaiError)
+
+        await prisma.job.update({
+          where: { id: job.id },
+          data: {
+            status: "FAILED",
+            error: openaiError instanceof Error ? openaiError.message : "Unknown error",
+          },
+        })
+
+        throw openaiError
+      }
+    }
 
     return NextResponse.json({
       data: {
@@ -138,9 +225,38 @@ export async function POST(
 
   } catch (error) {
     console.error("Error creating module:", error)
+
+    // Provide specific error messages based on error type
+    let errorMessage = "Failed to create module"
+    let statusCode = 500
+
+    if (error instanceof Error) {
+      const errorMsg = error.message.toLowerCase()
+
+      if (errorMsg.includes('quota') || errorMsg.includes('insufficient')) {
+        errorMessage = "OpenAI quota exceeded. Please check your billing details or try again later."
+        statusCode = 429
+      } else if (errorMsg.includes('rate limit')) {
+        errorMessage = "Too many requests to OpenAI. Please wait a moment and try again."
+        statusCode = 429
+      } else if (errorMsg.includes('api key') || errorMsg.includes('unauthorized')) {
+        errorMessage = "OpenAI API key is invalid or missing. Please check your configuration."
+        statusCode = 401
+      } else if (errorMsg.includes('model') && errorMsg.includes('not')) {
+        errorMessage = "The AI model is not available. Please check your OpenAI account permissions."
+        statusCode = 400
+      } else if (errorMsg.includes('timeout')) {
+        errorMessage = "Request timed out. Please try again."
+        statusCode = 504
+      } else {
+        // Include the actual error message for unexpected errors
+        errorMessage = `Failed to create module: ${error.message}`
+      }
+    }
+
     return NextResponse.json(
-      { error: "Failed to create module" },
-      { status: 500 }
+      { error: errorMessage },
+      { status: statusCode }
     )
   }
 }

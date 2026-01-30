@@ -3,8 +3,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
-import { mockOpenAI } from '@/lib/services/mock/openai';
-import type { QuestionWithResponse } from '@/lib/services/mock/openai';
+import { openAIService } from '@/lib/services/openai';
+import type { QuestionWithResponse } from '@/lib/services/openai';
 
 export async function POST(
   req: NextRequest,
@@ -66,8 +66,8 @@ export async function POST(
       category: q.category,
     }));
 
-    // Generate follow-up questions using mock OpenAI
-    const followUpQuestions = await mockOpenAI.generateFollowUpQuestions(
+    // Generate follow-up questions using OpenAI
+    const followUpQuestions = await openAIService.generateFollowUpQuestions(
       {
         name: project.interviewee.name,
         relationship: project.interviewee.relationship,
