@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { PrimaryButton } from '@/components/ui/primary-button';
 import { SecondaryButton } from '@/components/ui/secondary-button';
 import { PageHeading } from '@/components/ui/page-heading';
+import ErrorAlert from '@/components/ui/error-alert';
 
 interface Question {
   id: string;
@@ -142,7 +143,9 @@ export default function QuestionsPage({
         throw new Error(errorData.error || 'Failed to generate chapter');
       }
 
-      router.push(`/projects/${params.id}/modules/${params.moduleId}/chapter`);
+      // Redirect to modules dashboard instead of blocking on loading screen
+      // Chapter will generate in background
+      router.push(`/projects/${params.id}/modules?generated=true`);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
       setGeneratingChapter(false);
@@ -222,6 +225,16 @@ export default function QuestionsPage({
               />
             </div>
 
+            {/* Error Alert */}
+            {error && (
+              <div className="mt-6">
+                <ErrorAlert
+                  message={error}
+                  onDismiss={() => setError('')}
+                />
+              </div>
+            )}
+
             <div className="mt-6 card-elevated p-6">
               <div className="flex items-center justify-between mb-3">
                 <span className="text-sm font-medium text-text-primary">
@@ -291,20 +304,12 @@ export default function QuestionsPage({
                   <span className="text-sm text-text-secondary">
                     {currentQuestion.response ? currentQuestion.response.split(/\s+/).filter(w => w).length : 0} words
                   </span>
-                  <div className="flex items-center gap-3">
-                    <SecondaryButton
-                      onClick={() => handleSaveAnswer(false)}
-                      disabled={saving || !currentQuestion.response}
-                    >
-                      {saving ? 'Saving...' : 'Save'}
-                    </SecondaryButton>
-                    <PrimaryButton
-                      onClick={() => handleSaveAnswer(true)}
-                      disabled={saving || !currentQuestion.response || currentQuestionIndex >= questions.length - 1}
-                    >
-                      Submit Answer →
-                    </PrimaryButton>
-                  </div>
+                  <PrimaryButton
+                    onClick={() => handleSaveAnswer(true)}
+                    disabled={saving || !currentQuestion.response}
+                  >
+                    {saving ? 'Saving...' : currentQuestionIndex >= questions.length - 1 ? 'Save Answer' : 'Submit Answer →'}
+                  </PrimaryButton>
                 </div>
               </div>
 

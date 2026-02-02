@@ -27,7 +27,7 @@ const openai = new OpenAI({
 
 // Configuration
 const CONFIG = {
-  model: process.env.OPENAI_MODEL || 'gpt-4-turbo-preview',
+  model: process.env.OPENAI_MODEL || 'gpt-4o-mini',
   maxTokens: parseInt(process.env.OPENAI_MAX_TOKENS || '4000'),
   temperature: 0.7,
 };
@@ -373,11 +373,11 @@ Return ONLY the narrative text, no titles or formatting.`;
 
     this.totalTokensUsed += usage.total_tokens;
 
-    // Estimate cost (GPT-4 Turbo pricing as of 2024)
-    // Input: $0.01 per 1K tokens
-    // Output: $0.03 per 1K tokens
-    const inputCost = (usage.prompt_tokens / 1000) * 0.01;
-    const outputCost = (usage.completion_tokens / 1000) * 0.03;
+    // Estimate cost (GPT-4o-mini pricing as of 2024)
+    // Input: $0.00015 per 1K tokens
+    // Output: $0.0006 per 1K tokens
+    const inputCost = (usage.prompt_tokens / 1000) * 0.00015;
+    const outputCost = (usage.completion_tokens / 1000) * 0.0006;
     const cost = inputCost + outputCost;
 
     this.totalCost += cost;

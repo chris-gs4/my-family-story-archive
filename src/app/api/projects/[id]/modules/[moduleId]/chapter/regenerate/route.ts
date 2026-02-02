@@ -18,9 +18,10 @@ const regenerateSchema = z.object({
  */
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string; moduleId: string } }
+  context: { params: Promise<{ id: string; moduleId: string }> | { id: string; moduleId: string } }
 ) {
   try {
+    const params = await Promise.resolve(context.params);
     const session = await getServerSession(authOptions)
 
     if (!session?.user?.id) {
@@ -78,6 +79,16 @@ export async function POST(
       return NextResponse.json(
         { error: "Module not found" },
         { status: 404 }
+      )
+    }
+
+    // Edge case: Check if chapter is already being generated
+    if (module.status === "GENERATING_CHAPTER") {
+      return NextResponse.json(
+        {
+          error: "A chapter is already being generated for this module. Please wait for it to complete.",
+        },
+        { status: 409 } // Conflict
       )
     }
 
@@ -146,50 +157,59 @@ export async function POST(
     })
 
     // Trigger Inngest job
-    await inngest.send({
-      name: "module/chapter.generate",
-      data: {
-        moduleId: params.moduleId,
-        chapterId: chapter.id,
-        projectId: params.id,
-        questions: module.questions.map(q => ({
-          question: q.question,
-          response: q.response!,
-          category: q.category,
-        })),
-        settings: {
-          narrativePerson,
-          narrativeTone,
-          narrativeStyle,
+    try {
+      await inngest.send({
+        name: "module/chapter.generate",
+        data: {
+          moduleId: params.moduleId,
+          chapterId: chapter.id,
+          projectId: params.id,
+          questions: module.questions.map(q => ({
+            question: q.question,
+            response: q.response!,
+            category: q.category,
+          })),
+          settings: {
+            narrativePerson,
+            narrativeTone,
+            narrativeStyle,
+          },
+          feedback,
+          previousChapter: previousChapter.content,
+          isRegeneration: true,
+          intervieweeName: project.interviewee?.name || "Unknown",
         },
-        feedback,
-        previousChapter: previousChapter.content,
-        isRegeneration: true,
-        intervieweeName: project.interviewee?.name || "Unknown",
-      },
-    })
+      })
 
-    // Update job status
-    await prisma.job.update({
-      where: { id: job.id },
-      data: { status: "RUNNING" },
-    })
+      // Update job status
+      await prisma.job.update({
+        where: { id: job.id },
+        data: { status: "RUNNING" },
+      })
 
-    return NextResponse.json({
-      data: {
-        chapter: {
-          id: chapter.id,
-          version: newVersion,
+      return NextResponse.json({
+        data: {
+          chapter: {
+            id: chapter.id,
+            version: newVersion,
+          },
+          jobId: job.id,
         },
-        jobId: job.id,
-      },
-      message: "Chapter regeneration started",
-    })
+        message: "Chapter regeneration started",
+      })
+    } catch (inngestError) {
+      console.error("Inngest error:", inngestError)
+      // If Inngest fails, clean up and return error
+      await prisma.moduleChapter.delete({ where: { id: chapter.id } })
+      await prisma.job.delete({ where: { id: job.id } })
+      throw new Error(`Inngest send failed: ${inngestError instanceof Error ? inngestError.message : 'Unknown error'}`)
+    }
 
   } catch (error) {
     console.error("Error regenerating chapter:", error)
+    const errorMessage = error instanceof Error ? error.message : 'Failed to regenerate chapter'
     return NextResponse.json(
-      { error: "Failed to regenerate chapter" },
+      { error: errorMessage },
       { status: 500 }
     )
   }

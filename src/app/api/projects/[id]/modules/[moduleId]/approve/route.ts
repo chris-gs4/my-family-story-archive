@@ -9,9 +9,10 @@ import { prisma } from "@/lib/prisma"
  */
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string; moduleId: string } }
+  context: { params: Promise<{ id: string; moduleId: string }> | { id: string; moduleId: string } }
 ) {
   try {
+    const params = await Promise.resolve(context.params);
     const session = await getServerSession(authOptions)
 
     if (!session?.user?.id) {
@@ -109,14 +110,28 @@ export async function POST(
       // Don't auto-create if already have 8 modules
       const nextModuleNumber = module.moduleNumber + 1
 
-      nextModule = await prisma.module.create({
-        data: {
+      // Check if next module already exists
+      const existingNextModule = await prisma.module.findFirst({
+        where: {
           projectId: params.id,
           moduleNumber: nextModuleNumber,
-          title: `Module ${nextModuleNumber}`,
-          status: "DRAFT",
         },
       })
+
+      if (!existingNextModule) {
+        // Only create if it doesn't exist
+        nextModule = await prisma.module.create({
+          data: {
+            projectId: params.id,
+            moduleNumber: nextModuleNumber,
+            title: `Module ${nextModuleNumber}`,
+            status: "DRAFT",
+          },
+        })
+      } else {
+        // Use existing module
+        nextModule = existingNextModule
+      }
     }
 
     return NextResponse.json({
@@ -142,8 +157,12 @@ export async function POST(
 
   } catch (error) {
     console.error("Error approving module:", error)
+    console.error("Error details:", error instanceof Error ? error.message : 'Unknown error')
+    console.error("Error stack:", error instanceof Error ? error.stack : 'No stack trace')
+
+    const errorMessage = error instanceof Error ? error.message : 'Failed to approve module'
     return NextResponse.json(
-      { error: "Failed to approve module" },
+      { error: errorMessage },
       { status: 500 }
     )
   }

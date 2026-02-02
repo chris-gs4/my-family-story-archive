@@ -6,6 +6,8 @@ import { useRouter } from 'next/navigation';
 import { PrimaryButton } from '@/components/ui/primary-button';
 import { SecondaryButton } from '@/components/ui/secondary-button';
 import { PageHeading } from '@/components/ui/page-heading';
+import ErrorAlert from '@/components/ui/error-alert';
+import SuccessAlert from '@/components/ui/success-alert';
 import {
   StoryCard,
   StoryCardCover,
@@ -18,7 +20,7 @@ interface Module {
   id: string;
   moduleNumber: number;
   title: string;
-  status: 'DRAFT' | 'IN_PROGRESS' | 'APPROVED';
+  status: 'DRAFT' | 'QUESTIONS_GENERATED' | 'IN_PROGRESS' | 'GENERATING_CHAPTER' | 'CHAPTER_GENERATED' | 'APPROVED';
   theme: string | null;
   completedQuestions: number;
   totalQuestions: number;
@@ -46,10 +48,34 @@ export default function ModulesPage({ params }: { params: { id: string } }) {
   const [error, setError] = useState('');
   const [data, setData] = useState<ModulesData | null>(null);
   const [creatingModule, setCreatingModule] = useState(false);
+  const [downloadingBook, setDownloadingBook] = useState(false);
+  const [showGeneratingMessage, setShowGeneratingMessage] = useState(false);
 
   useEffect(() => {
     fetchModules();
+
+    // Check if we just started generating a chapter
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('generated') === 'true') {
+      setShowGeneratingMessage(true);
+      // Clear the query param
+      window.history.replaceState({}, '', `/projects/${params.id}/modules`);
+    }
   }, [params.id]);
+
+  // Poll for updates if any module is generating
+  useEffect(() => {
+    if (!data) return;
+
+    const hasGenerating = data.modules.some(m => m.status === 'GENERATING_CHAPTER');
+    if (!hasGenerating) return;
+
+    const interval = setInterval(() => {
+      fetchModules();
+    }, 5000); // Poll every 5 seconds
+
+    return () => clearInterval(interval);
+  }, [data]);
 
   const fetchModules = async () => {
     try {
@@ -103,9 +129,47 @@ export default function ModulesPage({ params }: { params: { id: string } }) {
     if (module.status === 'APPROVED') {
       // View the approved chapter
       router.push(`/projects/${params.id}/modules/${module.id}/chapter`);
+    } else if (module.status === 'GENERATING_CHAPTER' || module.status === 'CHAPTER_GENERATED') {
+      // View the chapter (will show loading state if still generating, or completed chapter)
+      router.push(`/projects/${params.id}/modules/${module.id}/chapter`);
     } else {
       // Go to questions (will show loading state if not ready yet)
       router.push(`/projects/${params.id}/modules/${module.id}/questions`);
+    }
+  };
+
+  const handleDownloadCompleteBook = async () => {
+    setDownloadingBook(true);
+    setError('');
+
+    try {
+      const response = await fetch(`/api/projects/${params.id}/book/export`);
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to download book');
+      }
+
+      // Get the filename from Content-Disposition header
+      const contentDisposition = response.headers.get('Content-Disposition');
+      const filenameMatch = contentDisposition?.match(/filename="(.+)"/);
+      const filename = filenameMatch ? filenameMatch[1] : 'family-story-complete-book.pdf';
+
+      // Download the file
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to download book');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } finally {
+      setDownloadingBook(false);
     }
   };
 
@@ -139,7 +203,7 @@ export default function ModulesPage({ params }: { params: { id: string } }) {
                   Setup Required
                 </h3>
                 <p className="text-text-secondary mb-6">
-                  Before creating modules, please tell us about the person you're interviewing.
+                  Before creating modules, please tell us about the person you&apos;re interviewing.
                 </p>
                 <PrimaryButton onClick={() => router.push(`/projects/${params.id}/setup`)}>
                   Setup Interviewee →
@@ -163,11 +227,14 @@ export default function ModulesPage({ params }: { params: { id: string } }) {
 
   const canCompileBook = data && data.totalCompleted >= 3;
   const paperBg = '#FAF8F3';
+  const totalModules = data?.modules.length || 0;
+  const completedModules = data?.totalCompleted || 0;
+  const progressPercentage = totalModules > 0 ? Math.round((completedModules / totalModules) * 100) : 0;
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: paperBg }}>
       <div className="container mx-auto px-4 max-w-7xl py-12">
-        <div className="flex items-center justify-between mb-12">
+        <div className="flex items-center justify-between mb-8">
           <PageHeading
             title="Story Modules"
             subtitle="Preserving your family's legacy, one chapter at a time"
@@ -181,6 +248,56 @@ export default function ModulesPage({ params }: { params: { id: string } }) {
             ← Dashboard
           </SecondaryButton>
         </div>
+
+        {/* Error Alert */}
+        {error && (
+          <ErrorAlert
+            message={error}
+            onDismiss={() => setError('')}
+          />
+        )}
+
+        {/* Success Message - Chapter Generation Started */}
+        {showGeneratingMessage && (
+          <SuccessAlert
+            message="Your chapter is being generated! You can continue working while we create it. The status will update automatically when it's ready."
+            onDismiss={() => setShowGeneratingMessage(false)}
+          />
+        )}
+
+        {/* Overall Progress Indicator */}
+        {totalModules > 0 && (
+          <div className="mb-8 rounded-2xl p-6" style={{
+            backgroundColor: '#FFFFFF',
+            boxShadow: '0 2px 8px rgba(17, 24, 39, 0.08)',
+            border: '1px solid rgba(17, 24, 39, 0.08)',
+          }}>
+            <div className="flex items-center justify-between mb-3">
+              <div>
+                <h3 className="text-lg font-semibold" style={{ fontFamily: 'Georgia, serif', color: '#111827' }}>
+                  Overall Progress
+                </h3>
+                <p className="text-sm" style={{ color: 'rgba(17, 24, 39, 0.60)' }}>
+                  {completedModules} of {totalModules} {totalModules === 1 ? 'chapter' : 'chapters'} completed
+                </p>
+              </div>
+              <div className="text-right">
+                <div className="text-3xl font-bold" style={{ fontFamily: 'Georgia, serif', color: '#2F6F5E' }}>
+                  {progressPercentage}%
+                </div>
+              </div>
+            </div>
+            <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+              <div
+                className="h-3 rounded-full transition-all duration-500 ease-out"
+                style={{
+                  width: `${progressPercentage}%`,
+                  backgroundColor: '#2F6F5E',
+                }}
+              />
+            </div>
+          </div>
+        )}
 
         {error && (
           <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
@@ -206,14 +323,28 @@ export default function ModulesPage({ params }: { params: { id: string } }) {
                     color: '#111827',
                   }}
                 >
-                  Ready to Compile Your Book!
+                  📖 Your Book is Ready!
                 </h3>
                 <p style={{ color: 'rgba(17, 24, 39, 0.60)' }}>
-                  You've completed {data?.totalCompleted} modules. You can now compile them into a complete book.
+                  You&apos;ve completed {data?.totalCompleted} {data?.totalCompleted === 1 ? 'chapter' : 'chapters'}. Download your complete book as a beautifully formatted PDF.
                 </p>
               </div>
-              <PrimaryButton theme="paper-primary" onClick={() => alert('Book compilation coming soon!')}>
-                Compile Book
+              <PrimaryButton
+                theme="paper-primary"
+                onClick={handleDownloadCompleteBook}
+                disabled={downloadingBook}
+              >
+                {downloadingBook ? (
+                  <>
+                    <svg className="animate-spin -ml-1 mr-2 h-4 w-4 inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Downloading...
+                  </>
+                ) : (
+                  '📥 Download Complete Book'
+                )}
               </PrimaryButton>
             </div>
           </div>
@@ -267,17 +398,49 @@ export default function ModulesPage({ params }: { params: { id: string } }) {
                           zIndex: 3,
                         }}
                       >
-                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
-                          />
-                        </svg>
-                        <span className="hidden sm:inline">
-                          {isNotStarted ? 'Not started' : module.status === 'APPROVED' ? 'Complete' : 'Capturing'}
-                        </span>
+                        {module.status === 'GENERATING_CHAPTER' ? (
+                          <>
+                            <svg className="w-3 h-3 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                              />
+                            </svg>
+                            <span className="hidden sm:inline">Generating...</span>
+                          </>
+                        ) : module.status === 'CHAPTER_GENERATED' ? (
+                          <>
+                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                              />
+                            </svg>
+                            <span className="hidden sm:inline">Ready</span>
+                          </>
+                        ) : (
+                          <>
+                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+                              />
+                            </svg>
+                            <span className="hidden sm:inline">
+                              {isNotStarted
+                                ? 'Not started'
+                                : module.status === 'APPROVED'
+                                ? 'Complete'
+                                : 'Capturing'}
+                            </span>
+                          </>
+                        )}
                       </div>
                     </div>
 
@@ -325,15 +488,29 @@ export default function ModulesPage({ params }: { params: { id: string } }) {
                     <StoryCardPhotoWindow />
 
                     {/* Progress Stats */}
-                    <div className="mt-auto pt-4">
-                      <p className="text-sm font-medium mb-1" style={{ color: '#111827' }}>
-                        {module.completedQuestions} memories saved
-                      </p>
-                      <p className="text-xs mb-3" style={{ color: 'rgba(17, 24, 39, 0.60)' }}>
-                        {module.totalQuestions - module.completedQuestions} prompts remaining · {progressPercent}% complete
-                      </p>
-                      <StoryCardProgressBar progress={progressPercent} />
-                    </div>
+                    {module.status === 'APPROVED' ? (
+                      <div className="mt-auto pt-4">
+                        <div className="flex items-center gap-2 text-sm font-medium mb-1" style={{ color: '#16A34A' }}>
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          Chapter approved
+                        </div>
+                        <p className="text-xs" style={{ color: 'rgba(17, 24, 39, 0.60)' }}>
+                          {module.completedQuestions} memories preserved
+                        </p>
+                      </div>
+                    ) : (
+                      <div className="mt-auto pt-4">
+                        <p className="text-sm font-medium mb-1" style={{ color: '#111827' }}>
+                          {module.completedQuestions} memories saved
+                        </p>
+                        <p className="text-xs mb-3" style={{ color: 'rgba(17, 24, 39, 0.60)' }}>
+                          {module.totalQuestions - module.completedQuestions} prompts remaining · {progressPercent}% complete
+                        </p>
+                        <StoryCardProgressBar progress={progressPercent} />
+                      </div>
+                    )}
                   </div>
 
                   {/* Footer */}
@@ -348,14 +525,22 @@ export default function ModulesPage({ params }: { params: { id: string } }) {
                         })}
                       </span>
                       <PrimaryButton
-                        theme="paper-primary"
+                        theme={module.status === 'CHAPTER_GENERATED' ? 'action-required' : 'paper-primary'}
                         size="md"
                         onClick={(e) => {
                           e.stopPropagation();
                           handleModuleClick(module);
                         }}
                       >
-                        {isNotStarted ? 'Start writing' : module.status === 'APPROVED' ? 'View chapter' : 'Continue writing'}
+                        {module.status === 'GENERATING_CHAPTER'
+                          ? 'Generating chapter...'
+                          : module.status === 'CHAPTER_GENERATED'
+                          ? 'Review & Approve'
+                          : isNotStarted
+                          ? 'Start writing'
+                          : module.status === 'APPROVED'
+                          ? 'View chapter'
+                          : 'Continue writing'}
                       </PrimaryButton>
                     </div>
                   </div>

@@ -8,7 +8,7 @@ interface PrimaryButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
   fullWidth?: boolean
   loading?: boolean
   icon?: React.ReactNode
-  theme?: "default" | "paper-primary"
+  theme?: "default" | "paper-primary" | "action-required"
 }
 
 const PrimaryButton = React.forwardRef<HTMLButtonElement, PrimaryButtonProps>(
@@ -24,6 +24,8 @@ const PrimaryButton = React.forwardRef<HTMLButtonElement, PrimaryButtonProps>(
     ...props
   }, ref) => {
     const isPaperPrimary = theme === "paper-primary"
+    const isActionRequired = theme === "action-required"
+    const isCustomTheme = isPaperPrimary || isActionRequired
 
     return (
       <button
@@ -49,13 +51,18 @@ const PrimaryButton = React.forwardRef<HTMLButtonElement, PrimaryButtonProps>(
             "text-white",
           ],
 
+          // Colors - Action Required theme
+          theme === "action-required" && [
+            "text-white",
+          ],
+
           // Rounded corners
-          isPaperPrimary ? "rounded-xl" : "rounded-lg",
+          isCustomTheme ? "rounded-xl" : "rounded-lg",
 
           // Subtle shadow
           "shadow-sm",
-          isPaperPrimary && "hover:shadow-md",
-          !isPaperPrimary && "hover:shadow-md",
+          isCustomTheme && "hover:shadow-md",
+          !isCustomTheme && "hover:shadow-md",
 
           // Active state
           "active:scale-[0.98]",
@@ -67,7 +74,7 @@ const PrimaryButton = React.forwardRef<HTMLButtonElement, PrimaryButtonProps>(
 
           // Sizes
           size === "sm" && "h-9 px-3 text-sm",
-          size === "md" && (isPaperPrimary ? "h-10 px-4 text-sm" : "h-11 px-5 text-base"),
+          size === "md" && (isCustomTheme ? "h-10 px-4 text-sm" : "h-11 px-5 text-base"),
           size === "lg" && "h-12 px-6 text-lg",
 
           // Full width
@@ -79,6 +86,9 @@ const PrimaryButton = React.forwardRef<HTMLButtonElement, PrimaryButtonProps>(
           ...(isPaperPrimary && {
             backgroundColor: '#2F6F5E',
           }),
+          ...(isActionRequired && {
+            backgroundColor: '#DC2626', // Red-600
+          }),
           ...props.style,
         }}
         onMouseEnter={(e) => {
@@ -86,10 +96,18 @@ const PrimaryButton = React.forwardRef<HTMLButtonElement, PrimaryButtonProps>(
             e.currentTarget.style.backgroundColor = '#275D4F'
             e.currentTarget.style.boxShadow = '0 2px 8px rgba(47, 111, 94, 0.2)'
           }
+          if (isActionRequired && !disabled && !loading) {
+            e.currentTarget.style.backgroundColor = '#B91C1C' // Red-700
+            e.currentTarget.style.boxShadow = '0 2px 8px rgba(220, 38, 38, 0.2)'
+          }
         }}
         onMouseLeave={(e) => {
           if (isPaperPrimary && !disabled && !loading) {
             e.currentTarget.style.backgroundColor = '#2F6F5E'
+            e.currentTarget.style.boxShadow = ''
+          }
+          if (isActionRequired && !disabled && !loading) {
+            e.currentTarget.style.backgroundColor = '#DC2626'
             e.currentTarget.style.boxShadow = ''
           }
         }}

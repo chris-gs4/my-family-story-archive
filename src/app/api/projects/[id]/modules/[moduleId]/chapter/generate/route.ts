@@ -84,12 +84,32 @@ export async function POST(
       )
     }
 
+    // Edge case: Check if chapter is already being generated
+    if (module.status === "GENERATING_CHAPTER") {
+      return NextResponse.json(
+        {
+          error: "A chapter is already being generated for this module. Please wait for it to complete.",
+        },
+        { status: 409 } // Conflict
+      )
+    }
+
     // Check if enough questions are answered (minimum 50%)
     const totalQuestions = await prisma.moduleQuestion.count({
       where: { moduleId: params.moduleId },
     })
 
     const answeredQuestions = module.questions.length
+
+    // Edge case: No questions exist for this module
+    if (totalQuestions === 0) {
+      return NextResponse.json(
+        {
+          error: "No questions found for this module. Please generate questions first.",
+        },
+        { status: 400 }
+      )
+    }
 
     if (answeredQuestions < Math.ceil(totalQuestions * 0.5)) {
       return NextResponse.json(
