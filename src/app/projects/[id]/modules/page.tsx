@@ -26,6 +26,7 @@ interface Module {
   totalQuestions: number;
   hasChapter: boolean;
   approvedAt: string | null;
+  coverImageUrl: string | null;
   createdAt: string;
 }
 
@@ -485,7 +486,7 @@ export default function ModulesPage({ params }: { params: { id: string } }) {
 
                   {/* Photo Window & Progress */}
                   <div className="px-6 py-5 flex-1 flex flex-col">
-                    <StoryCardPhotoWindow />
+                    <StoryCardPhotoWindow imageUrl={module.coverImageUrl} />
 
                     {/* Progress Stats */}
                     {module.status === 'APPROVED' ? (

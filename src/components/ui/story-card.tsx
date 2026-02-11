@@ -211,25 +211,37 @@ const StoryCardBadge = React.forwardRef<HTMLDivElement, StoryCardBadgeProps>(
 )
 StoryCardBadge.displayName = "StoryCardBadge"
 
+interface StoryCardPhotoWindowProps extends React.HTMLAttributes<HTMLDivElement> {
+  imageUrl?: string | null
+}
+
 const StoryCardPhotoWindow = React.forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, children, ...props }, ref) => (
+  StoryCardPhotoWindowProps
+>(({ className, children, imageUrl, ...props }, ref) => (
   <div
     ref={ref}
     className={cn(
-      "rounded-xl flex items-center justify-center flex-col text-center",
+      "rounded-xl flex items-center justify-center flex-col text-center overflow-hidden",
       className
     )}
     style={{
       height: '150px',
-      backgroundColor: 'rgba(17, 24, 39, 0.02)',
-      border: '1px dashed rgba(17, 24, 39, 0.18)',
+      backgroundColor: imageUrl ? 'transparent' : 'rgba(17, 24, 39, 0.02)',
+      border: imageUrl ? 'none' : '1px dashed rgba(17, 24, 39, 0.18)',
       ...props.style,
     }}
     {...props}
   >
-    {children || (
+    {imageUrl ? (
+      <img
+        src={imageUrl}
+        alt="Module cover"
+        className="w-full h-full object-cover"
+      />
+    ) : children ? (
+      children
+    ) : (
       <>
         <svg
           className="w-12 h-12 mb-2"

@@ -195,6 +195,66 @@ class OpenAIService {
   }
 
   /**
+   * Generate image using DALL-E 3
+   * For minimalist hand-drawn sketch illustrations
+   */
+  async generateImage(
+    prompt: string,
+    options: {
+      size?: '1024x1024' | '1024x1792' | '1792x1024';
+      quality?: 'standard' | 'hd';
+      style?: 'natural' | 'vivid';
+    } = {}
+  ): Promise<{ url: string; revisedPrompt: string }> {
+    console.log('[OpenAI] Generating image with DALL-E 3');
+    console.log(`[OpenAI] Prompt: ${prompt.substring(0, 100)}...`);
+
+    const size = options.size || '1024x1024';
+    const quality = options.quality || 'standard';
+    const style = options.style || 'natural';
+
+    try {
+      const response = await openai.images.generate({
+        model: 'dall-e-3',
+        prompt: prompt,
+        n: 1,
+        size: size,
+        quality: quality,
+        style: style,
+      });
+
+      const imageUrl = response.data[0].url;
+      const revisedPrompt = response.data[0].revised_prompt || prompt;
+
+      if (!imageUrl) {
+        throw new Error('No image URL returned from DALL-E');
+      }
+
+      // Calculate cost (DALL-E 3 pricing)
+      const cost = this.calculateImageCost(size, quality);
+      this.totalCost += cost;
+
+      console.log('\n' + '='.repeat(60));
+      console.log('🎨 DALL-E 3 Image Generated');
+      console.log('='.repeat(60));
+      console.log(`📐 Size: ${size}`);
+      console.log(`✨ Quality: ${quality}`);
+      console.log(`🎭 Style: ${style}`);
+      console.log(`💰 Cost This Call: $${cost.toFixed(4)}`);
+      console.log(`📈 Session Total: $${this.totalCost.toFixed(4)}`);
+      console.log('='.repeat(60) + '\n');
+
+      return {
+        url: imageUrl,
+        revisedPrompt: revisedPrompt,
+      };
+    } catch (error) {
+      console.error('[OpenAI] Error generating image:', error);
+      throw new Error(`Failed to generate image: ${this.getErrorMessage(error)}`);
+    }
+  }
+
+  /**
    * Get token usage stats
    */
   getUsageStats(): { totalTokens: number; estimatedCost: number } {
@@ -392,6 +452,24 @@ Return ONLY the narrative text, no titles or formatting.`;
     console.log(`💰 Cost This Call: $${cost.toFixed(4)}`);
     console.log(`📈 Session Total: $${this.totalCost.toFixed(4)}`);
     console.log('='.repeat(60) + '\n');
+  }
+
+  private calculateImageCost(
+    size: '1024x1024' | '1024x1792' | '1792x1024',
+    quality: 'standard' | 'hd'
+  ): number {
+    // DALL-E 3 pricing (as of 2024)
+    const pricing: Record<string, number> = {
+      '1024x1024-standard': 0.04,
+      '1024x1024-hd': 0.08,
+      '1024x1792-standard': 0.08,
+      '1024x1792-hd': 0.12,
+      '1792x1024-standard': 0.08,
+      '1792x1024-hd': 0.12,
+    };
+
+    const key = `${size}-${quality}`;
+    return pricing[key] || 0.04;
   }
 
   private getErrorMessage(error: unknown): string {

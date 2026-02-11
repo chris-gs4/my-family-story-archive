@@ -177,6 +177,11 @@ model Module {
   status       ModuleStatus @default(DRAFT)
   theme        String?      // Optional theme/focus for this module
 
+  // Cover image (AI-generated or uploaded)
+  coverImageUrl       String?   // DALL-E URL or S3 URL
+  coverImagePrompt    String?   @db.Text // Prompt used to generate the image
+  coverImageGeneratedAt DateTime? // When image was generated
+
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
   approvedAt DateTime?
@@ -230,6 +235,11 @@ model ModuleChapter {
   narrativePerson String? // "first-person" or "third-person"
   narrativeTone   String? // "warm", "formal", "conversational"
   narrativeStyle  String? // "descriptive", "concise", "poetic"
+
+  // Chapter illustration (AI-generated or uploaded)
+  illustrationUrl       String?   // DALL-E URL or S3 URL
+  illustrationPrompt    String?   @db.Text // Prompt used to generate the image
+  illustrationGeneratedAt DateTime? // When image was generated
 
   // Metadata
   structure Json? // { sections: [{ title, startParagraph }] }

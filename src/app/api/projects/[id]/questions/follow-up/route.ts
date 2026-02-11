@@ -103,9 +103,38 @@ export async function POST(
     });
   } catch (error) {
     console.error('[API] Error generating follow-up questions:', error);
+
+    // Provide specific error messages based on error type
+    let errorMessage = "Failed to generate follow-up questions"
+    let statusCode = 500
+
+    if (error instanceof Error) {
+      const errorMsg = error.message.toLowerCase()
+
+      if (errorMsg.includes('quota') || errorMsg.includes('insufficient')) {
+        errorMessage = "OpenAI quota exceeded. Please check your billing details or try again later."
+        statusCode = 429
+      } else if (errorMsg.includes('rate limit')) {
+        errorMessage = "Too many requests to OpenAI. Please wait a moment and try again."
+        statusCode = 429
+      } else if (errorMsg.includes('api key') || errorMsg.includes('unauthorized')) {
+        errorMessage = "OpenAI API key is invalid or missing. Please check your configuration."
+        statusCode = 401
+      } else if (errorMsg.includes('model') && errorMsg.includes('not')) {
+        errorMessage = "The AI model is not available. Please check your OpenAI account permissions."
+        statusCode = 400
+      } else if (errorMsg.includes('timeout')) {
+        errorMessage = "Request timed out. Please try again."
+        statusCode = 504
+      } else {
+        // Include the actual error message for unexpected errors
+        errorMessage = `Failed to generate follow-up questions: ${error.message}`
+      }
+    }
+
     return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
+      { error: errorMessage },
+      { status: statusCode }
     );
   }
 }

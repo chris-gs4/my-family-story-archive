@@ -101,7 +101,7 @@ export async function GET(
     }
 
     // Return the file as a download
-    return new NextResponse(result.buffer, {
+    return new NextResponse(new Uint8Array(result.buffer), {
       status: 200,
       headers: {
         'Content-Type': result.mimeType,

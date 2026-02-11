@@ -18,6 +18,9 @@ interface Chapter {
   narrativeTone: string;
   narrativeStyle: string;
   structure: any;
+  illustrationUrl: string | null;
+  illustrationPrompt: string | null;
+  illustrationGeneratedAt: string | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -46,6 +49,8 @@ export default function ChapterPage({
   const [regenerating, setRegenerating] = useState(false);
   const [showRegenerateModal, setShowRegenerateModal] = useState(false);
   const [regenerateFeedback, setRegenerateFeedback] = useState('');
+  const [generatingImage, setGeneratingImage] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
 
   useEffect(() => {
     fetchChapter();
@@ -180,6 +185,129 @@ export default function ChapterPage({
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to regenerate chapter');
       setRegenerating(false);
+    }
+  };
+
+  const handleGenerateImage = async () => {
+    console.log('🎨 [DEBUG] handleGenerateImage called');
+    console.log('🎨 [DEBUG] Current state:', { generatingImage, isApproved: module?.status });
+
+    setGeneratingImage(true);
+    setError('');
+
+    try {
+      console.log('🎨 [DEBUG] Fetching:', `/api/projects/${params.id}/modules/${params.moduleId}/chapter/image/generate`);
+
+      const response = await fetch(
+        `/api/projects/${params.id}/modules/${params.moduleId}/chapter/image/generate`,
+        { method: 'POST' }
+      );
+
+      console.log('🎨 [DEBUG] Response status:', response.status);
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('🎨 [DEBUG] API Error:', errorData);
+        throw new Error(errorData.error || 'Failed to generate image');
+      }
+
+      const result = await response.json();
+      console.log('🎨 [DEBUG] Success! Result:', result);
+
+      // Update chapter with new illustration
+      setChapter((prev) =>
+        prev
+          ? {
+              ...prev,
+              illustrationUrl: result.imageUrl,
+              illustrationPrompt: result.prompt,
+              illustrationGeneratedAt: new Date().toISOString(),
+            }
+          : null
+      );
+
+      console.log('✅ Image generated successfully:', result.imageUrl);
+    } catch (err) {
+      console.error('❌ [DEBUG] Error in handleGenerateImage:', err);
+      const errorMessage = err instanceof Error ? err.message : 'Failed to generate image';
+      setError(errorMessage);
+      alert(`Image Generation Failed: ${errorMessage}`); // Temporary visual feedback
+    } finally {
+      setGeneratingImage(false);
+    }
+  };
+
+  const handleUploadImage = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+      setError('Please upload a valid image (JPEG, PNG, or WebP)');
+      return;
+    }
+
+    // Validate file size (5MB max)
+    const maxSize = 5 * 1024 * 1024;
+    if (file.size > maxSize) {
+      setError('Image too large. Maximum size is 5MB');
+      return;
+    }
+
+    setUploadingImage(true);
+    setError('');
+
+    try {
+      // Convert to base64
+      const reader = new FileReader();
+      reader.onloadend = async () => {
+        const base64Data = reader.result as string;
+
+        const response = await fetch(
+          `/api/projects/${params.id}/modules/${params.moduleId}/chapter/image/upload`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              imageData: base64Data,
+              mimeType: file.type,
+            }),
+          }
+        );
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Failed to upload image');
+        }
+
+        const result = await response.json();
+
+        // Update chapter with uploaded illustration
+        setChapter((prev) =>
+          prev
+            ? {
+                ...prev,
+                illustrationUrl: result.imageUrl,
+                illustrationPrompt: 'User-uploaded custom image',
+                illustrationGeneratedAt: new Date().toISOString(),
+              }
+            : null
+        );
+
+        console.log('Image uploaded successfully');
+        setUploadingImage(false);
+      };
+
+      reader.onerror = () => {
+        setError('Failed to read image file');
+        setUploadingImage(false);
+      };
+
+      reader.readAsDataURL(file);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to upload image');
+      setUploadingImage(false);
     }
   };
 
@@ -366,6 +494,127 @@ export default function ChapterPage({
                 );
               })}
             </div>
+          </div>
+
+          {/* Chapter Illustration Section */}
+          <div className="card-elevated p-8 mb-8">
+            <h3 className="text-xl font-display font-semibold text-text-primary mb-4">
+              Chapter Illustration
+            </h3>
+
+            {chapter.illustrationUrl ? (
+              <div className="space-y-4">
+                <div className="relative rounded-lg overflow-hidden border border-gray-200">
+                  <img
+                    src={chapter.illustrationUrl}
+                    alt="Chapter illustration"
+                    className="w-full h-auto max-h-96 object-contain bg-gray-50"
+                  />
+                </div>
+                {!isApproved && (
+                  <div className="flex gap-3">
+                    <SecondaryButton
+                      onClick={handleGenerateImage}
+                      disabled={generatingImage}
+                    >
+                      {generatingImage ? (
+                        <>
+                          <svg className="animate-spin -ml-1 mr-2 h-4 w-4 inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                          </svg>
+                          Generating...
+                        </>
+                      ) : (
+                        '🔄 Regenerate Image'
+                      )}
+                    </SecondaryButton>
+                    <label className="inline-block">
+                      <input
+                        type="file"
+                        accept="image/jpeg,image/png,image/jpg,image/webp"
+                        onChange={handleUploadImage}
+                        className="hidden"
+                        disabled={uploadingImage}
+                      />
+                      <SecondaryButton as="span" disabled={uploadingImage}>
+                        {uploadingImage ? (
+                          <>
+                            <svg className="animate-spin -ml-1 mr-2 h-4 w-4 inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            Uploading...
+                          </>
+                        ) : (
+                          '📤 Replace with Upload'
+                        )}
+                      </SecondaryButton>
+                    </label>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="space-y-4">
+                <p className="text-text-secondary mb-4">
+                  Add a hand-drawn sketch illustration to bring this chapter to life. Choose to generate one automatically or upload your own.
+                </p>
+                {isApproved && (
+                  <div className="mb-3 p-3 bg-yellow-50 border border-yellow-200 rounded text-sm text-yellow-800">
+                    ⚠️ This module is approved. Adding an image won't affect the chapter content.
+                  </div>
+                )}
+                <div className="flex gap-3">
+                  <PrimaryButton
+                    onClick={() => {
+                      console.log('🔘 [DEBUG] Button clicked! isApproved:', isApproved, 'generatingImage:', generatingImage);
+                      handleGenerateImage();
+                    }}
+                    disabled={generatingImage}
+                  >
+                    {generatingImage ? (
+                      <>
+                        <svg className="animate-spin -ml-1 mr-2 h-4 w-4 inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Generating image...
+                      </>
+                    ) : (
+                      '🎨 Auto-generate Image'
+                    )}
+                  </PrimaryButton>
+                  <label className="inline-block">
+                    <input
+                      type="file"
+                      accept="image/jpeg,image/png,image/jpg,image/webp"
+                      onChange={handleUploadImage}
+                      className="hidden"
+                      disabled={uploadingImage}
+                    />
+                    <SecondaryButton as="span" disabled={uploadingImage}>
+                      {uploadingImage ? (
+                        <>
+                          <svg className="animate-spin -ml-1 mr-2 h-4 w-4 inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                          </svg>
+                          Uploading...
+                        </>
+                      ) : (
+                        '📤 Upload Own Image'
+                      )}
+                    </SecondaryButton>
+                  </label>
+                </div>
+                {generatingImage && (
+                  <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-700">
+                    <p className="font-medium mb-1">✨ Generating your sketch illustration...</p>
+                    <p>This typically takes 20-30 seconds. The AI will create a minimalist hand-drawn style image based on your chapter content.</p>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Action Buttons */}

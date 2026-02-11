@@ -1,7 +1,7 @@
 // Document Generation Service
 // Generates PDF, DOCX, and TXT files from narrative content
 
-import PDFDocument from 'pdfkit';
+import { jsPDF } from 'jspdf';
 import { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType } from 'docx';
 
 interface NarrativeData {
@@ -15,6 +15,23 @@ interface NarrativeData {
   };
 }
 
+// New interface for module-based book generation
+interface ModuleChapterData {
+  moduleNumber: number;
+  title?: string;
+  content: string;
+  wordCount?: number;
+  illustrationUrl?: string | null;
+}
+
+interface BookData {
+  title: string;
+  intervieweeName?: string;
+  chapters: ModuleChapterData[];
+  createdAt?: Date;
+  projectCreatedAt?: Date;
+}
+
 interface DocumentGeneratorResult {
   buffer: Buffer;
   mimeType: string;
@@ -22,159 +39,486 @@ interface DocumentGeneratorResult {
 }
 
 /**
- * Generate a PDF document from narrative
+ * Generate a PDF document from a complete book (all approved module chapters)
+ */
+export async function generateBookPDF(data: BookData): Promise<DocumentGeneratorResult> {
+  try {
+    const doc = new jsPDF({
+      orientation: 'portrait',
+      unit: 'pt',
+      format: 'letter',
+    });
+
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
+    const margin = 72;
+    const maxWidth = pageWidth - (margin * 2);
+    let yPosition = margin;
+
+    // Helper function to add text with word wrapping
+    const addText = (text: string, fontSize: number, isBold: boolean = false, align: 'left' | 'center' = 'left', color: number[] = [0, 0, 0]) => {
+      doc.setFontSize(fontSize);
+      if (isBold) {
+        doc.setFont('helvetica', 'bold');
+      } else {
+        doc.setFont('helvetica', 'normal');
+      }
+      doc.setTextColor(color[0], color[1], color[2]);
+
+      const lines = doc.splitTextToSize(text, maxWidth);
+
+      lines.forEach((line: string) => {
+        if (yPosition + fontSize > pageHeight - margin) {
+          doc.addPage();
+          yPosition = margin;
+        }
+
+        let xPosition = margin;
+        if (align === 'center') {
+          const textWidth = doc.getTextWidth(line);
+          xPosition = (pageWidth - textWidth) / 2;
+        }
+
+        doc.text(line, xPosition, yPosition);
+        yPosition += fontSize * 1.5;
+      });
+
+      doc.setTextColor(0, 0, 0);
+    };
+
+    const addSpacing = (space: number) => {
+      yPosition += space;
+      if (yPosition > pageHeight - margin) {
+        doc.addPage();
+        yPosition = margin;
+      }
+    };
+
+    // Title Page
+    addText(data.title, 32, true, 'center');
+    addSpacing(40);
+
+    if (data.intervieweeName) {
+      addText(`The Story of ${data.intervieweeName}`, 18, false, 'center');
+      addSpacing(20);
+    }
+
+    addText(`${data.chapters.length} ${data.chapters.length === 1 ? 'Chapter' : 'Chapters'}`, 14, false, 'center', [102, 102, 102]);
+    addSpacing(10);
+
+    if (data.createdAt) {
+      const dateStr = new Date(data.createdAt).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      });
+      addText(dateStr, 12, false, 'center', [102, 102, 102]);
+    }
+
+    // Table of Contents (new page)
+    doc.addPage();
+    yPosition = margin;
+
+    addText('Table of Contents', 24, true, 'center');
+    addSpacing(40);
+
+    data.chapters.forEach((chapter, index) => {
+      const chapterTitle = chapter.title || `Chapter ${chapter.moduleNumber}`;
+      addText(`${index + 1}. ${chapterTitle}`, 12, false, 'left');
+      addSpacing(5);
+    });
+
+    // Add chapters
+    data.chapters.forEach((chapter, index) => {
+      doc.addPage();
+      yPosition = margin;
+
+      const chapterTitle = chapter.title || `Chapter ${chapter.moduleNumber}`;
+
+      // Chapter number
+      addText(`Chapter ${index + 1}`, 14, false, 'left', [102, 102, 102]);
+      addSpacing(10);
+
+      // Chapter title
+      addText(chapterTitle, 20, true, 'left');
+      addSpacing(30);
+
+      // Chapter content
+      const paragraphs = chapter.content.split('\n\n');
+      paragraphs.forEach((paragraph, pIndex) => {
+        if (paragraph.trim()) {
+          if (paragraph.trim().startsWith('#')) {
+            addSpacing(20);
+            const headingText = paragraph.trim().replace(/^#+\s/, '');
+            addText(headingText, 16, true);
+            addSpacing(10);
+          } else {
+            addText(paragraph.trim(), 12, false);
+            if (pIndex < paragraphs.length - 1) {
+              addSpacing(15);
+            }
+          }
+        }
+      });
+    });
+
+    // Add page numbers to all pages (except title page)
+    const totalPages = doc.getNumberOfPages();
+    for (let i = 2; i <= totalPages; i++) {
+      doc.setPage(i);
+      doc.setFontSize(10);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(102, 102, 102);
+      doc.text(`${i - 1}`, pageWidth / 2, pageHeight - 36, { align: 'center' });
+    }
+
+    // Set metadata
+    doc.setProperties({
+      title: data.title,
+      author: data.intervieweeName || 'Family Story Archive',
+      subject: 'Family Story - Complete Book',
+      creator: 'Family Story Archive',
+    });
+
+    // Convert to buffer
+    const pdfArrayBuffer = doc.output('arraybuffer');
+    const buffer = Buffer.from(pdfArrayBuffer);
+
+    return {
+      buffer,
+      mimeType: 'application/pdf',
+      filename: `${sanitizeFilename(data.title)}_complete-book.pdf`,
+    };
+  } catch (error) {
+    throw new Error(`Failed to generate book PDF: ${error instanceof Error ? error.message : 'Unknown error'}`);
+  }
+}
+
+/**
+ * Generate a PDF document from a single module chapter
+ */
+export async function generateChapterPDF(
+  chapterData: ModuleChapterData,
+  intervieweeName?: string,
+  projectTitle?: string
+): Promise<DocumentGeneratorResult> {
+  try {
+    const doc = new jsPDF({
+      orientation: 'portrait',
+      unit: 'pt',
+      format: 'letter',
+    });
+
+    const chapterTitle = chapterData.title || `Chapter ${chapterData.moduleNumber}`;
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
+    const margin = 72;
+    const maxWidth = pageWidth - (margin * 2);
+
+    let yPosition = margin;
+
+    // Helper function to add text with word wrapping
+    const addText = (text: string, fontSize: number, isBold: boolean = false, align: 'left' | 'center' = 'left') => {
+      doc.setFontSize(fontSize);
+      if (isBold) {
+        doc.setFont('helvetica', 'bold');
+      } else {
+        doc.setFont('helvetica', 'normal');
+      }
+
+      const lines = doc.splitTextToSize(text, maxWidth);
+
+      lines.forEach((line: string) => {
+        // Check if we need a new page
+        if (yPosition + fontSize > pageHeight - margin) {
+          doc.addPage();
+          yPosition = margin;
+          addPageNumber();
+          // Reset font settings after page number
+          doc.setFontSize(fontSize);
+          if (isBold) {
+            doc.setFont('helvetica', 'bold');
+          } else {
+            doc.setFont('helvetica', 'normal');
+          }
+          doc.setTextColor(0, 0, 0);
+        }
+
+        let xPosition = margin;
+        if (align === 'center') {
+          const textWidth = doc.getTextWidth(line);
+          xPosition = (pageWidth - textWidth) / 2;
+        }
+
+        doc.text(line, xPosition, yPosition);
+        yPosition += fontSize * 1.5;
+      });
+    };
+
+    // Helper function to add spacing
+    const addSpacing = (space: number) => {
+      yPosition += space;
+      if (yPosition > pageHeight - margin) {
+        doc.addPage();
+        yPosition = margin;
+        addPageNumber();
+      }
+    };
+
+    // Helper function to add page numbers
+    const addPageNumber = () => {
+      const pageCount = doc.getNumberOfPages();
+      doc.setFontSize(10);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(102, 102, 102);
+      doc.text(`${pageCount}`, pageWidth / 2, pageHeight - 36, { align: 'center' });
+      doc.setTextColor(0, 0, 0);
+    };
+
+    // Title Page
+    if (projectTitle) {
+      doc.setTextColor(102, 102, 102);
+      addText(projectTitle, 14, false, 'center');
+      addSpacing(20);
+      doc.setTextColor(0, 0, 0);
+    }
+
+    doc.setTextColor(153, 153, 153);
+    addText(`Chapter ${chapterData.moduleNumber}`, 12, false, 'center');
+    addSpacing(10);
+    doc.setTextColor(0, 0, 0);
+
+    addText(chapterTitle, 24, true, 'center');
+    addSpacing(60);
+
+    // Chapter content - use consistent 12pt font for all body text
+    const paragraphs = chapterData.content.split('\n\n');
+    paragraphs.forEach((paragraph, index) => {
+      if (paragraph.trim()) {
+        // Remove any markdown formatting and use consistent body text
+        const cleanText = paragraph.trim().replace(/^#+\s/, '');
+        addText(cleanText, 12, false);
+        if (index < paragraphs.length - 1) {
+          addSpacing(15);
+        }
+      }
+    });
+
+    // Add chapter illustration if available
+    if (chapterData.illustrationUrl) {
+      try {
+        addSpacing(40);
+
+        // Check if there's enough space on current page, otherwise add new page
+        const imageHeight = 200;
+        if (yPosition + imageHeight > pageHeight - margin) {
+          doc.addPage();
+          yPosition = margin;
+          addPageNumber();
+        }
+
+        // Calculate image dimensions to fit nicely at the bottom
+        const maxImageWidth = maxWidth * 0.6; // 60% of page width
+
+        // Center the image horizontally
+        const imageX = margin + (maxWidth - maxImageWidth) / 2;
+
+        // Add the image - jsPDF will handle URL fetching in browser context
+        doc.addImage(
+          chapterData.illustrationUrl,
+          'PNG', // Changed from JPEG to PNG as DALL-E returns PNG
+          imageX,
+          yPosition,
+          maxImageWidth,
+          imageHeight,
+          undefined,
+          'FAST'
+        );
+
+        yPosition += imageHeight + 20;
+      } catch (imageError) {
+        console.warn('Failed to add illustration to PDF:', imageError);
+        // Continue without the image if there's an error
+      }
+    }
+
+    // Add page numbers to all pages
+    const totalPages = doc.getNumberOfPages();
+    for (let i = 1; i <= totalPages; i++) {
+      doc.setPage(i);
+      doc.setFontSize(10);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(102, 102, 102);
+      doc.text(`${i}`, pageWidth / 2, pageHeight - 36, { align: 'center' });
+    }
+
+    // Set metadata
+    doc.setProperties({
+      title: chapterTitle,
+      author: intervieweeName || 'Family Story Archive',
+      subject: projectTitle ? `${projectTitle} - ${chapterTitle}` : chapterTitle,
+    });
+
+    // Convert to buffer
+    const pdfArrayBuffer = doc.output('arraybuffer');
+    const buffer = Buffer.from(pdfArrayBuffer);
+
+    return {
+      buffer,
+      mimeType: 'application/pdf',
+      filename: `${sanitizeFilename(chapterTitle)}.pdf`,
+    };
+  } catch (error) {
+    throw new Error(`Failed to generate chapter PDF: ${error instanceof Error ? error.message : 'Unknown error'}`);
+  }
+}
+
+/**
+ * Generate a PDF document from narrative (legacy support)
  */
 export async function generatePDF(data: NarrativeData): Promise<DocumentGeneratorResult> {
-  return new Promise((resolve, reject) => {
-    try {
-      const doc = new PDFDocument({
-        size: 'LETTER',
-        margins: {
-          top: 72,
-          bottom: 72,
-          left: 72,
-          right: 72,
-        },
-        bufferPages: true,
-      });
+  try {
+    const doc = new jsPDF({
+      orientation: 'portrait',
+      unit: 'pt',
+      format: 'letter',
+    });
 
-      const chunks: Buffer[] = [];
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
+    const margin = 72;
+    const maxWidth = pageWidth - (margin * 2);
+    let yPosition = margin;
 
-      doc.on('data', (chunk) => chunks.push(chunk));
-      doc.on('end', () => {
-        const buffer = Buffer.concat(chunks);
-        resolve({
-          buffer,
-          mimeType: 'application/pdf',
-          filename: `${sanitizeFilename(data.title)}.pdf`,
-        });
-      });
-      doc.on('error', reject);
-
-      // Add metadata
-      doc.info.Title = data.title;
-      doc.info.Author = data.intervieweeName || 'Family Story Archive';
-      doc.info.Subject = 'Family Story';
-      doc.info.CreationDate = data.createdAt || new Date();
-
-      // Title Page
-      doc.fontSize(28)
-        .font('Helvetica-Bold')
-        .text(data.title, {
-          align: 'center',
-        });
-
-      doc.moveDown(2);
-
-      if (data.intervieweeName) {
-        doc.fontSize(16)
-          .font('Helvetica')
-          .text(`The Story of ${data.intervieweeName}`, {
-            align: 'center',
-          });
-        doc.moveDown(1);
+    const addText = (text: string, fontSize: number, isBold: boolean = false, align: 'left' | 'center' = 'left', color: number[] = [0, 0, 0]) => {
+      doc.setFontSize(fontSize);
+      if (isBold) {
+        doc.setFont('helvetica', 'bold');
+      } else {
+        doc.setFont('helvetica', 'normal');
       }
+      doc.setTextColor(color[0], color[1], color[2]);
 
-      if (data.createdAt) {
-        doc.fontSize(12)
-          .font('Helvetica')
-          .fillColor('#666666')
-          .text(new Date(data.createdAt).toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-          }), {
-            align: 'center',
-          });
-      }
+      const lines = doc.splitTextToSize(text, maxWidth);
 
-      // Add page break
-      doc.addPage();
-
-      // Reset text color
-      doc.fillColor('#000000');
-
-      // Table of Contents (if chapters exist)
-      if (data.structure?.chapters && data.structure.chapters.length > 0) {
-        doc.fontSize(20)
-          .font('Helvetica-Bold')
-          .text('Table of Contents', {
-            underline: true,
-          });
-
-        doc.moveDown(1);
-
-        data.structure.chapters.forEach((chapter) => {
-          doc.fontSize(12)
-            .font('Helvetica')
-            .text(`• ${chapter.title}`, {
-              indent: 20,
-            });
-          doc.moveDown(0.3);
-        });
-
-        doc.addPage();
-      }
-
-      // Process content - split by chapters if available
-      const contentSections = splitContentByChapters(data.content, data.structure?.chapters || []);
-
-      contentSections.forEach((section, index) => {
-        if (index > 0) {
+      lines.forEach((line: string) => {
+        if (yPosition + fontSize > pageHeight - margin) {
           doc.addPage();
+          yPosition = margin;
         }
 
-        if (section.title) {
-          doc.fontSize(18)
-            .font('Helvetica-Bold')
-            .text(section.title, {
-              align: 'left',
-            });
-          doc.moveDown(1);
+        let xPosition = margin;
+        if (align === 'center') {
+          const textWidth = doc.getTextWidth(line);
+          xPosition = (pageWidth - textWidth) / 2;
         }
 
-        // Add body text
-        const paragraphs = section.content.split('\n\n');
-        paragraphs.forEach((paragraph) => {
-          if (paragraph.trim()) {
-            doc.fontSize(12)
-              .font('Helvetica')
-              .text(paragraph.trim(), {
-                align: 'justify',
-                lineGap: 4,
-              });
-            doc.moveDown(1);
-          }
-        });
+        doc.text(line, xPosition, yPosition);
+        yPosition += fontSize * 1.5;
       });
 
-      // Add footer with page numbers
-      const pages = doc.bufferedPageRange();
-      for (let i = 0; i < pages.count; i++) {
-        doc.switchToPage(i);
+      doc.setTextColor(0, 0, 0);
+    };
 
-        // Skip page number on title page
-        if (i === 0) continue;
+    const addSpacing = (space: number) => {
+      yPosition += space;
+      if (yPosition > pageHeight - margin) {
+        doc.addPage();
+        yPosition = margin;
+      }
+    };
 
-        doc.fontSize(10)
-          .font('Helvetica')
-          .fillColor('#666666')
-          .text(
-            `Page ${i}`,
-            72,
-            doc.page.height - 50,
-            {
-              align: 'center',
-              width: doc.page.width - 144,
-            }
-          );
+    // Title Page
+    addText(data.title, 28, true, 'center');
+    addSpacing(40);
+
+    if (data.intervieweeName) {
+      addText(`The Story of ${data.intervieweeName}`, 16, false, 'center');
+      addSpacing(20);
+    }
+
+    if (data.createdAt) {
+      const dateStr = new Date(data.createdAt).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      });
+      addText(dateStr, 12, false, 'center', [102, 102, 102]);
+    }
+
+    // New page
+    doc.addPage();
+    yPosition = margin;
+
+    // Table of Contents (if chapters exist)
+    if (data.structure?.chapters && data.structure.chapters.length > 0) {
+      addText('Table of Contents', 20, true, 'center');
+      addSpacing(20);
+
+      data.structure.chapters.forEach((chapter) => {
+        addText(`• ${chapter.title}`, 12, false);
+        addSpacing(5);
+      });
+
+      doc.addPage();
+      yPosition = margin;
+    }
+
+    // Process content - split by chapters if available
+    const contentSections = splitContentByChapters(data.content, data.structure?.chapters || []);
+
+    contentSections.forEach((section, index) => {
+      if (index > 0) {
+        doc.addPage();
+        yPosition = margin;
       }
 
-      doc.end();
-    } catch (error) {
-      reject(error);
+      if (section.title) {
+        addText(section.title, 18, true);
+        addSpacing(20);
+      }
+
+      // Add body text
+      const paragraphs = section.content.split('\n\n');
+      paragraphs.forEach((paragraph, pIndex) => {
+        if (paragraph.trim()) {
+          addText(paragraph.trim(), 12, false);
+          if (pIndex < paragraphs.length - 1) {
+            addSpacing(15);
+          }
+        }
+      });
+    });
+
+    // Add page numbers to all pages (except title page)
+    const totalPages = doc.getNumberOfPages();
+    for (let i = 2; i <= totalPages; i++) {
+      doc.setPage(i);
+      doc.setFontSize(10);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(102, 102, 102);
+      doc.text(`Page ${i - 1}`, pageWidth / 2, pageHeight - 36, { align: 'center' });
     }
-  });
+
+    // Set metadata
+    doc.setProperties({
+      title: data.title,
+      author: data.intervieweeName || 'Family Story Archive',
+      subject: 'Family Story',
+    });
+
+    // Convert to buffer
+    const pdfArrayBuffer = doc.output('arraybuffer');
+    const buffer = Buffer.from(pdfArrayBuffer);
+
+    return {
+      buffer,
+      mimeType: 'application/pdf',
+      filename: `${sanitizeFilename(data.title)}.pdf`,
+    };
+  } catch (error) {
+    throw new Error(`Failed to generate PDF: ${error instanceof Error ? error.message : 'Unknown error'}`);
+  }
 }
 
 /**
@@ -474,4 +818,4 @@ function sanitizeFilename(filename: string): string {
 }
 
 // Export types
-export type { NarrativeData, DocumentGeneratorResult };
+export type { NarrativeData, DocumentGeneratorResult, ModuleChapterData, BookData };

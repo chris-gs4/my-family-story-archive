@@ -9,9 +9,10 @@ import { prisma } from "@/lib/prisma"
  */
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string; moduleId: string } }
+  context: { params: Promise<{ id: string; moduleId: string }> | { id: string; moduleId: string } }
 ) {
   try {
+    const params = await Promise.resolve(context.params);
     const session = await getServerSession(authOptions)
 
     if (!session?.user?.id) {

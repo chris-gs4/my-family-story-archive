@@ -335,6 +335,7 @@ export async function GET(
         totalQuestions,
         hasChapter,
         approvedAt: module.approvedAt,
+        coverImageUrl: module.coverImageUrl,
         createdAt: module.createdAt,
       }
     })
