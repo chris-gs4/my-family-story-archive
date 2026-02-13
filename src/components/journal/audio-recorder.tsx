@@ -1,99 +1,106 @@
 "use client"
 
 import { useState, useRef, useCallback, useEffect } from "react"
-import { Mic, Square, Loader2 } from "lucide-react"
+import { Mic, Square } from "lucide-react"
 
-type RecorderState = "idle" | "recording" | "uploading" | "processing" | "done" | "error"
+type RecorderState = "idle" | "recording" | "fading" | "error"
 
 interface AudioRecorderProps {
   projectId: string
-  promptText?: string
-  onComplete: () => void
+  prompt: string
+  ghostText: string
+  onEntrySubmitted: () => void
   onError?: (error: string) => void
 }
 
-const BOILERPLATE_PHRASES = [
-  "Transforming your words into prose...",
-  "Finding the heart of your story...",
-  "Polishing your narrative...",
-  "Crafting your memoir entry...",
-  "Weaving your memories together...",
-]
+// Boilerplate text that types out DURING recording — the signature visual
+const BOILERPLATE = `I remember sitting in my grandmother's kitchen, watching her bake apple pie. The warm smell of cinnamon filled the whole house, and she would let me help roll out the dough. Those afternoons felt like they could last forever, just the two of us in that warm little kitchen with flour on our hands and love in the air.`
 
-export function AudioRecorder({ projectId, promptText, onComplete, onError }: AudioRecorderProps) {
+export function AudioRecorder({
+  projectId,
+  prompt,
+  ghostText,
+  onEntrySubmitted,
+  onError,
+}: AudioRecorderProps) {
   const [state, setState] = useState<RecorderState>("idle")
   const [elapsed, setElapsed] = useState(0)
-  const [animationText, setAnimationText] = useState("")
-  const [entryId, setEntryId] = useState<string | null>(null)
+  const [typedText, setTypedText] = useState("")
+  const [isFadingText, setIsFadingText] = useState(false)
   const [errorMessage, setErrorMessage] = useState("")
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null)
   const chunksRef = useRef<Blob[]>([])
   const timerRef = useRef<NodeJS.Timeout | null>(null)
-  const animationTimerRef = useRef<NodeJS.Timeout | null>(null)
-  const pollTimerRef = useRef<NodeJS.Timeout | null>(null)
+  const typewriterRef = useRef<NodeJS.Timeout | null>(null)
+  const entryDataRef = useRef<{ entryId: string; uploadUrl: string } | null>(null)
 
-  // Format seconds as mm:ss
   const formatTime = (seconds: number) => {
-    const m = Math.floor(seconds / 60).toString().padStart(2, "0")
+    const m = Math.floor(seconds / 60).toString().padStart(1, "0")
     const s = (seconds % 60).toString().padStart(2, "0")
     return `${m}:${s}`
   }
 
-  // Start boilerplate text animation
-  const startAnimation = useCallback(() => {
-    let index = 0
-    setAnimationText(BOILERPLATE_PHRASES[0])
-    animationTimerRef.current = setInterval(() => {
-      index = (index + 1) % BOILERPLATE_PHRASES.length
-      setAnimationText(BOILERPLATE_PHRASES[index])
-    }, 3000)
+  // Typewriter — runs DURING recording
+  const startTypewriter = useCallback(() => {
+    let charIndex = 0
+    setTypedText("")
+
+    typewriterRef.current = setInterval(() => {
+      charIndex++
+      setTypedText(BOILERPLATE.slice(0, charIndex))
+      if (charIndex >= BOILERPLATE.length) {
+        if (typewriterRef.current) clearInterval(typewriterRef.current)
+      }
+    }, 40)
   }, [])
 
-  // Clean up all timers
   const cleanup = useCallback(() => {
     if (timerRef.current) clearInterval(timerRef.current)
-    if (animationTimerRef.current) clearInterval(animationTimerRef.current)
-    if (pollTimerRef.current) clearInterval(pollTimerRef.current)
+    if (typewriterRef.current) clearInterval(typewriterRef.current)
   }, [])
 
   useEffect(() => {
     return cleanup
   }, [cleanup])
 
-  // Poll for entry completion
-  const pollForCompletion = useCallback((id: string) => {
-    pollTimerRef.current = setInterval(async () => {
+  // Upload and trigger processing — entirely in background, user never sees this
+  const submitEntryInBackground = useCallback(
+    async (audioBlob: Blob, entryId: string, uploadUrl: string, duration: number) => {
       try {
-        const res = await fetch(`/api/journal/entries/${id}`)
-        if (!res.ok) return
-
-        const { data } = await res.json()
-        if (data.status === "COMPLETE") {
-          cleanup()
-          setState("done")
-          setTimeout(onComplete, 1500)
-        } else if (data.status === "ERROR") {
-          cleanup()
-          setState("error")
-          setErrorMessage(data.errorMessage || "Processing failed")
-          onError?.(data.errorMessage || "Processing failed")
+        // Upload to S3 (skip in mock mode)
+        if (!uploadUrl.includes("mock")) {
+          await fetch(uploadUrl, {
+            method: "PUT",
+            body: audioBlob,
+            headers: { "Content-Type": "audio/webm" },
+          })
         }
-      } catch {
-        // Ignore poll errors, will retry
+
+        // Mark as uploaded → triggers processing pipeline
+        await fetch(`/api/journal/entries/${entryId}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ status: "UPLOADED", duration }),
+        })
+
+        console.log(`[Recorder] Entry ${entryId} submitted for background processing`)
+      } catch (err) {
+        console.error("[Recorder] Background submit failed:", err)
       }
-    }, 2000)
-  }, [cleanup, onComplete, onError])
+    },
+    []
+  )
 
   const startRecording = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
 
-      // Create entry in backend to get upload URL
+      // Create entry record upfront to get presigned URL
       const res = await fetch("/api/journal/entries", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ projectId, promptText }),
+        body: JSON.stringify({ projectId, promptText: prompt }),
       })
 
       if (!res.ok) {
@@ -102,9 +109,8 @@ export function AudioRecorder({ projectId, promptText, onComplete, onError }: Au
       }
 
       const { data } = await res.json()
-      setEntryId(data.entry.id)
+      entryDataRef.current = { entryId: data.entry.id, uploadUrl: data.uploadUrl }
 
-      // Set up MediaRecorder
       const mediaRecorder = new MediaRecorder(stream, {
         mimeType: MediaRecorder.isTypeSupported("audio/webm;codecs=opus")
           ? "audio/webm;codecs=opus"
@@ -113,62 +119,51 @@ export function AudioRecorder({ projectId, promptText, onComplete, onError }: Au
 
       chunksRef.current = []
       mediaRecorder.ondataavailable = (e) => {
-        if (e.data.size > 0) {
-          chunksRef.current.push(e.data)
-        }
+        if (e.data.size > 0) chunksRef.current.push(e.data)
       }
 
-      mediaRecorder.onstop = async () => {
-        // Stop all tracks
+      mediaRecorder.onstop = () => {
         stream.getTracks().forEach((track) => track.stop())
 
-        // Upload
-        setState("uploading")
+        // Fade out the boilerplate text
+        setIsFadingText(true)
+
         const audioBlob = new Blob(chunksRef.current, { type: "audio/webm" })
+        const duration = elapsed
 
-        try {
-          // Upload to S3 via presigned URL
-          await fetch(data.uploadUrl, {
-            method: "PUT",
-            body: audioBlob,
-            headers: { "Content-Type": "audio/webm" },
-          })
-
-          // Mark as uploaded and trigger processing
-          setState("processing")
-          startAnimation()
-
-          const uploadRes = await fetch(`/api/journal/entries/${data.entry.id}`, {
-            method: "PATCH",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              status: "UPLOADED",
-              duration: elapsed,
-            }),
-          })
-
-          if (!uploadRes.ok) {
-            throw new Error("Failed to trigger processing")
-          }
-
-          // Start polling for completion
-          pollForCompletion(data.entry.id)
-        } catch (err) {
-          setState("error")
-          const msg = err instanceof Error ? err.message : "Upload failed"
-          setErrorMessage(msg)
-          onError?.(msg)
+        // Fire-and-forget: submit in background
+        if (entryDataRef.current) {
+          submitEntryInBackground(
+            audioBlob,
+            entryDataRef.current.entryId,
+            entryDataRef.current.uploadUrl,
+            duration
+          )
         }
+
+        // After fade animation completes, show next question immediately
+        setTimeout(() => {
+          setIsFadingText(false)
+          setTypedText("")
+          setState("idle")
+          setElapsed(0)
+          onEntrySubmitted()
+        }, 1500)
       }
 
       mediaRecorderRef.current = mediaRecorder
-      mediaRecorder.start(1000) // Collect data every second
+      mediaRecorder.start(1000)
 
       setState("recording")
       setElapsed(0)
+
+      // Start timer
       timerRef.current = setInterval(() => {
         setElapsed((prev) => prev + 1)
       }, 1000)
+
+      // Start typewriter (boilerplate text appears while recording)
+      startTypewriter()
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Microphone access denied"
       setState("error")
@@ -182,111 +177,121 @@ export function AudioRecorder({ projectId, promptText, onComplete, onError }: Au
       clearInterval(timerRef.current)
       timerRef.current = null
     }
+    if (typewriterRef.current) {
+      clearInterval(typewriterRef.current)
+      typewriterRef.current = null
+    }
     if (mediaRecorderRef.current && mediaRecorderRef.current.state === "recording") {
       mediaRecorderRef.current.stop()
     }
+    setState("fading")
   }
 
   const reset = () => {
     cleanup()
     setState("idle")
     setElapsed(0)
-    setEntryId(null)
     setErrorMessage("")
-    setAnimationText("")
+    setTypedText("")
+    setIsFadingText(false)
   }
 
   return (
-    <div className="flex flex-col items-center">
-      {/* Recording state */}
-      {state === "idle" && (
-        <div className="flex flex-col items-center gap-6">
-          <button
-            onClick={startRecording}
-            className="w-20 h-20 rounded-full bg-journal-text flex items-center justify-center
-              hover:bg-black active:scale-95 transition-all duration-200
-              focus:outline-none focus:ring-4 focus:ring-journal-text/20"
-            aria-label="Start recording"
-          >
-            <Mic className="w-8 h-8 text-white" />
-          </button>
-          <p className="text-sm text-journal-text-secondary">Tap to start recording</p>
-        </div>
-      )}
+    <div className="flex flex-col h-full">
+      {/* Question */}
+      <div className="flex-shrink-0 text-center px-4 pt-8 pb-4">
+        <h2 className="text-xl font-bold text-journal-text leading-snug">
+          {prompt}
+        </h2>
+      </div>
 
-      {state === "recording" && (
-        <div className="flex flex-col items-center gap-6">
-          {/* Pulsing rings */}
+      {/* Middle area: ghost text + boilerplate typewriter */}
+      <div className="flex-1 px-6 py-4 relative overflow-hidden">
+        {/* Ghost text from previous answer — always faintly visible */}
+        {ghostText && (
+          <p className="text-base font-caveat text-journal-text/10 leading-relaxed italic">
+            {ghostText}
+          </p>
+        )}
+
+        {/* Boilerplate typewriter text — appears DURING recording */}
+        {(state === "recording" || state === "fading") && typedText && (
+          <p
+            className={`text-lg font-caveat text-journal-text/60 leading-relaxed italic absolute inset-x-6 top-4 transition-opacity duration-1000 ${
+              isFadingText ? "opacity-0" : "opacity-100"
+            }`}
+          >
+            {typedText}
+            {!isFadingText && (
+              <span className="inline-block w-[2px] h-[1em] bg-journal-text/30 ml-0.5 animate-pulse align-text-bottom" />
+            )}
+          </p>
+        )}
+      </div>
+
+      {/* Bottom: mic button + label */}
+      <div className="flex-shrink-0 flex flex-col items-center pb-10 pt-2">
+        {/* Recording timer label */}
+        {state === "recording" && (
+          <p className="text-sm text-red-500 font-medium mb-3">
+            Recording {formatTime(elapsed)}
+          </p>
+        )}
+
+        {/* "Writing your story..." label during fade */}
+        {state === "fading" && (
+          <p className="text-sm text-journal-text-secondary mb-3">
+            Writing your story...
+          </p>
+        )}
+
+        {/* Mic / Stop button */}
+        {state === "recording" ? (
           <div className="relative">
-            <div className="absolute inset-0 w-20 h-20 rounded-full bg-red-500/20 animate-ping" />
-            <div className="absolute -inset-3 w-26 h-26 rounded-full bg-red-500/10 animate-pulse" />
+            {/* Pink pulse ring */}
+            <div className="absolute -inset-3 rounded-full bg-red-200/50 animate-pulse" />
             <button
               onClick={stopRecording}
-              className="relative w-20 h-20 rounded-full bg-red-500 flex items-center justify-center
-                hover:bg-red-600 active:scale-95 transition-all duration-200
-                focus:outline-none focus:ring-4 focus:ring-red-500/20"
+              className="relative w-16 h-16 rounded-full bg-red-500 flex items-center justify-center
+                active:scale-95 transition-transform duration-150
+                focus:outline-none"
               aria-label="Stop recording"
             >
-              <Square className="w-6 h-6 text-white fill-white" />
+              <Square className="w-5 h-5 text-white fill-white" />
             </button>
           </div>
-
-          {/* Timer */}
-          <div className="text-2xl font-mono text-journal-text tabular-nums">
-            {formatTime(elapsed)}
+        ) : state === "fading" ? (
+          <div className="w-16 h-16 rounded-full bg-journal-text/80 flex items-center justify-center">
+            <Mic className="w-6 h-6 text-white" />
           </div>
-          <p className="text-sm text-journal-text-secondary">Recording... tap to stop</p>
-        </div>
-      )}
-
-      {state === "uploading" && (
-        <div className="flex flex-col items-center gap-4">
-          <div className="w-20 h-20 rounded-full bg-journal-text/10 flex items-center justify-center">
-            <Loader2 className="w-8 h-8 text-journal-text animate-spin" />
+        ) : state === "error" ? (
+          <div className="flex flex-col items-center gap-3">
+            <p className="text-sm text-red-600 text-center">{errorMessage}</p>
+            <button
+              onClick={reset}
+              className="text-sm text-journal-text underline underline-offset-2"
+            >
+              Try again
+            </button>
           </div>
-          <p className="text-sm text-journal-text-secondary">Uploading...</p>
-        </div>
-      )}
-
-      {state === "processing" && (
-        <div className="flex flex-col items-center gap-4">
-          <div className="w-20 h-20 rounded-full bg-journal-text/10 flex items-center justify-center">
-            <Loader2 className="w-8 h-8 text-journal-text animate-spin" />
-          </div>
-          <p className="text-base text-journal-text font-medium text-center transition-opacity duration-500">
-            {animationText}
-          </p>
-          <p className="text-xs text-journal-text-secondary">This usually takes about 15-20 seconds</p>
-        </div>
-      )}
-
-      {state === "done" && (
-        <div className="flex flex-col items-center gap-4">
-          <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center">
-            <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-            </svg>
-          </div>
-          <p className="text-base text-journal-text font-medium">Entry saved!</p>
-        </div>
-      )}
-
-      {state === "error" && (
-        <div className="flex flex-col items-center gap-4">
-          <div className="w-20 h-20 rounded-full bg-red-100 flex items-center justify-center">
-            <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </div>
-          <p className="text-sm text-red-600 text-center">{errorMessage}</p>
-          <button
-            onClick={reset}
-            className="text-sm text-journal-text underline underline-offset-2"
-          >
-            Try again
-          </button>
-        </div>
-      )}
+        ) : (
+          /* Idle state */
+          <>
+            <button
+              onClick={startRecording}
+              className="w-16 h-16 rounded-full bg-journal-text flex items-center justify-center
+                hover:bg-black active:scale-95 transition-all duration-200
+                focus:outline-none focus:ring-4 focus:ring-journal-text/20"
+              aria-label="Start recording"
+            >
+              <Mic className="w-6 h-6 text-white" />
+            </button>
+            <p className="text-sm text-journal-text-secondary mt-3">
+              Tap to speak your answer
+            </p>
+          </>
+        )}
+      </div>
     </div>
   )
 }

@@ -3,6 +3,9 @@ import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { inngest } from "@/lib/inngest/client"
+import { openAIService } from "@/lib/services/openai"
+import { mockOpenAI } from "@/lib/services/mock/openai"
+import { s3Service } from "@/lib/services/s3"
 
 // GET /api/journal/entries/[entryId] - Get a single journal entry
 export async function GET(
@@ -35,6 +38,95 @@ export async function GET(
       { error: "Failed to fetch journal entry" },
       { status: 500 }
     )
+  }
+}
+
+/**
+ * Process a journal entry inline (fallback when Inngest is unavailable)
+ */
+async function processEntryInline(entryId: string, audioFileKey: string, jobId: string) {
+  try {
+    // Mark as processing
+    await prisma.journalEntry.update({
+      where: { id: entryId },
+      data: { status: "PROCESSING" },
+    })
+    await prisma.job.update({
+      where: { id: jobId },
+      data: { status: "RUNNING", startedAt: new Date(), progress: 10 },
+    })
+
+    // Transcribe
+    let transcription;
+    if (process.env.OPENAI_API_KEY) {
+      const buffer = await s3Service.getFileBuffer(audioFileKey)
+      transcription = await openAIService.transcribeAudioFile(buffer)
+    } else {
+      transcription = await mockOpenAI.transcribeAudio(audioFileKey, 180)
+    }
+
+    await prisma.job.update({
+      where: { id: jobId },
+      data: { progress: 50 },
+    })
+
+    // Generate narrative
+    let narrative;
+    if (process.env.OPENAI_API_KEY) {
+      narrative = await openAIService.generateJournalNarrative(transcription.text)
+    } else {
+      const mockResult = await mockOpenAI.generateNarrative(transcription.text)
+      narrative = {
+        title: "A Memory Unfolds",
+        narrativeText: mockResult.content,
+        wordCount: mockResult.wordCount,
+      }
+    }
+
+    // Save results
+    await prisma.journalEntry.update({
+      where: { id: entryId },
+      data: {
+        rawTranscript: transcription.text,
+        title: narrative.title,
+        narrativeText: narrative.narrativeText,
+        wordCount: narrative.wordCount,
+        duration: transcription.duration,
+        status: "COMPLETE",
+      },
+    })
+
+    await prisma.job.update({
+      where: { id: jobId },
+      data: {
+        status: "COMPLETED",
+        progress: 100,
+        completedAt: new Date(),
+        output: {
+          title: narrative.title,
+          wordCount: narrative.wordCount,
+          duration: transcription.duration,
+        },
+      },
+    })
+
+    console.log(`[Inline] Journal entry processed: ${entryId} - "${narrative.title}"`)
+  } catch (error) {
+    console.error(`[Inline] Failed to process entry ${entryId}:`, error)
+    await prisma.journalEntry.update({
+      where: { id: entryId },
+      data: {
+        status: "ERROR",
+        errorMessage: error instanceof Error ? error.message : "Processing failed",
+      },
+    })
+    await prisma.job.update({
+      where: { id: jobId },
+      data: {
+        status: "FAILED",
+        error: error instanceof Error ? error.message : "Processing failed",
+      },
+    })
   }
 }
 
@@ -90,16 +182,22 @@ export async function PATCH(
         },
       })
 
-      // Trigger Inngest processing
-      await inngest.send({
-        name: "journal/entry.process",
-        data: {
-          entryId: params.entryId,
-          audioFileKey: entry.audioFileKey,
-          jobId: job.id,
-          projectId: entry.project.id,
-        },
-      })
+      // Try Inngest first, fall back to inline processing
+      try {
+        await inngest.send({
+          name: "journal/entry.process",
+          data: {
+            entryId: params.entryId,
+            audioFileKey: entry.audioFileKey,
+            jobId: job.id,
+            projectId: entry.project.id,
+          },
+        })
+      } catch (inngestError) {
+        console.log("[Journal] Inngest unavailable, processing inline")
+        // Don't await — process in background so the response returns immediately
+        processEntryInline(params.entryId, entry.audioFileKey || "", job.id)
+      }
 
       return NextResponse.json({ data: updatedEntry })
     }

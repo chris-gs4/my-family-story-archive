@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useCallback } from "react"
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import { AudioRecorder } from "@/components/journal"
@@ -18,13 +18,30 @@ const PROMPTS = [
   "What do you want people to know about you?",
 ]
 
+// Shuffle prompts so each session feels fresh
+function shuffleArray<T>(arr: T[]): T[] {
+  const shuffled = [...arr]
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
+  }
+  return shuffled
+}
+
 export default function JournalRecordPage() {
   useSession({ required: true })
   const router = useRouter()
   const [projectId, setProjectId] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState("")
-  const [prompt] = useState(() => PROMPTS[Math.floor(Math.random() * PROMPTS.length)])
+
+  // Question cycling state
+  const [prompts] = useState(() => shuffleArray(PROMPTS))
+  const [promptIndex, setPromptIndex] = useState(0)
+  const [ghostText, setGhostText] = useState("")
+
+  // The boilerplate that was "typed out" during the last recording — becomes ghost text
+  const BOILERPLATE = `I remember sitting in my grandmother's kitchen, watching her bake apple pie. The warm smell of cinnamon filled the whole house, and she would let me help roll out the dough. Those afternoons felt like they could last forever, just the two of us in that warm little kitchen with flour on our hands and love in the air.`
 
   // Find or verify the user's journal project
   useEffect(() => {
@@ -35,7 +52,6 @@ export default function JournalRecordPage() {
 
         const { data } = await res.json()
         if (data.length === 0) {
-          // No project yet, redirect to setup
           router.push("/journal/setup")
           return
         }
@@ -50,13 +66,18 @@ export default function JournalRecordPage() {
     loadProject()
   }, [router])
 
-  const handleComplete = () => {
-    router.push("/journal")
-  }
+  // Called when user finishes recording and fade completes — cycle to next question
+  const handleEntrySubmitted = useCallback(() => {
+    // The boilerplate that just faded becomes the ghost text for the next question
+    setGhostText(BOILERPLATE)
+
+    // Advance to next prompt (loop back to start if exhausted)
+    setPromptIndex((prev) => (prev + 1) % prompts.length)
+  }, [prompts.length, BOILERPLATE])
 
   if (isLoading) {
     return (
-      <div className="flex flex-col items-center justify-center pt-24">
+      <div className="flex flex-col items-center justify-center h-full pt-24">
         <div className="w-8 h-8 border-2 border-journal-text/20 border-t-journal-text rounded-full animate-spin" />
       </div>
     )
@@ -79,25 +100,12 @@ export default function JournalRecordPage() {
   if (!projectId) return null
 
   return (
-    <div className="flex flex-col items-center pt-8 pb-12">
-      {/* Prompt */}
-      <div className="text-center mb-12 px-4">
-        <p className="text-xs uppercase tracking-wider text-journal-text-secondary mb-3">
-          Today&apos;s prompt
-        </p>
-        <h2 className="text-xl font-semibold text-journal-text leading-relaxed font-caveat">
-          {prompt}
-        </h2>
-        <p className="text-xs text-journal-text-secondary mt-3">
-          Or talk about anything on your mind
-        </p>
-      </div>
-
-      {/* Recorder */}
+    <div className="h-[calc(100dvh-60px)] md:h-[calc(90vh-80px)] md:max-h-[680px]">
       <AudioRecorder
         projectId={projectId}
-        promptText={prompt}
-        onComplete={handleComplete}
+        prompt={prompts[promptIndex]}
+        ghostText={ghostText}
+        onEntrySubmitted={handleEntrySubmitted}
         onError={(msg) => setError(msg)}
       />
     </div>

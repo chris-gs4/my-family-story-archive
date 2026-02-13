@@ -116,9 +116,8 @@ class MockOpenAIService {
     console.log(`[Mock OpenAI] Transcribing audio: ${audioFileKey}`);
     console.log(`[Mock OpenAI] Duration: ${duration} seconds`);
 
-    // Simulate transcription delay (1 second per minute of audio)
-    const delayMs = Math.max(1000, (duration / 60) * 1000);
-    await this.delay(delayMs);
+    // Simulate transcription delay (brief in dev)
+    await this.delay(500);
 
     const transcript = this.generateMockTranscript(duration);
     const wordCount = transcript.split(/\s+/).length;
@@ -142,8 +141,8 @@ class MockOpenAIService {
     console.log(`[Mock OpenAI] Generating ${style} narrative`);
     console.log(`[Mock OpenAI] Transcript length: ${transcript.length} characters`);
 
-    // Simulate processing delay
-    await this.delay(3000);
+    // Simulate processing delay (brief in dev)
+    await this.delay(500);
 
     const narrative = this.generateMockNarrative(transcript, style);
     const wordCount = narrative.split(/\s+/).length;
