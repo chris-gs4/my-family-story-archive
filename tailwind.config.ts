@@ -20,6 +20,7 @@ const config: Config = {
     extend: {
       fontFamily: {
         sans: ['var(--font-sans)'],
+        caveat: ['var(--font-caveat)'],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -54,6 +55,13 @@ const config: Config = {
         card: {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
+        },
+        journal: {
+          bg: '#F5F0E8',
+          text: '#1a1a1a',
+          'text-secondary': '#999999',
+          border: '#d4d0c8',
+          'input-bg': '#FAF8F5',
         },
       },
       borderRadius: {

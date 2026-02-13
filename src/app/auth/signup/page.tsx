@@ -2,12 +2,13 @@
 
 import { useState } from "react"
 import { signIn } from "next-auth/react"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
 import { PrimaryButton } from "@/components/ui"
 
 export default function SignUpPage() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("")
 
@@ -57,7 +58,8 @@ export default function SignUpPage() {
       if (result?.error) {
         setError("Registration successful, but sign in failed. Please try signing in.")
       } else {
-        router.push("/dashboard")
+        const callbackUrl = searchParams.get("callbackUrl") || "/dashboard"
+        router.push(callbackUrl)
         router.refresh()
       }
     } catch (error) {

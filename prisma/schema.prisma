@@ -124,6 +124,7 @@ model Project {
   narrative         Narrative?
   jobs              Job[]
   modules           Module[]
+  journalEntries    JournalEntry[]
 
   @@index([userId])
   @@index([status])
@@ -407,6 +408,9 @@ enum JobType {
   GENERATE_MODULE_CHAPTER
   COMPILE_BOOK
 
+  // Journal-specific jobs
+  PROCESS_JOURNAL_ENTRY
+
   @@map("job_type")
 }
 
@@ -445,6 +449,45 @@ model Job {
   @@index([type])
   @@index([projectId, type, status])
   @@map("jobs")
+}
+
+// ======================
+// JOURNAL ENTRIES
+// ======================
+
+enum JournalEntryStatus {
+  RECORDING
+  UPLOADED
+  PROCESSING
+  COMPLETE
+  ERROR
+
+  @@map("journal_entry_status")
+}
+
+model JournalEntry {
+  id             String             @id @default(cuid())
+  projectId      String
+  entryDate      DateTime           @default(now())
+  title          String?            // AI-generated creative title
+  audioFileKey   String?            // S3 object key
+  rawTranscript  String?            @db.Text
+  narrativeText  String?            @db.Text
+  promptText     String?            @db.Text // AI prompt shown to user
+  status         JournalEntryStatus @default(RECORDING)
+  wordCount      Int?
+  duration       Int?               // Audio duration in seconds
+  errorMessage   String?
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+
+  // Relations
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+  @@index([projectId, entryDate])
+  @@index([status])
+  @@map("journal_entries")
 }
 
 // ======================

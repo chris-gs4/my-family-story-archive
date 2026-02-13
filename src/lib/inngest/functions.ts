@@ -3,6 +3,7 @@ import { inngest } from './client';
 import { prisma } from '@/lib/prisma';
 import { openAIService } from '@/lib/services/openai';
 import { mockOpenAI } from '@/lib/services/mock/openai'; // Keep for fallback
+import { s3Service } from '@/lib/services/s3';
 import type { ProjectStatus } from '@prisma/client';
 
 // Use real OpenAI if API key is configured, otherwise fall back to mock
@@ -536,6 +537,123 @@ export const generateModuleChapterJob = inngest.createFunction(
   }
 );
 
+/**
+ * Job 6: Process Journal Entry (Transcribe + Generate Narrative)
+ */
+export const processJournalEntryJob = inngest.createFunction(
+  {
+    id: 'process-journal-entry',
+    name: 'Process Journal Entry',
+    retries: 2,
+  },
+  { event: 'journal/entry.process' },
+  async ({ event, step }) => {
+    const { entryId, audioFileKey, jobId, projectId } = event.data;
+
+    console.log(`[Inngest] Processing journal entry: ${entryId}`);
+
+    // Step 1: Mark entry as processing
+    await step.run('mark-processing', async () => {
+      await prisma.journalEntry.update({
+        where: { id: entryId },
+        data: { status: 'PROCESSING' },
+      });
+      await prisma.job.update({
+        where: { id: jobId },
+        data: { status: 'RUNNING', startedAt: new Date(), progress: 10 },
+      });
+    });
+
+    // Step 2: Download audio from S3
+    const audioBuffer = await step.run('download-audio', async () => {
+      console.log(`[Inngest] Downloading audio: ${audioFileKey}`);
+      const buffer = await s3Service.getFileBuffer(audioFileKey);
+      return buffer.toString('base64'); // Serialize for Inngest step
+    });
+
+    // Step 3: Update progress
+    await step.run('update-progress-30', async () => {
+      await prisma.job.update({
+        where: { id: jobId },
+        data: { progress: 30 },
+      });
+    });
+
+    // Step 4: Transcribe audio
+    const transcription = await step.run('transcribe-audio', async () => {
+      console.log(`[Inngest] Transcribing audio for entry: ${entryId}`);
+
+      if (process.env.OPENAI_API_KEY) {
+        const buffer = Buffer.from(audioBuffer, 'base64');
+        return await openAIService.transcribeAudioFile(buffer);
+      }
+
+      // Mock fallback
+      return await mockOpenAI.transcribeAudio(audioFileKey, 180);
+    });
+
+    // Step 5: Update progress
+    await step.run('update-progress-60', async () => {
+      await prisma.job.update({
+        where: { id: jobId },
+        data: { progress: 60 },
+      });
+    });
+
+    // Step 6: Generate narrative + title
+    const narrative = await step.run('generate-narrative', async () => {
+      console.log(`[Inngest] Generating narrative for entry: ${entryId}`);
+
+      if (process.env.OPENAI_API_KEY) {
+        return await openAIService.generateJournalNarrative(transcription.text);
+      }
+
+      // Mock fallback
+      const mockResult = await mockOpenAI.generateNarrative(transcription.text);
+      return {
+        title: 'A Memory Unfolds',
+        narrativeText: mockResult.content,
+        wordCount: mockResult.wordCount,
+      };
+    });
+
+    // Step 7: Save results to database
+    await step.run('save-results', async () => {
+      await prisma.journalEntry.update({
+        where: { id: entryId },
+        data: {
+          rawTranscript: transcription.text,
+          title: narrative.title,
+          narrativeText: narrative.narrativeText,
+          wordCount: narrative.wordCount,
+          duration: transcription.duration,
+          status: 'COMPLETE',
+        },
+      });
+    });
+
+    // Step 8: Complete job
+    await step.run('complete-job', async () => {
+      await prisma.job.update({
+        where: { id: jobId },
+        data: {
+          status: 'COMPLETED',
+          progress: 100,
+          completedAt: new Date(),
+          output: {
+            title: narrative.title,
+            wordCount: narrative.wordCount,
+            duration: transcription.duration,
+          },
+        },
+      });
+    });
+
+    console.log(`[Inngest] Journal entry processed: ${entryId} - "${narrative.title}"`);
+    return { success: true, title: narrative.title, wordCount: narrative.wordCount };
+  }
+);
+
 // Export all functions as an array
 export const functions = [
   generateQuestionsJob,
@@ -543,4 +661,5 @@ export const functions = [
   generateNarrativeJob,
   generateModuleQuestionsJob,
   generateModuleChapterJob,
+  processJournalEntryJob,
 ];

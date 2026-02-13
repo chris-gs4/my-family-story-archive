@@ -20,6 +20,13 @@ import type {
   NarrativeResult,
 } from './mock/openai';
 
+// Journal-specific types
+export interface JournalNarrativeResult {
+  title: string;
+  narrativeText: string;
+  wordCount: number;
+}
+
 // Initialize OpenAI client
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -251,6 +258,103 @@ class OpenAIService {
     } catch (error) {
       console.error('[OpenAI] Error generating image:', error);
       throw new Error(`Failed to generate image: ${this.getErrorMessage(error)}`);
+    }
+  }
+
+  /**
+   * Transcribe audio using Whisper API
+   */
+  async transcribeAudioFile(
+    audioBuffer: Buffer,
+    fileName: string = 'audio.webm'
+  ): Promise<TranscriptionResult> {
+    console.log(`[OpenAI] Transcribing audio file: ${fileName}`);
+
+    try {
+      const blob = new Blob([new Uint8Array(audioBuffer)], { type: 'audio/webm' });
+      const file = new File([blob], fileName, { type: 'audio/webm' });
+
+      const response = await openai.audio.transcriptions.create({
+        model: 'whisper-1',
+        file: file,
+        response_format: 'verbose_json',
+      });
+
+      const text = response.text;
+      const wordCount = text.split(/\s+/).filter(Boolean).length;
+      const duration = Math.round(response.duration || 0);
+
+      console.log(`[OpenAI] Transcription complete: ${wordCount} words, ${duration}s`);
+
+      return {
+        text,
+        duration,
+        wordCount,
+      };
+    } catch (error) {
+      console.error('[OpenAI] Error transcribing audio:', error);
+      throw new Error(`Failed to transcribe audio: ${this.getErrorMessage(error)}`);
+    }
+  }
+
+  /**
+   * Generate a polished journal narrative with creative title from a raw transcript
+   */
+  async generateJournalNarrative(
+    transcript: string
+  ): Promise<JournalNarrativeResult> {
+    console.log(`[OpenAI] Generating journal narrative from transcript (${transcript.length} chars)`);
+
+    try {
+      const response = await openai.chat.completions.create({
+        model: CONFIG.model,
+        messages: [
+          {
+            role: 'system',
+            content: SYSTEM_PROMPTS.journalNarrative,
+          },
+          {
+            role: 'user',
+            content: `Transform this voice journal transcript into polished narrative prose with a creative title.
+
+**Raw Transcript:**
+${transcript}
+
+**Return format:**
+Return a JSON object with this structure:
+{
+  "title": "An evocative, creative title (not a literal summary)",
+  "narrativeText": "The polished first-person narrative prose"
+}
+
+Return ONLY the JSON object, no additional text.`,
+          },
+        ],
+        max_tokens: CONFIG.maxTokens,
+        temperature: 0.8,
+      });
+
+      this.trackUsage(response.usage);
+
+      const content = response.choices[0].message.content || '';
+      const jsonMatch = content.match(/\{[\s\S]*\}/);
+      if (!jsonMatch) {
+        throw new Error('No JSON object found in response');
+      }
+
+      const parsed = JSON.parse(jsonMatch[0]);
+      const wordCount = parsed.narrativeText.split(/\s+/).filter(Boolean).length;
+
+      console.log(`[OpenAI] Journal narrative generated: "${parsed.title}" (${wordCount} words)`);
+
+      return {
+        title: parsed.title,
+        narrativeText: parsed.narrativeText,
+        wordCount,
+      };
+    } catch (error) {
+      console.error('[OpenAI] Error generating journal narrative:', error);
+      throw new Error(`Failed to generate journal narrative: ${this.getErrorMessage(error)}`);
     }
   }
 
@@ -514,6 +618,23 @@ Your narrative should:
 - Honor the person's story with care and respect
 
 Write prose that the subject and their family will treasure.`,
+
+  journalNarrative: `You are a skilled memoir editor helping someone turn their voice journal entries into polished narrative prose.
+
+Your task:
+1. Take a raw voice transcript (which may contain filler words, repetitions, incomplete sentences)
+2. Transform it into beautiful first-person narrative prose
+3. Generate a creative, evocative title that captures the emotional essence — not a literal summary
+
+Guidelines:
+- Write in first person, preserving the speaker's authentic voice
+- Clean up speech patterns (remove "um", "uh", "like", repetitions) while keeping personality
+- Maintain all factual details and emotional content
+- Create flowing paragraphs, not bullet points
+- The title should be poetic or evocative (e.g. "The Summer on Maple Street", "The Taste of Home")
+- Keep the narrative concise — typically 150-400 words for a 3-5 minute recording
+- Do NOT add fictional details or embellish beyond what was said
+- Do NOT add a moral or lesson unless the speaker expressed one`,
 };
 
 // Singleton instance
