@@ -19,7 +19,7 @@ export default function PaymentPage() {
       {/* Header */}
       <header className="bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <h2 className="text-xl font-semibold text-text-primary">Family Story Archive</h2>
+          <h2 className="text-xl font-semibold text-text-primary">Mabel</h2>
           <SecondaryButton onClick={() => router.push('/dashboard')}>
             Back to Dashboard
           </SecondaryButton>

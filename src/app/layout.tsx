@@ -16,8 +16,8 @@ const caveat = Caveat({
 })
 
 export const metadata: Metadata = {
-  title: "Family Story Archive",
-  description: "Preserve your family's stories for generations",
+  title: "Mabel",
+  description: "Your Stories, Written with Care",
 }
 
 export const viewport: Viewport = {

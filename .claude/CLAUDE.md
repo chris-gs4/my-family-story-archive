@@ -1,6 +1,6 @@
-# Family Story Archive
+# Mabel — Your Stories, Written with Care
 
-An AI tool that helps people interview their parents, friends, or relatives about their life stories, then automatically turns those conversations into written narratives and audiobooks using voice cloning.
+Mabel is an AI-powered app that helps people capture the life stories of their parents, friends, or relatives through guided voice journaling — then automatically turns those recordings into polished written narratives and audiobooks. The mascot is a pixel-art grandmother character named Mabel.
 
 ## Quick Reference
 
@@ -32,6 +32,8 @@ confabulator/        # Project documentation (IMPORTANT - read these first)
 ├── wireframes.md    # UI/UX wireframes and screen flows
 ├── business-model-canvas.md # Business model
 └── PR-FAQ.md        # Press release and FAQ
+wireframes/
+└── mabel assets/    # Brand assets (logo, mascot, app icon)
 src/                 # Source code
 ├── app/             # Next.js app router (if applicable)
 ├── components/      # UI components
@@ -44,17 +46,23 @@ capacitor.config.ts  # Capacitor configuration
 ## Project Context
 
 ### Target Customer
-Anyone interested in writing a book, record an audiobook, or learn more about their family history.
+Anyone interested in preserving family stories — adult children who want to capture their parents' memories, people creating meaningful gifts, genealogy enthusiasts, or anyone who wants to turn spoken stories into a beautiful written book.
 
 ### Value Proposition
-It removes all the friction from preserving family stories. Instead of needing to be a good interviewer, writer, or audio editor, the AI handles the structured questions, narrative creation, and voice cloning in one place. 
+Mabel removes all the friction from preserving family stories. Instead of needing to be a good interviewer, writer, or audio editor, the AI handles the guided questions, audio transcription, narrative creation, and voice cloning in one place. Just tap record, speak, and Mabel writes your story.
+
+### Brand
+- **Name:** Mabel
+- **Tagline:** Your Stories, Written with Care
+- **Mascot:** Pixel-art grandmother character named Mabel
+- **Brand assets:** `wireframes/mabel assets/` (logo, square icon, tagline)
 
 ### Platform
 web + iOS native (Capacitor)
 
 ## Tech Stack
 
-TypeScript, JavaScript, Next.js, React, Tailwind CSS, shadcn/ui, Radix UI, React Hook Form, Zod, Prisma ORM, NextAuth.js, Stripe, AWS S3, Vercel, PostgreSQL (Neon), Inngest (background jobs)
+TypeScript, JavaScript, Next.js, React, Tailwind CSS, shadcn/ui, Radix UI, React Hook Form, Zod, Prisma ORM, NextAuth.js, Stripe, AWS S3, Vercel, PostgreSQL (Neon), Inngest (background jobs), Capacitor (iOS native)
 
 ## Key Documentation
 
@@ -91,11 +99,13 @@ TypeScript, JavaScript, Next.js, React, Tailwind CSS, shadcn/ui, Radix UI, React
 
 ## Current Focus
 
-The MVP focuses on these core capabilities:
+The MVP focuses on audio-first guided journaling:
 
 - AI-guided interview questions that adapt based on responses
+- Audio recording (native AAC on iOS, WebM on web)
 - Audio transcription (Whisper API)
 - Narrative generation from transcripts
+- Module-based story building (chapter by chapter)
 
 See `confabulator/implementation-plan.md` for the complete development roadmap.
 

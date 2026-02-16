@@ -175,9 +175,9 @@ export async function generateBookPDF(data: BookData): Promise<DocumentGenerator
     // Set metadata
     doc.setProperties({
       title: data.title,
-      author: data.intervieweeName || 'Family Story Archive',
+      author: data.intervieweeName || 'Mabel',
       subject: 'Family Story - Complete Book',
-      creator: 'Family Story Archive',
+      creator: 'Mabel',
     });
 
     // Convert to buffer
@@ -355,7 +355,7 @@ export async function generateChapterPDF(
     // Set metadata
     doc.setProperties({
       title: chapterTitle,
-      author: intervieweeName || 'Family Story Archive',
+      author: intervieweeName || 'Mabel',
       subject: projectTitle ? `${projectTitle} - ${chapterTitle}` : chapterTitle,
     });
 
@@ -503,7 +503,7 @@ export async function generatePDF(data: NarrativeData): Promise<DocumentGenerato
     // Set metadata
     doc.setProperties({
       title: data.title,
-      author: data.intervieweeName || 'Family Story Archive',
+      author: data.intervieweeName || 'Mabel',
       subject: 'Family Story',
     });
 

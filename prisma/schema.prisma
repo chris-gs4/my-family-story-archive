@@ -1,4 +1,4 @@
-// Family Story Archive Database Schema
+// Mabel Database Schema
 // Based on implementation-plan.md data model
 
 generator client {

@@ -1,4 +1,4 @@
-// Family Story Archive Design System Components
+// Mabel Design System Components
 export {
   StoryCard,
   StoryCardHeader,

@@ -1,8 +1,8 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.familystoryarchive.app',
-  appName: 'Family Story Archive',
+  appId: 'com.mabel.app',
+  appName: 'Mabel',
   webDir: 'out',
   server: {
     // In production, point to your deployed Vercel URL:

@@ -75,7 +75,7 @@ export default function SignUpPage() {
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-foreground mb-2">
-            Join Family Story Archive
+            Join Mabel
           </h1>
           <p className="text-muted-foreground">
             Start preserving your family's memories today
