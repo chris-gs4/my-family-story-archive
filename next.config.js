@@ -6,7 +6,12 @@ const nextConfig = {
   },
   experimental: {
     serverActions: {
-      allowedOrigins: ['localhost:3000'],
+      allowedOrigins: [
+        'localhost:3000',
+        // Capacitor iOS uses capacitor://localhost as its origin
+        'capacitor://localhost',
+        'localhost',
+      ],
     },
   },
 }
