@@ -76,8 +76,8 @@ async function testImageGenerationWorkflow() {
     const questions = await openAIService.generateQuestions({
       name: project.interviewee!.name,
       relationship: project.interviewee!.relationship,
-      birthYear: project.interviewee!.birthYear,
-      generation: project.interviewee!.generation,
+      birthYear: project.interviewee!.birthYear ?? undefined,
+      generation: project.interviewee!.generation ?? undefined,
       topics: project.interviewee!.topics as string[]
     }, 5);
 
@@ -201,8 +201,8 @@ Warm and nostalgic feeling, suitable for a family memoir.`;
       {
         name: project.interviewee!.name,
         relationship: project.interviewee!.relationship,
-        birthYear: project.interviewee!.birthYear,
-        generation: project.interviewee!.generation,
+        birthYear: project.interviewee!.birthYear ?? undefined,
+        generation: project.interviewee!.generation ?? undefined,
         topics: project.interviewee!.topics as string[]
       },
       previousQuestions,
@@ -314,9 +314,9 @@ Warm and nostalgic feeling, suitable for a family memoir.`;
     const pdf1 = await generateChapterPDF(
       {
         moduleNumber: 1,
-        title: module1.title,
+        title: module1.title ?? undefined,
         content: chapter1.content,
-        wordCount: chapter1.wordCount,
+        wordCount: chapter1.wordCount ?? undefined,
         illustrationUrl: imageUrl1
       },
       project.interviewee!.name,
@@ -332,9 +332,9 @@ Warm and nostalgic feeling, suitable for a family memoir.`;
     const pdf2 = await generateChapterPDF(
       {
         moduleNumber: 2,
-        title: module2.title,
+        title: module2.title ?? undefined,
         content: chapter2.content,
-        wordCount: chapter2.wordCount,
+        wordCount: chapter2.wordCount ?? undefined,
         illustrationUrl: imageUrl2
       },
       project.interviewee!.name,

@@ -44,7 +44,7 @@ export async function GET(
     }
 
     // Get module with latest chapter
-    const module = await prisma.module.findFirst({
+    const storyModule = await prisma.module.findFirst({
       where: {
         id: params.moduleId,
         projectId: params.id,
@@ -59,14 +59,14 @@ export async function GET(
       },
     })
 
-    if (!module) {
+    if (!storyModule) {
       return NextResponse.json(
         { error: "Module not found" },
         { status: 404 }
       )
     }
 
-    const chapter = module.chapters[0]
+    const chapter = storyModule.chapters[0]
 
     if (!chapter) {
       return NextResponse.json(
@@ -94,8 +94,8 @@ export async function GET(
 
     // Prepare chapter data for PDF generation
     const chapterData: ModuleChapterData = {
-      moduleNumber: module.moduleNumber,
-      title: module.title || undefined,
+      moduleNumber: storyModule.moduleNumber,
+      title: storyModule.title || undefined,
       content: chapter.content,
       wordCount: chapter.wordCount || undefined,
       illustrationUrl: illustrationBase64,

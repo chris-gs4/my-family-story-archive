@@ -65,11 +65,11 @@ export async function PATCH(
     })
 
     // Update module status to IN_PROGRESS if it was in QUESTIONS_GENERATED
-    const module = await prisma.module.findUnique({
+    const storyModule = await prisma.module.findUnique({
       where: { id: params.moduleId },
     })
 
-    if (module && module.status === "QUESTIONS_GENERATED") {
+    if (storyModule && storyModule.status === "QUESTIONS_GENERATED") {
       await prisma.module.update({
         where: { id: params.moduleId },
         data: { status: "IN_PROGRESS" },

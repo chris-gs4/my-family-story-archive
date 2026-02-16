@@ -37,7 +37,7 @@ export async function POST(
     }
 
     // 3. Get module and chapter
-    const module = await prisma.module.findFirst({
+    const storyModule = await prisma.module.findFirst({
       where: {
         id: moduleId,
         projectId: projectId,
@@ -50,11 +50,11 @@ export async function POST(
       },
     });
 
-    if (!module) {
+    if (!storyModule) {
       return NextResponse.json({ error: 'Module not found' }, { status: 404 });
     }
 
-    const chapter = module.chapters[0];
+    const chapter = storyModule.chapters[0];
     if (!chapter) {
       return NextResponse.json(
         { error: 'No chapter found for this module' },
@@ -63,7 +63,7 @@ export async function POST(
     }
 
     // 4. Extract theme from chapter content for image generation
-    const theme = extractThemeFromChapter(chapter.content, module.title);
+    const theme = extractThemeFromChapter(chapter.content, storyModule.title);
 
     // 5. Build DALL-E prompt for minimalist hand-drawn sketch
     const imagePrompt = buildSketchPrompt(theme, project.interviewee?.name);
@@ -88,7 +88,7 @@ export async function POST(
     });
 
     // 8. Auto-copy illustration to module cover (if module doesn't have one)
-    if (!module.coverImageUrl) {
+    if (!storyModule.coverImageUrl) {
       await prisma.module.update({
         where: { id: moduleId },
         data: {

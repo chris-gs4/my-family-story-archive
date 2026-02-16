@@ -50,8 +50,8 @@ async function testDalleAccess() {
     console.log('');
     console.log('📊 Response Details:');
     console.log(`   Generation time: ${duration} seconds`);
-    console.log(`   Image URL: ${response.data[0].url}`);
-    console.log(`   Revised prompt: ${response.data[0].revised_prompt}`);
+    console.log(`   Image URL: ${response.data?.[0]?.url}`);
+    console.log(`   Revised prompt: ${response.data?.[0]?.revised_prompt}`);
     console.log('');
     console.log('💰 Cost: ~$0.04 (DALL-E 3 standard 1024x1024)');
     console.log('');

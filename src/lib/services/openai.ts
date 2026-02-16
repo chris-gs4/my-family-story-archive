@@ -230,8 +230,8 @@ class OpenAIService {
         style: style,
       });
 
-      const imageUrl = response.data[0].url;
-      const revisedPrompt = response.data[0].revised_prompt || prompt;
+      const imageUrl = response.data?.[0]?.url;
+      const revisedPrompt = response.data?.[0]?.revised_prompt || prompt;
 
       if (!imageUrl) {
         throw new Error('No image URL returned from DALL-E');

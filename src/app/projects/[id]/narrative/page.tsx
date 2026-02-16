@@ -350,7 +350,7 @@ export default function NarrativePage({ params }: { params: { id: string } }) {
                     Ready to Create Your Story?
                   </h3>
                   <p className="text-text-secondary mb-6">
-                    We'll transform your transcription into a beautifully written narrative.
+                    We&apos;ll transform your transcription into a beautifully written narrative.
                     This takes about 15-30 seconds.
                   </p>
                   <PrimaryButton onClick={handleGenerateNarrative}>

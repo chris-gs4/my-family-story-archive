@@ -382,7 +382,7 @@ async function waitForModuleStatus(
     }
 
     // Check for error states
-    if (module.status === 'FAILED') {
+    if (module.status === ('FAILED' as string)) {
       throw new Error(`${description} failed - module status is FAILED`);
     }
 

@@ -52,7 +52,7 @@ export async function POST(
     }
 
     // Get module with questions
-    const module = await prisma.module.findFirst({
+    const storyModule = await prisma.module.findFirst({
       where: {
         id: params.moduleId,
         projectId: params.id,
@@ -77,7 +77,7 @@ export async function POST(
       },
     })
 
-    if (!module) {
+    if (!storyModule) {
       return NextResponse.json(
         { error: "Module not found" },
         { status: 404 }
@@ -85,7 +85,7 @@ export async function POST(
     }
 
     // Edge case: Check if chapter is already being generated
-    if (module.status === "GENERATING_CHAPTER") {
+    if (storyModule.status === "GENERATING_CHAPTER") {
       return NextResponse.json(
         {
           error: "A chapter is already being generated for this module. Please wait for it to complete.",
@@ -99,7 +99,7 @@ export async function POST(
       where: { moduleId: params.moduleId },
     })
 
-    const answeredQuestions = module.questions.length
+    const answeredQuestions = storyModule.questions.length
 
     // Edge case: No questions exist for this module
     if (totalQuestions === 0) {
@@ -133,7 +133,7 @@ export async function POST(
     const { narrativePerson, narrativeTone, narrativeStyle } = validation.data
 
     // Determine version number
-    const version = module.chapters.length > 0 ? module.chapters[0].version + 1 : 1
+    const version = storyModule.chapters.length > 0 ? storyModule.chapters[0].version + 1 : 1
 
     // Create placeholder chapter
     const chapter = await prisma.moduleChapter.create({
@@ -179,7 +179,7 @@ export async function POST(
           moduleId: params.moduleId,
           chapterId: chapter.id,
           projectId: params.id,
-          questions: module.questions.map(q => ({
+          questions: storyModule.questions.map(q => ({
             question: q.question,
             response: q.response!,
             category: q.category,
@@ -209,7 +209,7 @@ export async function POST(
         })
 
         // Prepare questions for chapter generation
-        const questionsForChapter = module.questions.map(q => ({
+        const questionsForChapter = storyModule.questions.map(q => ({
           question: q.question,
           response: q.response!,
           category: q.category,

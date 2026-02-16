@@ -312,7 +312,7 @@ export default function QuestionsPage({ params }: { params: { id: string } }) {
                   Ready to Start?
                 </h3>
                 <p className="text-text-secondary mb-6">
-                  We'll create personalized interview questions based on {interviewee.name}'s information. Let's begin the conversation.
+                  We&apos;ll create personalized interview questions based on {interviewee.name}&apos;s information. Let&apos;s begin the conversation.
                 </p>
                 <PrimaryButton onClick={handleGenerateQuestions} disabled={generating}>
                   Start Interview
@@ -358,7 +358,7 @@ export default function QuestionsPage({ params }: { params: { id: string } }) {
                   </svg>
                   <div className="text-sm text-blue-800">
                     <p className="font-medium mb-1">Round {currentBatch} Questions</p>
-                    <p>Answer these questions in your own words. The more detail you provide, the richer the story will be. After you finish, we'll generate more personalized follow-up questions.</p>
+                    <p>Answer these questions in your own words. The more detail you provide, the richer the story will be. After you finish, we&apos;ll generate more personalized follow-up questions.</p>
                   </div>
                 </div>
               </div>

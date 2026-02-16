@@ -38,7 +38,7 @@ export async function POST(
     }
 
     // Get module with chapter
-    const module = await prisma.module.findFirst({
+    const storyModule = await prisma.module.findFirst({
       where: {
         id: params.moduleId,
         projectId: params.id,
@@ -53,7 +53,7 @@ export async function POST(
       },
     })
 
-    if (!module) {
+    if (!storyModule) {
       return NextResponse.json(
         { error: "Module not found" },
         { status: 404 }
@@ -61,7 +61,7 @@ export async function POST(
     }
 
     // Check if module already approved
-    if (module.status === "APPROVED") {
+    if (storyModule.status === "APPROVED") {
       return NextResponse.json(
         { error: "Module already approved" },
         { status: 400 }
@@ -69,7 +69,7 @@ export async function POST(
     }
 
     // Check if chapter exists
-    if (module.chapters.length === 0) {
+    if (storyModule.chapters.length === 0) {
       return NextResponse.json(
         { error: "Generate a chapter before approving the module" },
         { status: 400 }
@@ -108,7 +108,7 @@ export async function POST(
     let nextModule = null
     if (completedModulesCount < 8) {
       // Don't auto-create if already have 8 modules
-      const nextModuleNumber = module.moduleNumber + 1
+      const nextModuleNumber = storyModule.moduleNumber + 1
 
       // Check if next module already exists
       const existingNextModule = await prisma.module.findFirst({

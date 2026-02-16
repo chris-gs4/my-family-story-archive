@@ -108,7 +108,7 @@ export async function POST(
           type: "TRANSCRIBE_AUDIO",
           status: "PENDING",
           progress: 0,
-          metadata: {
+          input: {
             sessionId: interviewSession.id,
             audioFileKey: uploadResult.fileKey,
             duration: dummyDuration,

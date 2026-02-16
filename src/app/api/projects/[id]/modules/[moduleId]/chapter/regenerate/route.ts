@@ -50,7 +50,7 @@ export async function POST(
     }
 
     // Get module with questions and existing chapter
-    const module = await prisma.module.findFirst({
+    const storyModule = await prisma.module.findFirst({
       where: {
         id: params.moduleId,
         projectId: params.id,
@@ -75,7 +75,7 @@ export async function POST(
       },
     })
 
-    if (!module) {
+    if (!storyModule) {
       return NextResponse.json(
         { error: "Module not found" },
         { status: 404 }
@@ -83,7 +83,7 @@ export async function POST(
     }
 
     // Edge case: Check if chapter is already being generated
-    if (module.status === "GENERATING_CHAPTER") {
+    if (storyModule.status === "GENERATING_CHAPTER") {
       return NextResponse.json(
         {
           error: "A chapter is already being generated for this module. Please wait for it to complete.",
@@ -92,7 +92,7 @@ export async function POST(
       )
     }
 
-    if (module.chapters.length === 0) {
+    if (storyModule.chapters.length === 0) {
       return NextResponse.json(
         { error: "No existing chapter to regenerate. Generate a chapter first." },
         { status: 400 }
@@ -109,7 +109,7 @@ export async function POST(
       )
     }
 
-    const previousChapter = module.chapters[0]
+    const previousChapter = storyModule.chapters[0]
     const newVersion = previousChapter.version + 1
 
     // Use provided settings or fall back to previous settings
@@ -164,7 +164,7 @@ export async function POST(
           moduleId: params.moduleId,
           chapterId: chapter.id,
           projectId: params.id,
-          questions: module.questions.map(q => ({
+          questions: storyModule.questions.map(q => ({
             question: q.question,
             response: q.response!,
             category: q.category,

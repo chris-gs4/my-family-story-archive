@@ -56,12 +56,12 @@ async function testPDFWithImage() {
     const pdfData = await generateChapterPDF(
       {
         moduleNumber: module.moduleNumber,
-        title: module.title,
+        title: module.title ?? undefined,
         content: chapter.content,
-        wordCount: chapter.wordCount,
+        wordCount: chapter.wordCount ?? undefined,
         illustrationUrl: chapter.illustrationUrl
       },
-      project.interviewee?.name,
+      project.interviewee?.name ?? undefined,
       project.title
     );
 

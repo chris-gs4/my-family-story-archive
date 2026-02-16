@@ -36,7 +36,7 @@ export async function POST(
     }
 
     // 3. Get module and chapter
-    const module = await prisma.module.findFirst({
+    const storyModule = await prisma.module.findFirst({
       where: {
         id: moduleId,
         projectId: projectId,
@@ -49,11 +49,11 @@ export async function POST(
       },
     });
 
-    if (!module) {
+    if (!storyModule) {
       return NextResponse.json({ error: 'Module not found' }, { status: 404 });
     }
 
-    const chapter = module.chapters[0];
+    const chapter = storyModule.chapters[0];
     if (!chapter) {
       return NextResponse.json(
         { error: 'No chapter found for this module' },
@@ -116,7 +116,7 @@ export async function POST(
     });
 
     // 8. Auto-copy to module cover if not set
-    if (!module.coverImageUrl) {
+    if (!storyModule.coverImageUrl) {
       await prisma.module.update({
         where: { id: moduleId },
         data: {

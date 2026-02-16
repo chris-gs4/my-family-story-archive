@@ -357,7 +357,7 @@ export default function ChapterPage({
                 The AI is creating Version {chapter.version} of your chapter. This typically takes 1-2 minutes.
               </p>
               <p className="text-sm text-text-secondary mb-8">
-                You'll be automatically redirected when it's ready, or you can check back in a moment.
+                You&apos;ll be automatically redirected when it&apos;s ready, or you can check back in a moment.
               </p>
               <SecondaryButton onClick={() => router.push(`/projects/${params.id}/modules`)}>
                 ← Back to Modules
@@ -537,7 +537,7 @@ export default function ChapterPage({
                         className="hidden"
                         disabled={uploadingImage}
                       />
-                      <SecondaryButton as="span" disabled={uploadingImage}>
+                      <span className="relative inline-flex items-center justify-center gap-2 font-medium transition-all duration-200 rounded-lg bg-transparent text-muted-foreground border border-border hover:border-primary hover:text-primary hover:bg-primary/5 active:scale-[0.98] h-11 px-5 text-base cursor-pointer" style={uploadingImage ? { opacity: 0.5, cursor: 'not-allowed' } : {}}>
                         {uploadingImage ? (
                           <>
                             <svg className="animate-spin -ml-1 mr-2 h-4 w-4 inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -549,7 +549,7 @@ export default function ChapterPage({
                         ) : (
                           '📤 Replace with Upload'
                         )}
-                      </SecondaryButton>
+                      </span>
                     </label>
                   </div>
                 )}
@@ -561,7 +561,7 @@ export default function ChapterPage({
                 </p>
                 {isApproved && (
                   <div className="mb-3 p-3 bg-yellow-50 border border-yellow-200 rounded text-sm text-yellow-800">
-                    ⚠️ This module is approved. Adding an image won't affect the chapter content.
+                    ⚠️ This module is approved. Adding an image won&apos;t affect the chapter content.
                   </div>
                 )}
                 <div className="flex gap-3">
@@ -592,7 +592,7 @@ export default function ChapterPage({
                       className="hidden"
                       disabled={uploadingImage}
                     />
-                    <SecondaryButton as="span" disabled={uploadingImage}>
+                    <span className="relative inline-flex items-center justify-center gap-2 font-medium transition-all duration-200 rounded-lg bg-transparent text-muted-foreground border border-border hover:border-primary hover:text-primary hover:bg-primary/5 active:scale-[0.98] h-11 px-5 text-base cursor-pointer" style={uploadingImage ? { opacity: 0.5, cursor: 'not-allowed' } : {}}>
                       {uploadingImage ? (
                         <>
                           <svg className="animate-spin -ml-1 mr-2 h-4 w-4 inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -604,7 +604,7 @@ export default function ChapterPage({
                       ) : (
                         '📤 Upload Own Image'
                       )}
-                    </SecondaryButton>
+                    </span>
                   </label>
                 </div>
                 {generatingImage && (

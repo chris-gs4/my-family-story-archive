@@ -40,11 +40,11 @@ export const generateQuestionsJob = inngest.createFunction(
     const questions = await step.run('generate-questions', async () => {
       return await mockOpenAI.generateQuestions(
         {
-          name: project.interviewee.name,
-          relationship: project.interviewee.relationship,
-          birthYear: project.interviewee.birthYear || undefined,
-          generation: project.interviewee.generation || undefined,
-          topics: project.interviewee.topics as string[],
+          name: project.interviewee!.name,
+          relationship: project.interviewee!.relationship,
+          birthYear: project.interviewee!.birthYear ?? undefined,
+          generation: project.interviewee!.generation ?? undefined,
+          topics: project.interviewee!.topics as string[],
         },
         20
       );
@@ -157,8 +157,8 @@ export const transcribeAudioJob = inngest.createFunction(
           sessionId,
           text: transcription.text,
           accuracy: 0.95, // Mock accuracy
-          wordTimings: null,
-          speakerLabels: null,
+          wordTimings: undefined,
+          speakerLabels: undefined,
         },
       });
     });

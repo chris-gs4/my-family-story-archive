@@ -78,7 +78,7 @@ export default function SignUpPage() {
             Join Mabel
           </h1>
           <p className="text-muted-foreground">
-            Start preserving your family's memories today
+            Start preserving your family&apos;s memories today
           </p>
         </div>
 

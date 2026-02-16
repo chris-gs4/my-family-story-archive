@@ -75,8 +75,8 @@ async function cleanupAndCreateTestProject() {
     const questions = await openAIService.generateQuestions({
       name: project.interviewee!.name,
       relationship: project.interviewee!.relationship,
-      birthYear: project.interviewee!.birthYear,
-      generation: project.interviewee!.generation,
+      birthYear: project.interviewee!.birthYear ?? undefined,
+      generation: project.interviewee!.generation ?? undefined,
       topics: project.interviewee!.topics as string[]
     }, 5);
 

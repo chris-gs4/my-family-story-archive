@@ -275,7 +275,7 @@ export default function AudioUploadPage({ params }: { params: { id: string } }) 
                         <strong>Duration:</strong> {Math.floor(latestSession.duration / 60)} minutes {latestSession.duration % 60} seconds
                       </p>
                       <p className="text-sm text-text-secondary">
-                        <strong>Word Count:</strong> {latestSession.transcription.wordCount.toLocaleString()} words
+                        <strong>Word Count:</strong> {latestSession.transcription?.wordCount.toLocaleString()} words
                       </p>
                     </div>
                   </div>
@@ -287,8 +287,8 @@ export default function AudioUploadPage({ params }: { params: { id: string } }) 
                 <h3 className="text-lg font-semibold text-text-primary mb-4">Transcription Preview</h3>
                 <div className="bg-gray-50 p-4 rounded-lg max-h-64 overflow-y-auto">
                   <p className="text-sm text-text-secondary whitespace-pre-line">
-                    {latestSession.transcription.text.substring(0, 500)}
-                    {latestSession.transcription.text.length > 500 && '...'}
+                    {latestSession.transcription?.text.substring(0, 500)}
+                    {(latestSession.transcription?.text.length ?? 0) > 500 && '...'}
                   </p>
                 </div>
               </div>

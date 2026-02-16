@@ -37,7 +37,7 @@ export async function GET(
     }
 
     // Get module with all details
-    const module = await prisma.module.findFirst({
+    const storyModule = await prisma.module.findFirst({
       where: {
         id: params.moduleId,
         projectId: params.id,
@@ -57,7 +57,7 @@ export async function GET(
       },
     })
 
-    if (!module) {
+    if (!storyModule) {
       return NextResponse.json(
         { error: "Module not found" },
         { status: 404 }
@@ -67,17 +67,17 @@ export async function GET(
     return NextResponse.json({
       data: {
         module: {
-          id: module.id,
-          moduleNumber: module.moduleNumber,
-          title: module.title,
-          status: module.status,
-          theme: module.theme,
-          createdAt: module.createdAt,
-          updatedAt: module.updatedAt,
-          approvedAt: module.approvedAt,
+          id: storyModule.id,
+          moduleNumber: storyModule.moduleNumber,
+          title: storyModule.title,
+          status: storyModule.status,
+          theme: storyModule.theme,
+          createdAt: storyModule.createdAt,
+          updatedAt: storyModule.updatedAt,
+          approvedAt: storyModule.approvedAt,
         },
-        questions: module.questions,
-        chapter: module.chapters[0] || null,
+        questions: storyModule.questions,
+        chapter: storyModule.chapters[0] || null,
       },
     })
 
@@ -124,14 +124,14 @@ export async function DELETE(
     }
 
     // Check if module exists
-    const module = await prisma.module.findFirst({
+    const storyModule = await prisma.module.findFirst({
       where: {
         id: params.moduleId,
         projectId: params.id,
       },
     })
 
-    if (!module) {
+    if (!storyModule) {
       return NextResponse.json(
         { error: "Module not found" },
         { status: 404 }
@@ -169,7 +169,7 @@ export async function DELETE(
     }
 
     // Update project current module if needed
-    if (module.status === "APPROVED") {
+    if (storyModule.status === "APPROVED") {
       await prisma.project.update({
         where: { id: params.id },
         data: {

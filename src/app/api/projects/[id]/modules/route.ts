@@ -78,7 +78,7 @@ export async function POST(
     const nextModuleNumber = project.currentModuleNumber
 
     // Create module
-    const module = await prisma.module.create({
+    const storyModule = await prisma.module.create({
       data: {
         projectId: params.id,
         moduleNumber: nextModuleNumber,
@@ -96,7 +96,7 @@ export async function POST(
         type: "GENERATE_MODULE_QUESTIONS",
         status: "PENDING",
         input: {
-          moduleId: module.id,
+          moduleId: storyModule.id,
           moduleNumber: nextModuleNumber,
           theme,
         },
@@ -111,7 +111,7 @@ export async function POST(
       await inngest.send({
         name: "module/questions.generate",
         data: {
-          moduleId: module.id,
+          moduleId: storyModule.id,
           projectId: params.id,
           moduleNumber: nextModuleNumber,
           theme,
@@ -175,7 +175,7 @@ export async function POST(
         // Save questions to database
         await prisma.moduleQuestion.createMany({
           data: questions.map((q, index) => ({
-            moduleId: module.id,
+            moduleId: storyModule.id,
             question: q.question,
             category: q.category,
             order: index + 1,
@@ -184,7 +184,7 @@ export async function POST(
 
         // Update module status
         await prisma.module.update({
-          where: { id: module.id },
+          where: { id: storyModule.id },
           data: { status: "QUESTIONS_GENERATED" },
         })
 
@@ -199,7 +199,7 @@ export async function POST(
           },
         })
 
-        console.log(`[API] Generated ${questions.length} questions directly for module ${module.id}`)
+        console.log(`[API] Generated ${questions.length} questions directly for module ${storyModule.id}`)
       } catch (openaiError) {
         console.error("Failed to generate questions:", openaiError)
 
@@ -217,7 +217,7 @@ export async function POST(
 
     return NextResponse.json({
       data: {
-        module,
+        module: storyModule,
         jobId: job.id,
         message: "Module created. Generating questions...",
       },
@@ -320,23 +320,23 @@ export async function GET(
     }
 
     // Format module data
-    const modules = project.modules.map((module) => {
-      const totalQuestions = module.questions.length
-      const completedQuestions = module.questions.filter(q => q.response).length
-      const hasChapter = module.chapters.length > 0
+    const modules = project.modules.map((mod) => {
+      const totalQuestions = mod.questions.length
+      const completedQuestions = mod.questions.filter(q => q.response).length
+      const hasChapter = mod.chapters.length > 0
 
       return {
-        id: module.id,
-        moduleNumber: module.moduleNumber,
-        title: module.title,
-        status: module.status,
-        theme: module.theme,
+        id: mod.id,
+        moduleNumber: mod.moduleNumber,
+        title: mod.title,
+        status: mod.status,
+        theme: mod.theme,
         completedQuestions,
         totalQuestions,
         hasChapter,
-        approvedAt: module.approvedAt,
-        coverImageUrl: module.coverImageUrl,
-        createdAt: module.createdAt,
+        approvedAt: mod.approvedAt,
+        coverImageUrl: mod.coverImageUrl,
+        createdAt: mod.createdAt,
       }
     })
 

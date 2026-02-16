@@ -247,7 +247,7 @@ export default function ProjectSetupPage({ params }: { params: { id: string } })
                 Topics to Explore
               </h2>
               <p className="text-text-secondary mb-6">
-                Select the topics you'd like to focus on during the interview. This helps us generate more relevant questions.
+                Select the topics you&apos;d like to focus on during the interview. This helps us generate more relevant questions.
               </p>
 
               <div className="grid grid-cols-2 md:grid-cols-3 gap-3">

@@ -169,15 +169,15 @@ export default function DesignDemoPage() {
             <div>
               <h3 className="text-xl font-bold text-gray-900 mb-3">Heritage Dark Mode - Modern Heirloom</h3>
               <p className="text-gray-700 mb-4 italic">
-                Redesigned based on your feedback to feel like "modern heirloom" not "fintech dashboard"
+                Redesigned based on your feedback to feel like &quot;modern heirloom&quot; not &quot;fintech dashboard&quot;
               </p>
               <ul className="space-y-2 text-gray-700">
                 <li>✅ <strong>Heritage Gold palette</strong> (#E3B341) - warm, nostalgic, timeless</li>
                 <li>✅ <strong>Serif typography</strong> (Georgia) for storytelling moments</li>
                 <li>✅ <strong>Softer composition</strong> - generous padding (32px), subtle textures</li>
-                <li>✅ <strong>Emotional language</strong> - "memories saved", "chapter taking shape"</li>
+                <li>✅ <strong>Emotional language</strong> - &quot;memories saved&quot;, &quot;chapter taking shape&quot;</li>
                 <li>✅ <strong>Bookmark progress bar</strong> - segmented like pages with warm glow</li>
-                <li>✅ <strong>Writing icon in CTA</strong> - "Continue this chapter"</li>
+                <li>✅ <strong>Writing icon in CTA</strong> - &quot;Continue this chapter&quot;</li>
                 <li>✅ <strong>Book icon</strong> in footer timestamp</li>
                 <li>✅ <strong>Midnight Ink background</strong> (#0B1220) - soft, not harsh tech dark</li>
                 <li>✅ <strong>Subtle texture overlay</strong> - paper/linen feel at 3% opacity</li>
@@ -192,25 +192,25 @@ export default function DesignDemoPage() {
             <div>
               <h3 className="text-xl font-bold text-gray-900 mb-3">⭐ Book Cover Grid - Memoir Shelf Experience</h3>
               <p className="text-gray-700 mb-4 italic">
-                The "book cover object" moment - each module feels like a real memoir/book on a shelf
+                The &quot;book cover object&quot; moment - each module feels like a real memoir/book on a shelf
               </p>
               <ul className="space-y-2 text-gray-700">
                 <li>✅ <strong>3-column grid layout</strong> - library/shelf of memoirs (responsive: 1/2/3 cols)</li>
                 <li>✅ <strong>Cover Zone</strong> - colored backgrounds with nested frame lines (signature motif)</li>
                 <li>✅ <strong>Curated theme colors</strong> - Sage (#EAF4EF), Powder Blue (#BFD8E6), Blush (#E7C7C9)</li>
-                <li>✅ <strong>Photo Window</strong> - large centerpiece (150px height) with "Add cover photo" prompt</li>
+                <li>✅ <strong>Photo Window</strong> - large centerpiece (150px height) with &quot;Add cover photo&quot; prompt</li>
                 <li>✅ <strong>Bookmark meter</strong> - vertical 6px bar on right edge showing progress</li>
                 <li>✅ <strong>Chapter number badge</strong> - volume label sticker (top-left on cover)</li>
                 <li>✅ <strong>Status badge</strong> - subtle top-right with pencil icon</li>
-                <li>✅ <strong>Emotional copy</strong> - "12 memories saved · 8 prompts remaining"</li>
-                <li>✅ <strong>Serif typography</strong> - Georgia for "CHAPTER 1" + module title</li>
-                <li>✅ <strong>Clean footer</strong> - date left, CTA ("Continue" / "Start writing") right</li>
+                <li>✅ <strong>Emotional copy</strong> - &quot;12 memories saved · 8 prompts remaining&quot;</li>
+                <li>✅ <strong>Serif typography</strong> - Georgia for &quot;CHAPTER 1&quot; + module title</li>
+                <li>✅ <strong>Clean footer</strong> - date left, CTA (&quot;Continue&quot; / &quot;Start writing&quot;) right</li>
                 <li>✅ <strong>Card hover</strong> - lift effect (-4px translateY) with enhanced shadow</li>
                 <li>✅ <strong>460px card height</strong> - generous, book-like proportions</li>
               </ul>
               <p className="text-gray-600 mt-4 text-sm font-semibold">
                 Feels like: A shelf of family memoirs that are becoming real books.
-                Each card is a "keepsake object" not a "dashboard widget."
+                Each card is a &quot;keepsake object&quot; not a &quot;dashboard widget.&quot;
                 Warm, intimate, archival, premium.
               </p>
             </div>
@@ -390,7 +390,7 @@ function WarmDesign({ module, progressPercent }: { module: any; progressPercent:
           <h2 className="text-3xl font-bold bg-gradient-to-r from-amber-700 to-orange-600 bg-clip-text text-transparent mb-2">
             Story Modules
           </h2>
-          <p className="text-base text-gray-600">Preserving your family's legacy, one chapter at a time</p>
+          <p className="text-base text-gray-600">Preserving your family&apos;s legacy, one chapter at a time</p>
         </div>
         <button className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors">
           ← Dashboard
@@ -478,7 +478,7 @@ function BookCoverGridDesign({ modules }: { modules: any[] }) {
             Story Modules
           </h1>
           <p className="text-base" style={{ color: 'rgba(17,24,39,0.60)' }}>
-            Preserving your family's legacy, one chapter at a time
+            Preserving your family&apos;s legacy, one chapter at a time
           </p>
         </div>
         <button
@@ -760,7 +760,7 @@ function PaperPrimaryDesign({ module, progressPercent }: { module: any; progress
             Story Modules
           </h2>
           <p className="text-base" style={{ color: '#6B7280' }}>
-            Preserving your family's legacy, one chapter at a time
+            Preserving your family&apos;s legacy, one chapter at a time
           </p>
         </div>
         <button
@@ -969,7 +969,7 @@ function DarkModeDesign({ module, progressPercent }: { module: any; progressPerc
             Story Modules
           </h2>
           <p className="text-base" style={{ color: 'rgba(243,246,251,0.72)' }}>
-            Preserving your family's legacy, one chapter at a time
+            Preserving your family&apos;s legacy, one chapter at a time
           </p>
         </div>
         <button className="px-4 py-2 text-sm font-medium transition-colors"
