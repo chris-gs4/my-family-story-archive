@@ -56,9 +56,12 @@ async function processEntryInline(entryId: string, audioFileKey: string, jobId: 
       data: { status: "RUNNING", startedAt: new Date(), progress: 10 },
     })
 
+    // Use real APIs only when both S3 and OpenAI are configured
+    const useRealAPIs = !!process.env.AWS_ACCESS_KEY_ID && !!process.env.OPENAI_API_KEY
+
     // Transcribe
     let transcription;
-    if (process.env.OPENAI_API_KEY) {
+    if (useRealAPIs) {
       const buffer = await s3Service.getFileBuffer(audioFileKey)
       transcription = await openAIService.transcribeAudioFile(buffer)
     } else {
@@ -72,7 +75,7 @@ async function processEntryInline(entryId: string, audioFileKey: string, jobId: 
 
     // Generate narrative
     let narrative;
-    if (process.env.OPENAI_API_KEY) {
+    if (useRealAPIs) {
       narrative = await openAIService.generateJournalNarrative(transcription.text)
     } else {
       const mockResult = await mockOpenAI.generateNarrative(transcription.text)
@@ -182,21 +185,27 @@ export async function PATCH(
         },
       })
 
-      // Try Inngest first, fall back to inline processing
-      try {
-        await inngest.send({
-          name: "journal/entry.process",
-          data: {
-            entryId: params.entryId,
-            audioFileKey: entry.audioFileKey,
-            jobId: job.id,
-            projectId: entry.project.id,
-          },
-        })
-      } catch (inngestError) {
-        console.log("[Journal] Inngest unavailable, processing inline")
-        // Don't await — process in background so the response returns immediately
+      // In development, always process inline (Inngest dev server may not be running)
+      // In production, use Inngest for background processing
+      const useInline = process.env.NODE_ENV !== "production"
+      if (useInline) {
+        console.log("[Journal] Processing inline (development mode)")
         processEntryInline(params.entryId, entry.audioFileKey || "", job.id)
+      } else {
+        try {
+          await inngest.send({
+            name: "journal/entry.process",
+            data: {
+              entryId: params.entryId,
+              audioFileKey: entry.audioFileKey,
+              jobId: job.id,
+              projectId: entry.project.id,
+            },
+          })
+        } catch (inngestError) {
+          console.log("[Journal] Inngest send failed, falling back to inline")
+          processEntryInline(params.entryId, entry.audioFileKey || "", job.id)
+        }
       }
 
       return NextResponse.json({ data: updatedEntry })

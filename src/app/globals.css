@@ -271,4 +271,9 @@
   .status-badge-error {
     @apply bg-red-100 text-red-800;
   }
+
+  /* Mabel app-wide gradient background */
+  .bg-mabel-gradient {
+    background: linear-gradient(to bottom, #A8E6DC 0%, #ccf6e9 15%, #F5F0E8 45%, #F5F0E8 100%);
+  }
 }

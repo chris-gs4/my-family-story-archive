@@ -16,7 +16,7 @@ export default function JournalLayout({
           md:h-[780px] md:max-h-[90vh]
           h-screen
           overflow-hidden
-          bg-journal-bg
+          bg-mabel-gradient
         "
       >
         {/* Dynamic Island — hidden on small screens */}

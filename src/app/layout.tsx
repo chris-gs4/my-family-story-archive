@@ -34,7 +34,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${inter.variable} ${caveat.variable}`}>
-      <body className="antialiased min-h-screen font-sans">
+      <body className="antialiased min-h-screen font-sans bg-mabel-gradient">
         <ClientProviders>
           {children}
         </ClientProviders>

@@ -8,8 +8,8 @@ type RecorderState = "idle" | "recording" | "fading" | "error"
 
 interface AudioRecorderProps {
   projectId: string
-  prompt: string
-  ghostText: string
+  prompt?: string
+  ghostText?: string
   onEntrySubmitted: () => void
   onError?: (error: string) => void
 }
@@ -19,8 +19,8 @@ const BOILERPLATE = `I remember sitting in my grandmother's kitchen, watching he
 
 export function AudioRecorder({
   projectId,
-  prompt,
-  ghostText,
+  prompt = "Tell your story...",
+  ghostText = "",
   onEntrySubmitted,
   onError,
 }: AudioRecorderProps) {
@@ -30,12 +30,17 @@ export function AudioRecorder({
   const [isFadingText, setIsFadingText] = useState(false)
   const [errorMessage, setErrorMessage] = useState("")
 
+  const [audioLevel, setAudioLevel] = useState(0)
+
   const mediaRecorderRef = useRef<MediaRecorder | null>(null)
   const chunksRef = useRef<Blob[]>([])
   const timerRef = useRef<NodeJS.Timeout | null>(null)
   const typewriterRef = useRef<NodeJS.Timeout | null>(null)
   const entryDataRef = useRef<{ entryId: string; uploadUrl: string } | null>(null)
   const elapsedRef = useRef(0)
+  const audioContextRef = useRef<AudioContext | null>(null)
+  const analyserRef = useRef<AnalyserNode | null>(null)
+  const levelAnimRef = useRef<number | null>(null)
 
   const isNative = isNativePlatform()
 
@@ -59,10 +64,49 @@ export function AudioRecorder({
     }, 40)
   }, [])
 
+  // Start monitoring audio levels from a media stream
+  const startAudioLevelMonitor = useCallback((stream: MediaStream) => {
+    try {
+      const audioContext = new AudioContext()
+      const analyser = audioContext.createAnalyser()
+      analyser.fftSize = 256
+      analyser.smoothingTimeConstant = 0.5
+      const source = audioContext.createMediaStreamSource(stream)
+      source.connect(analyser)
+
+      audioContextRef.current = audioContext
+      analyserRef.current = analyser
+
+      const dataArray = new Uint8Array(analyser.frequencyBinCount)
+
+      const tick = () => {
+        analyser.getByteFrequencyData(dataArray)
+        // Average the frequency data to get a 0-1 level
+        const sum = dataArray.reduce((a, b) => a + b, 0)
+        const avg = sum / dataArray.length / 255
+        setAudioLevel(avg)
+        levelAnimRef.current = requestAnimationFrame(tick)
+      }
+      tick()
+    } catch {
+      // AudioContext not available — no-op
+    }
+  }, [])
+
+  const stopAudioLevelMonitor = useCallback(() => {
+    if (levelAnimRef.current) cancelAnimationFrame(levelAnimRef.current)
+    levelAnimRef.current = null
+    audioContextRef.current?.close()
+    audioContextRef.current = null
+    analyserRef.current = null
+    setAudioLevel(0)
+  }, [])
+
   const cleanup = useCallback(() => {
     if (timerRef.current) clearInterval(timerRef.current)
     if (typewriterRef.current) clearInterval(typewriterRef.current)
-  }, [])
+    stopAudioLevelMonitor()
+  }, [stopAudioLevelMonitor])
 
   useEffect(() => {
     return cleanup
@@ -269,6 +313,9 @@ export function AudioRecorder({
       setElapsed(0)
       elapsedRef.current = 0
 
+      // Start audio level monitoring
+      startAudioLevelMonitor(stream)
+
       // Start timer
       timerRef.current = setInterval(() => {
         setElapsed((prev) => {
@@ -297,6 +344,7 @@ export function AudioRecorder({
       clearInterval(typewriterRef.current)
       typewriterRef.current = null
     }
+    stopAudioLevelMonitor()
     if (mediaRecorderRef.current && mediaRecorderRef.current.state === "recording") {
       mediaRecorderRef.current.stop()
     }
@@ -350,7 +398,7 @@ export function AudioRecorder({
       </div>
 
       {/* Bottom: mic button + label */}
-      <div className="flex-shrink-0 flex flex-col items-center pb-10 pt-2">
+      <div className="flex-shrink-0 flex flex-col items-center pb-20 md:pb-16 pt-2">
         {/* Recording timer label */}
         {state === "recording" && (
           <p className="text-sm text-red-500 font-medium mb-3">
@@ -368,8 +416,20 @@ export function AudioRecorder({
         {/* Mic / Stop button */}
         {state === "recording" ? (
           <div className="relative">
-            {/* Pink pulse ring */}
-            <div className="absolute -inset-3 rounded-full bg-red-200/50 animate-pulse" />
+            {/* Audio level ring — scales with mic input */}
+            <div
+              className="absolute rounded-full bg-red-300/40 transition-all duration-100 ease-out"
+              style={{
+                inset: `-${14 + audioLevel * 40}px`,
+                opacity: 0.2 + audioLevel * 0.6,
+              }}
+            />
+            <div
+              className="absolute rounded-full bg-red-200/30 transition-all duration-150 ease-out"
+              style={{
+                inset: `-${8 + audioLevel * 24}px`,
+              }}
+            />
             <button
               onClick={stopRecording}
               className="relative w-16 h-16 rounded-full bg-red-500 flex items-center justify-center
