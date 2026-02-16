@@ -1,8 +1,8 @@
-# Wireframes: Family Story Archive
+# Wireframes: Mabel
 
 ## Overview & User Story Mapping
 
-**Design Approach:** Family Story Archive leverages a clean and intuitive design, focusing on guiding users through storytelling with minimal friction. The platform targets desktop web, mobile web, and iOS native (via Capacitor) access, ensuring accessibility for all users.
+**Design Approach:** Mabel leverages a clean and intuitive design, focusing on guiding users through storytelling with minimal friction. The platform targets desktop web, mobile web, and iOS native (via Capacitor) access, ensuring accessibility for all users.
 
 **User Story → Screen Mapping:**
 - US-1: AI-Guided Interview Questions → [Interview Setup Screen]

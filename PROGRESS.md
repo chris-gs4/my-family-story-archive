@@ -1,4 +1,4 @@
-# Family Story Archive - Development Progress
+# Mabel - Development Progress
 
 ## ✅ Completed (Phase 1)
 
@@ -40,7 +40,7 @@
 
 ### Database Setup ✅
 - [x] **PostgreSQL 15 Installed** - via Homebrew
-- [x] **Database Created** - `family_story_archive` with user permissions
+- [x] **Database Created** - `mabel` with user permissions
 - [x] **Migrations Run** - All 15 tables created successfully
 - [x] **Demo Data Seeded** - 1 user + 5 sample projects
 - [x] **Environment Variables** - `.env` configured with database URL and secure secrets
@@ -122,7 +122,7 @@ See **QUICKSTART.md** for detailed testing instructions
 ## 📁 Project Structure
 
 ```
-my-family-story-archive/
+mabel/
 ├── confabulator/              # Documentation
 │   ├── PRD.md                 # Product requirements
 │   ├── implementation-plan.md # Technical architecture
@@ -168,7 +168,7 @@ my-family-story-archive/
 - **Dashboard:** http://localhost:3000/dashboard
 
 ### Demo Account (after DB setup)
-- Email: demo@familystoryarchive.com
+- Email: demo@mabel.com
 - Password: demo123
 
 ## 📚 Documentation

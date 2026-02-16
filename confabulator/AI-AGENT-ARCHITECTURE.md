@@ -1,4 +1,4 @@
-# AI Agent Architecture for Family Story Archive
+# AI Agent Architecture for Mabel
 
 **Version:** 1.0
 **Date:** January 20, 2026
@@ -23,7 +23,7 @@
 
 ## Overview
 
-The Family Story Archive uses a **Module-based approach** to break down the overwhelming task of creating a life story book into manageable, chapter-sized pieces. Each module represents one chapter of the final book.
+Mabel uses a **Module-based approach** to break down the overwhelming task of creating a life story book into manageable, chapter-sized pieces. Each module represents one chapter of the final book.
 
 ### Key Principle
 
@@ -903,6 +903,6 @@ System prompts user to compile book when:
 
 ---
 
-*Generated for Family Story Archive project*
+*Generated for Mabel project*
 *Author: Claude Code Assistant*
 *Date: January 20, 2026*

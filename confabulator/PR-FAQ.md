@@ -1,12 +1,12 @@
-# Family Story Archive Revolutionizes the Way We Preserve Personal Histories
+# Mabel Revolutionizes the Way We Preserve Personal Histories
 
 ## Build Your Family's Story, One Chapter at a Time
 
-Family Story Archive introduces a groundbreaking AI tool that empowers individuals to capture and preserve their family stories effortlessly through written narratives. This innovative platform uses a unique **module-based approach** where users build their family's story incrementally—one chapter at a time—ensuring that the cherished memories of parents, relatives, or friends are never lost.
+Mabel introduces a groundbreaking AI tool that empowers individuals to capture and preserve their family stories effortlessly through written narratives. This innovative platform uses a unique **module-based approach** where users build their family's story incrementally—one chapter at a time—ensuring that the cherished memories of parents, relatives, or friends are never lost.
 
-Unlike traditional storytelling methods that require completing a full interview upfront, Family Story Archive breaks the process into manageable modules. Each module focuses on a specific theme or life stage, and the AI learns from previous answers to ask increasingly relevant questions. The result: beautifully written chapters that compile into a complete family story book.
+Unlike traditional storytelling methods that require completing a full interview upfront, Mabel breaks the process into manageable modules. Each module focuses on a specific theme or life stage, and the AI learns from previous answers to ask increasingly relevant questions. The result: beautifully written chapters that compile into a complete family story book.
 
-By offering a seamless solution that combines AI-guided questions, context-learning technology, and professional narrative generation, Family Story Archive makes it easy for anyone to document their family history, fostering deeper connections across generations.
+By offering a seamless solution that combines AI-guided questions, context-learning technology, and professional narrative generation, Mabel makes it easy for anyone to document their family history, fostering deeper connections across generations.
 
 ### The Problem
 
@@ -14,7 +14,7 @@ In today’s fast-paced world, many people live their lives without ever telling
 
 ### The Solution
 
-Family Story Archive offers a comprehensive, user-friendly solution to this problem through its innovative module-based workflow. Here's how it works:
+Mabel offers a comprehensive, user-friendly solution to this problem through its innovative module-based workflow. Here's how it works:
 
 1. **Start with Module 1:** Answer 15-20 foundational questions about your loved one's early life, career, relationships, and values
 2. **Generate Chapter 1:** The AI transforms your responses into a polished narrative chapter
@@ -26,12 +26,12 @@ The process not only makes storytelling accessible but also enhances the narrati
 
 ### What Customers Are Saying
 
-"I thought capturing my mom's story would take weeks of planning and interviewing. Instead, I just answered questions one module at a time over coffee breaks. The AI's questions got more interesting as I went—it actually referenced earlier stories! Now we have a beautiful book that brought tears to the whole family." - Emily Carter, Family Story Archive User
+"I thought capturing my mom's story would take weeks of planning and interviewing. Instead, I just answered questions one module at a time over coffee breaks. The AI's questions got more interesting as I went—it actually referenced earlier stories! Now we have a beautiful book that brought tears to the whole family." - Emily Carter, Mabel User
 
 ### Getting Started
 
 To begin capturing your family's stories:
-1. Visit the Family Story Archive website and create an account
+1. Visit the Mabel website and create an account
 2. Start a new project and provide basic information about your loved one (name, relationship, interests)
 3. Create Module 1—the AI generates personalized questions instantly
 4. Answer questions at your own pace (you can save and come back anytime)
@@ -44,17 +44,17 @@ Start today and preserve your family's legacy, one chapter at a time.
 
 ### General Questions
 
-**Q: What is Family Story Archive?**
-A: Family Story Archive is an AI-powered platform that helps you preserve family stories through a unique module-based approach. You build your loved one's story one chapter at a time by answering AI-generated questions, which the platform transforms into professionally written narratives.
+**Q: What is Mabel?**
+A: Mabel is an AI-powered platform that helps you preserve family stories through a unique module-based approach. You build your loved one's story one chapter at a time by answering AI-generated questions, which the platform transforms into professionally written narratives.
 
-**Q: Who is Family Story Archive for?**
+**Q: Who is Mabel for?**
 A: It's for anyone interested in preserving family history—adult children aged 30-50 who want to capture their parents' stories, genealogy enthusiasts, families planning reunions, or anyone creating a meaningful gift for future generations.
 
-**Q: What makes Family Story Archive different from existing solutions?**
+**Q: What makes Mabel different from existing solutions?**
 A: Three key innovations: (1) **Module-based workflow** prevents overwhelm by breaking the process into manageable chapters, (2) **Context-learning AI** that gets smarter with each module by building on previous answers, and (3) **No recording required**—just type responses at your own pace.
 
 **Q: How much does it cost?**
-A: Family Story Archive offers a free trial to get started. Full pricing details are available on our website, with options for individual projects or ongoing family history work.
+A: Mabel offers a free trial to get started. Full pricing details are available on our website, with options for individual projects or ongoing family history work.
 
 **Q: How long does it take to complete a family story?**
 A: That's entirely up to you! The module system lets you work at your own pace. Some users complete a module per week (finishing in 1-2 months), while others prefer spreading it out over 3-6 months. Each module takes 30-60 minutes to answer questions, plus 2-3 minutes for the AI to generate the chapter.
@@ -83,8 +83,8 @@ A: For Module 1, the AI generates questions based on the interviewee's profile (
 **Q: What if I don't like the generated chapter?**
 A: You can regenerate any chapter with specific feedback like "make it more emotional," "add more details about her childhood," or "use first-person perspective." The AI creates a new version while preserving the original.
 
-**Q: What platforms does Family Story Archive support?**
-A: Family Story Archive is available as a web application accessible from any device with internet connectivity—desktop, tablet, or mobile browser—and as a native iOS app for iPhone and iPad.
+**Q: What platforms does Mabel support?**
+A: Mabel is available as a web application accessible from any device with internet connectivity—desktop, tablet, or mobile browser—and as a native iOS app for iPhone and iPad.
 
 **Q: How do I get started?**
 A: Simply visit our website, create an account, and follow the guided prompts to start your first project. You'll be answering questions within 2 minutes of signing up.
@@ -92,9 +92,9 @@ A: Simply visit our website, create an account, and follow the guided prompts to
 ### Business Questions
 
 **Q: What is the business model?**
-A: Family Story Archive operates on a project-based pricing model with optional subscriptions for ongoing work. We offer a free trial to get started, with paid plans for completing full family story projects.
+A: Mabel operates on a project-based pricing model with optional subscriptions for ongoing work. We offer a free trial to get started, with paid plans for completing full family story projects.
 
-**Q: What are the future plans for Family Story Archive?**
+**Q: What are the future plans for Mabel?**
 A: Our roadmap includes:
 - **Phase 2:** Audio recording and transcription support, standard text-to-speech audiobooks, email notifications
 - **Phase 3:** Voice cloning for personalized audiobooks using the interviewee's actual voice
@@ -102,7 +102,7 @@ A: Our roadmap includes:
 
 ### Technical Questions
 
-**Q: How does Family Story Archive work technically?**
+**Q: How does Mabel work technically?**
 A: The platform uses GPT-4 AI to generate contextually relevant questions and transform Q&A responses into narrative chapters. All processing happens in the background through asynchronous jobs—you can close the browser and come back when the chapter is ready (usually 2-3 minutes). The module system tracks state and progress automatically.
 
 **Q: What happens to my data? How secure is it?**
@@ -113,4 +113,4 @@ A: The platform is designed to guide you through each step, but if you need help
 
 ---
 
-Family Story Archive is your gateway to preserving the voices and stories that form the fabric of your family's history, ensuring they are never lost to time. Start your journey today.
+Mabel is your gateway to preserving the voices and stories that form the fabric of your family's history, ensuring they are never lost to time. Start your journey today.

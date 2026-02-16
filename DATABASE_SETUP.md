@@ -1,6 +1,6 @@
 # Database Setup Guide
 
-This guide will help you set up PostgreSQL for the Family Story Archive project.
+This guide will help you set up PostgreSQL for the Mabel project.
 
 ## Option 1: Local PostgreSQL (Development)
 
@@ -29,9 +29,9 @@ Download and install from [postgresql.org](https://www.postgresql.org/download/w
 psql postgres
 
 # Create database and user
-CREATE DATABASE family_story_archive;
-CREATE USER family_story_user WITH PASSWORD 'your_secure_password';
-GRANT ALL PRIVILEGES ON DATABASE family_story_archive TO family_story_user;
+CREATE DATABASE mabel;
+CREATE USER mabel_user WITH PASSWORD 'your_secure_password';
+GRANT ALL PRIVILEGES ON DATABASE mabel TO mabel_user;
 
 # Exit psql
 \q
@@ -40,7 +40,7 @@ GRANT ALL PRIVILEGES ON DATABASE family_story_archive TO family_story_user;
 ### Update .env File
 
 ```env
-DATABASE_URL="postgresql://family_story_user:your_secure_password@localhost:5432/family_story_archive"
+DATABASE_URL="postgresql://mabel_user:your_secure_password@localhost:5432/mabel"
 ```
 
 ### Run Migrations
@@ -67,7 +67,7 @@ Neon is recommended for production per the implementation plan.
 
 2. **Create a Project**
    - Click "New Project"
-   - Name: "family-story-archive"
+   - Name: "mabel"
    - Region: Choose closest to your users
 
 3. **Get Connection String**

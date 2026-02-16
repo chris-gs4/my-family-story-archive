@@ -1,7 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
 
 /**
- * Playwright Configuration for Family Story Archive E2E Tests
+ * Playwright Configuration for Mabel E2E Tests
  * See https://playwright.dev/docs/test-configuration
  */
 export default defineConfig({

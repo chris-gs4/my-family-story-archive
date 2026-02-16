@@ -657,4 +657,4 @@ interface InterviewQuestion {
 
 ---
 
-*This roadmap ensures that Family Story Archive captures not just facts, but the emotional truth and wisdom of each person's unique journey.*
+*This roadmap ensures that Mabel captures not just facts, but the emotional truth and wisdom of each person's unique journey.*

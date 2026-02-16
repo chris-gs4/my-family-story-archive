@@ -12,7 +12,7 @@ async function cleanupAndCreateTestProject() {
   try {
     // Find demo user (Sarah Mitchell)
     const user = await prisma.user.findUnique({
-      where: { email: 'demo@familystoryarchive.com' }
+      where: { email: 'demo@mabel.com' }
     });
 
     if (!user) {
@@ -142,7 +142,7 @@ async function cleanupAndCreateTestProject() {
     console.log(`   • Status: Ready for image generation testing`);
     console.log('\n🎯 Next Steps:');
     console.log('   1. Go to http://localhost:3000');
-    console.log('   2. Login as demo@familystoryarchive.com');
+    console.log('   2. Login as demo@mabel.com');
     console.log('   3. Open "Test Project"');
     console.log('   4. Click "View chapter" on Module 1');
     console.log('   5. Test image generation and PDF export');

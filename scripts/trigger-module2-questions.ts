@@ -5,7 +5,7 @@ import { Inngest } from 'inngest';
 const prisma = new PrismaClient();
 
 const inngest = new Inngest({
-  id: 'family-story-archive',
+  id: 'mabel',
   eventKey: process.env.INNGEST_EVENT_KEY!,
 });
 

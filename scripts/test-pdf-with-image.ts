@@ -17,7 +17,7 @@ async function testPDFWithImage() {
       where: {
         title: 'Test Project',
         user: {
-          email: 'demo@familystoryarchive.com'
+          email: 'demo@mabel.com'
         }
       },
       include: {

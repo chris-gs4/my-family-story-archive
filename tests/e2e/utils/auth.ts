@@ -4,7 +4,7 @@ import { Page } from '@playwright/test';
  * Test user credentials
  */
 export const TEST_USER = {
-  email: 'demo@familystoryarchive.com',
+  email: 'demo@mabel.com',
   password: 'demo123',
   name: 'Sarah Mitchell',
 };

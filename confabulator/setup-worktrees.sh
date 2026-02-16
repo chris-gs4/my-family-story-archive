@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # Git Worktree Setup Script
-# Project: Family Story Archive
+# Project: Mabel
 # Repository: https://github.com/chris-squeff/my-family-story-archive
 # Generated: 2025-12-22T19:40:43.790Z
 #

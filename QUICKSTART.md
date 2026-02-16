@@ -32,7 +32,7 @@ Opens at: http://localhost:5555
 ## 🧪 Testing the Workflow
 
 ### Demo Account Credentials
-- **Email:** demo@familystoryarchive.com
+- **Email:** demo@mabel.com
 - **Password:** demo123
 
 ### Complete Test Flow
@@ -151,7 +151,7 @@ lsof -ti:3000 | xargs kill -9
 brew services restart postgresql@15
 
 # Check connection
-psql family_story_archive -c "SELECT 1;"
+psql mabel -c "SELECT 1;"
 ```
 
 ### "Inngest functions not found"
@@ -166,7 +166,7 @@ psql family_story_archive -c "SELECT 1;"
 
 **Database:**
 - ✅ PostgreSQL running with 15 tables
-- ✅ Demo user: demo@familystoryarchive.com
+- ✅ Demo user: demo@mabel.com
 - ✅ 5 sample projects seeded
 
 **Mock Services:**

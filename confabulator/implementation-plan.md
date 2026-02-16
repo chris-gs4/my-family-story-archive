@@ -1,9 +1,9 @@
-# Implementation Plan: Family Story Archive
+# Implementation Plan: Mabel
 
 ## Executive Summary
 
 ### Core Value Proposition
-Family Story Archive enables users to effortlessly capture and preserve family stories by transforming interviews into written narratives and audiobooks using AI-driven technology.
+Mabel enables users to effortlessly capture and preserve family stories by transforming interviews into written narratives and audiobooks using AI-driven technology.
 
 ### MVP Scope
 The MVP includes AI-guided interview questions, audio transcription, narrative generation, and audiobook creation with voice cloning. These features empower users to document and share family stories seamlessly.
@@ -64,7 +64,7 @@ The MVP includes AI-guided interview questions, audio transcription, narrative g
 ## Module-Based Architecture ⭐ KEY INNOVATION
 
 ### Overview
-Family Story Archive uses a **module-based workflow** where users build their family story incrementally, one chapter at a time. This architecture solves two critical UX problems:
+Mabel uses a **module-based workflow** where users build their family story incrementally, one chapter at a time. This architecture solves two critical UX problems:
 1. **Prevents overwhelm** - Users complete bite-sized modules instead of facing a massive upfront interview
 2. **Enables AI learning** - Each module's questions build upon previous responses, creating deeper narratives
 

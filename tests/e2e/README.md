@@ -1,6 +1,6 @@
-# E2E Tests - Family Story Archive
+# E2E Tests - Mabel
 
-Playwright end-to-end tests for the Family Story Archive application.
+Playwright end-to-end tests for the Mabel application.
 
 ## Setup
 

@@ -1,10 +1,10 @@
-# Family Story Archive
+# Mabel
 
 AI-powered platform for preserving family stories through guided interviews and narrative generation. Build your family's story one chapter at a time with AI that learns from each module.
 
 ## 🌟 Overview
 
-Family Story Archive uses a breakthrough **module-based approach** to help you capture family stories without overwhelm. Instead of facing one massive interview, you complete bite-sized modules that become chapters in a beautiful book. Our context-learning AI analyzes previous answers to ask increasingly relevant follow-up questions, creating richer, more connected narratives.
+Mabel uses a breakthrough **module-based approach** to help you capture family stories without overwhelm. Instead of facing one massive interview, you complete bite-sized modules that become chapters in a beautiful book. Our context-learning AI analyzes previous answers to ask increasingly relevant follow-up questions, creating richer, more connected narratives.
 
 **Key Innovation:**
 - 📚 **Module-by-module story building** - Complete chapters at your own pace
@@ -239,4 +239,4 @@ Built with [Confabulator](https://vibecodelisboa.com/confabulator) - AI-powered 
 
 ---
 
-**Family Story Archive** - Preserving family legacies, one chapter at a time.
+**Mabel** — Your Stories, Written with Care.

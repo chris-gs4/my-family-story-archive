@@ -6,7 +6,7 @@ test.describe('Image Generation and PDF Export', () => {
   test.beforeEach(async ({ page }) => {
     // Login
     await page.goto('/auth/signin');
-    await page.fill('input[name="email"]', 'demo@familystoryarchive.com');
+    await page.fill('input[name="email"]', 'demo@mabel.com');
     await page.fill('input[name="password"]', 'password');
     await page.click('button[type="submit"]');
     await page.waitForURL('/dashboard');

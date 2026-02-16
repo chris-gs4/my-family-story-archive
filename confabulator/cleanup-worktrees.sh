@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # Git Worktree Cleanup Script
-# Project: Family Story Archive
+# Project: Mabel
 # Generated: 2025-12-22T19:40:43.790Z
 #
 # This script removes all worktrees created by the setup script.

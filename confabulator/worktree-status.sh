@@ -1,13 +1,13 @@
 #!/bin/bash
 #
 # Git Worktree Status Script
-# Project: Family Story Archive
+# Project: Mabel
 # Generated: 2025-12-22T19:40:43.790Z
 #
 # Shows the status of all worktrees and their dependencies.
 #
 
-echo "📊 Worktree Status - Family Story Archive"
+echo "📊 Worktree Status - Mabel"
 echo "="
 echo ""
 

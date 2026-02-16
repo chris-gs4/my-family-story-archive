@@ -1,4 +1,4 @@
-# Family Story Archive - Design System
+# Mabel - Design System
 
 **Purpose:** Create a warm, trustworthy, and timeless design that honors family stories
 **Executor:** Claude Code
@@ -8,7 +8,7 @@
 
 ## Executive Summary
 
-Family Story Archive should feel like opening a treasured family album - warm, personal, and timeless. The design is clean and modern but never cold, professional but never corporate. Every interaction should feel respectful of the precious memories being preserved.
+Mabel should feel like opening a treasured family album - warm, personal, and timeless. The design is clean and modern but never cold, professional but never corporate. Every interaction should feel respectful of the precious memories being preserved.
 
 **Core Metaphor:** A digital memory box that will be cherished for generations.
 
@@ -690,7 +690,7 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: "Family Story Archive",
+  title: "Mabel",
   description: "Preserve your family's stories for generations",
 }
 
@@ -801,7 +801,7 @@ Use `--background: #FAFAFA` for warmth. Pure white feels cold and clinical.
   <StoryCard variant="elevated" className="max-w-md w-full">
     <div className="text-center mb-8">
       <h1 className="text-[var(--text-3xl)] font-bold text-[var(--text-primary)] mb-2">
-        Welcome to Family Story Archive!
+        Welcome to Mabel!
       </h1>
       <p className="text-[var(--text-secondary)]">
         Preserve your family's stories for generations

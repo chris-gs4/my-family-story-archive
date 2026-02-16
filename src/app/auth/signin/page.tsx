@@ -179,7 +179,7 @@ export default function SignInPage() {
           <p className="text-sm text-muted-foreground text-center">
             <strong>Demo Account:</strong>
             <br />
-            Email: demo@familystoryarchive.com
+            Email: demo@mabel.com
             <br />
             Password: demo123
           </p>

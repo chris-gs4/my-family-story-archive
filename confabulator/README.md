@@ -1,4 +1,4 @@
-# Family Story Archive - Parallel Development Guide
+# Mabel - Parallel Development Guide
 
 Welcome! This directory contains everything you need for efficient parallel development using git worktrees.
 
