@@ -266,13 +266,17 @@ class OpenAIService {
    */
   async transcribeAudioFile(
     audioBuffer: Buffer,
-    fileName: string = 'audio.webm'
+    fileName: string = 'audio.webm',
+    mimeType?: string
   ): Promise<TranscriptionResult> {
     console.log(`[OpenAI] Transcribing audio file: ${fileName}`);
 
+    // Derive MIME type from file extension if not provided
+    const resolvedMime = mimeType || this.mimeTypeFromFileName(fileName);
+
     try {
-      const blob = new Blob([new Uint8Array(audioBuffer)], { type: 'audio/webm' });
-      const file = new File([blob], fileName, { type: 'audio/webm' });
+      const blob = new Blob([new Uint8Array(audioBuffer)], { type: resolvedMime });
+      const file = new File([blob], fileName, { type: resolvedMime });
 
       const response = await openai.audio.transcriptions.create({
         model: 'whisper-1',
@@ -574,6 +578,19 @@ Return ONLY the narrative text, no titles or formatting.`;
 
     const key = `${size}-${quality}`;
     return pricing[key] || 0.04;
+  }
+
+  private mimeTypeFromFileName(fileName: string): string {
+    const ext = fileName.split('.').pop()?.toLowerCase();
+    const mimeMap: Record<string, string> = {
+      webm: 'audio/webm',
+      aac: 'audio/aac',
+      mp4: 'audio/mp4',
+      m4a: 'audio/mp4',
+      wav: 'audio/wav',
+      mp3: 'audio/mpeg',
+    };
+    return mimeMap[ext || ''] || 'audio/webm';
   }
 
   private getErrorMessage(error: unknown): string {

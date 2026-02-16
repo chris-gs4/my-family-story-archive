@@ -8,7 +8,7 @@
 
 ## Product Overview
 
-Family Story Archive is an innovative web-based application designed to help individuals preserve family stories and legacies through AI-driven interviews and narrative generation. Using a unique **module-based approach**, users build their family story incrementally - answering questions one module at a time, with each module becoming a chapter in the final book.
+Family Story Archive is an innovative web and mobile application designed to help individuals preserve family stories and legacies through AI-driven interviews and narrative generation. Using a unique **module-based approach**, users build their family story incrementally - answering questions one module at a time, with each module becoming a chapter in the final book.
 
 The platform addresses the common problem of lost family histories by making story preservation accessible, non-overwhelming, and deeply personal. Unlike traditional methods that require interviewing expertise or significant time commitment upfront, our module system allows users to:
 - **Build stories gradually** over weeks or months at their own pace
@@ -202,7 +202,7 @@ DRAFT → QUESTIONS_GENERATED → IN_PROGRESS → GENERATING_CHAPTER → CHAPTER
 
 ## Technical Considerations
 
-- **Platform Requirements:** Must be accessible via web browsers on desktop and mobile devices (responsive web design).
+- **Platform Requirements:** Must be accessible via web browsers on desktop and mobile devices (responsive web design), and as a native iOS app via Capacitor.
 - **Integration Needs:**
   - Whisper API for audio transcription
   - OpenAI API for AI-guided questions and narrative generation

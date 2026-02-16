@@ -585,7 +585,9 @@ export const processJournalEntryJob = inngest.createFunction(
 
       if (process.env.OPENAI_API_KEY) {
         const buffer = Buffer.from(audioBuffer, 'base64');
-        return await openAIService.transcribeAudioFile(buffer);
+        const ext = audioFileKey.split('.').pop() || 'webm';
+        const fileName = `audio.${ext}`;
+        return await openAIService.transcribeAudioFile(buffer, fileName);
       }
 
       // Mock fallback

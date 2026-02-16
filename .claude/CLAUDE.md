@@ -17,6 +17,10 @@ npx prisma generate      # Generate Prisma client
 npx prisma migrate dev   # Create and apply migrations
 npx prisma db push       # Push schema without migrations (dev)
 npx prisma studio        # Open database GUI
+
+# Capacitor (iOS)
+npm run cap:sync         # Sync web assets to iOS project
+npx cap open ios         # Open Xcode project
 ```
 
 ### Project Structure
@@ -33,6 +37,8 @@ src/                 # Source code
 ├── components/      # UI components
 ├── lib/             # Utility functions and services
 └── types/           # TypeScript types
+ios/                 # Capacitor iOS native shell (Xcode project)
+capacitor.config.ts  # Capacitor configuration
 ```
 
 ## Project Context
@@ -44,7 +50,7 @@ Anyone interested in writing a book, record an audiobook, or learn more about th
 It removes all the friction from preserving family stories. Instead of needing to be a good interviewer, writer, or audio editor, the AI handles the structured questions, narrative creation, and voice cloning in one place. 
 
 ### Platform
-web
+web + iOS native (Capacitor)
 
 ## Tech Stack
 

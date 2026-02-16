@@ -35,6 +35,7 @@ export function AudioRecorder({
   const timerRef = useRef<NodeJS.Timeout | null>(null)
   const typewriterRef = useRef<NodeJS.Timeout | null>(null)
   const entryDataRef = useRef<{ entryId: string; uploadUrl: string } | null>(null)
+  const elapsedRef = useRef(0)
 
   const isNative = isNativePlatform()
 
@@ -146,11 +147,11 @@ export function AudioRecorder({
         throw new Error("Microphone permission denied")
       }
 
-      // Create entry record upfront to get presigned URL
+      // Create entry record upfront to get presigned URL (native records as AAC)
       const res = await fetch("/api/journal/entries", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ projectId, promptText: prompt }),
+        body: JSON.stringify({ projectId, promptText: prompt, audioFormat: "aac" }),
       })
 
       if (!res.ok) {
@@ -167,10 +168,15 @@ export function AudioRecorder({
 
       setState("recording")
       setElapsed(0)
+      elapsedRef.current = 0
 
       // Start timer
       timerRef.current = setInterval(() => {
-        setElapsed((prev) => prev + 1)
+        setElapsed((prev) => {
+          const next = prev + 1
+          elapsedRef.current = next
+          return next
+        })
       }, 1000)
 
       // Start typewriter
@@ -251,7 +257,7 @@ export function AudioRecorder({
         stream.getTracks().forEach((track) => track.stop())
 
         const audioBlob = new Blob(chunksRef.current, { type: "audio/webm" })
-        const duration = elapsed
+        const duration = elapsedRef.current
 
         handleRecordingComplete(audioBlob, "audio/webm", duration)
       }
@@ -261,10 +267,15 @@ export function AudioRecorder({
 
       setState("recording")
       setElapsed(0)
+      elapsedRef.current = 0
 
       // Start timer
       timerRef.current = setInterval(() => {
-        setElapsed((prev) => prev + 1)
+        setElapsed((prev) => {
+          const next = prev + 1
+          elapsedRef.current = next
+          return next
+        })
       }, 1000)
 
       // Start typewriter (boilerplate text appears while recording)

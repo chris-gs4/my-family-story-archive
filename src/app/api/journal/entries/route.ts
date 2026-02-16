@@ -57,7 +57,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
-    const { projectId, promptText } = body
+    const { projectId, promptText, audioFormat = "webm" } = body
 
     if (!projectId) {
       return NextResponse.json(
@@ -78,11 +78,19 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Generate presigned upload URL
-    const fileName = `entry-${Date.now()}.webm`
+    // Generate presigned upload URL with format-aware extension and MIME type
+    const mimeTypes: Record<string, string> = {
+      webm: "audio/webm",
+      aac: "audio/aac",
+      mp4: "audio/mp4",
+      m4a: "audio/mp4",
+    }
+    const ext = audioFormat in mimeTypes ? audioFormat : "webm"
+    const contentType = mimeTypes[ext] || "audio/webm"
+    const fileName = `entry-${Date.now()}.${ext}`
     const { fileKey, uploadUrl } = await s3Service.getUploadUrl(
       fileName,
-      "audio/webm"
+      contentType
     )
 
     // Create journal entry record

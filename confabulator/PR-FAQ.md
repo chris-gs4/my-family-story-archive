@@ -75,7 +75,7 @@ A: Key features include:
 - **Auto-save responses** - Never lose your work
 
 **Q: Can I record audio interviews instead of typing?**
-A: Audio recording and transcription features are planned for a future update. Currently, the platform focuses on text-based responses, which allows for easier editing and immediate progress saving.
+A: Yes! The platform supports audio recording for voice journal entries. On iOS, the native app records using the device microphone with high-quality AAC audio. On the web, recordings use WebM format. Audio is automatically transcribed and transformed into polished narratives.
 
 **Q: How does the AI know what questions to ask?**
 A: For Module 1, the AI generates questions based on the interviewee's profile (relationship, age, interests). For subsequent modules, the AI analyzes all previous responses to identify themes, names, places, and events—then generates follow-up questions that dive deeper and explore connections.
@@ -84,7 +84,7 @@ A: For Module 1, the AI generates questions based on the interviewee's profile (
 A: You can regenerate any chapter with specific feedback like "make it more emotional," "add more details about her childhood," or "use first-person perspective." The AI creates a new version while preserving the original.
 
 **Q: What platforms does Family Story Archive support?**
-A: Family Story Archive is a web-based platform accessible from any device with internet connectivity—desktop, tablet, or mobile.
+A: Family Story Archive is available as a web application accessible from any device with internet connectivity—desktop, tablet, or mobile browser—and as a native iOS app for iPhone and iPad.
 
 **Q: How do I get started?**
 A: Simply visit our website, create an account, and follow the guided prompts to start your first project. You'll be answering questions within 2 minutes of signing up.

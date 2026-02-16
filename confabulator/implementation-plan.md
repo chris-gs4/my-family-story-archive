@@ -17,7 +17,7 @@ The MVP includes AI-guided interview questions, audio transcription, narrative g
 
 ### Tech Stack Recommendations
 
-**Final Stack for Web/Progressive Web App:**
+**Final Stack for Web + iOS Native:**
 
 **Core Framework & Infrastructure:**
 - **Frontend Framework:** Next.js 14+ with React 18+ and TypeScript
@@ -33,6 +33,11 @@ The MVP includes AI-guided interview questions, audio transcription, narrative g
 - **File Storage:** AWS S3 (cost-effective for large audio files, presigned URLs)
 - **Email:** Resend (modern API, generous free tier)
 - **Payments:** Stripe (industry standard, well-documented)
+
+**Mobile Native:**
+- **Native Shell:** Capacitor (wraps Next.js web app for iOS distribution)
+- **Audio Recording:** capacitor-voice-recorder (native AAC recording on iOS)
+- **Haptics:** @capacitor/haptics (native haptic feedback)
 
 **Observability & Analytics:**
 - **Error Tracking:** Sentry (comprehensive error monitoring)
