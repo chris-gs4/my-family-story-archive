@@ -8,11 +8,11 @@ struct WelcomeView: View {
     var body: some View {
         VStack(spacing: 0) {
             Spacer()
-                .frame(height: 20)
+                .frame(height: scaled(20))
 
             // Wordmark
-            MabelWordmark(height: 30)
-                .padding(.bottom, 32)
+            MabelWordmark(height: scaled(30))
+                .padding(.bottom, scaled(32))
 
             // Mascot with warm glow
             ZStack {
@@ -26,11 +26,11 @@ struct WelcomeView: View {
                                 Color.clear
                             ]),
                             center: .center,
-                            startRadius: 20,
-                            endRadius: 140
+                            startRadius: scaled(20),
+                            endRadius: scaled(140)
                         )
                     )
-                    .frame(width: 280, height: 280)
+                    .frame(width: scaled(280), height: scaled(280))
                     .scaleEffect(mascotGlow ? 1.05 : 1.0)
                     .animation(
                         .easeInOut(duration: 2.5).repeatForever(autoreverses: true),
@@ -40,19 +40,19 @@ struct WelcomeView: View {
                 Image("MabelMascot")
                     .resizable()
                     .scaledToFit()
-                    .frame(width: 200, height: 200)
+                    .frame(width: scaled(200), height: scaled(200))
             }
-            .padding(.bottom, 32)
+            .padding(.bottom, scaled(32))
 
             // Headline
             Text("Tell your story")
-                .font(.comfortaa(28, weight: .bold))
+                .font(.comfortaa(scaled(28), weight: .bold))
                 .foregroundColor(.mabelText)
                 .padding(.bottom, 8)
 
             // Subtext
             Text("Record your memories.\nMabel will turn them into something beautiful.")
-                .font(.comfortaa(16, weight: .regular))
+                .font(.comfortaa(scaled(16), weight: .regular))
                 .foregroundColor(.mabelSubtle)
                 .multilineTextAlignment(.center)
                 .lineSpacing(4)
@@ -67,14 +67,14 @@ struct WelcomeView: View {
             // Sign-in link placeholder
             Button(action: {}) {
                 Text("Already have an account? Sign in")
-                    .font(.comfortaa(13, weight: .regular))
+                    .font(.comfortaa(scaled(13), weight: .regular))
                     .foregroundColor(.mabelSubtle)
             }
             .padding(.top, 12)
             .padding(.bottom, 32)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.mabelBackground)
+        .background(Color.mabelBackground.ignoresSafeArea())
         .navigationBarHidden(true)
         .onAppear {
             mascotGlow = true

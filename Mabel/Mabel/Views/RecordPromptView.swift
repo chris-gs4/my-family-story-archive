@@ -16,13 +16,13 @@ struct RecordPromptView: View {
     var body: some View {
         VStack(spacing: 0) {
             // Wordmark
-            MabelWordmark(height: 26)
+            MabelWordmark(height: scaled(26))
                 .padding(.top, 12)
-                .padding(.bottom, 24)
+                .padding(.bottom, scaled(24))
 
             // Heading
             Text("What story would you\nlike to tell?")
-                .font(.comfortaa(24, weight: .bold))
+                .font(.comfortaa(scaled(24), weight: .bold))
                 .foregroundColor(.mabelText)
                 .multilineTextAlignment(.center)
                 .lineSpacing(2)
@@ -30,9 +30,9 @@ struct RecordPromptView: View {
 
             // Subtext
             Text("Tap the button and start speaking.")
-                .font(.comfortaa(14, weight: .regular))
+                .font(.comfortaa(scaled(14), weight: .regular))
                 .foregroundColor(.mabelSubtle)
-                .padding(.bottom, 28)
+                .padding(.bottom, scaled(28))
 
             // Mic button with pulse
             Button(action: {
@@ -42,7 +42,7 @@ struct RecordPromptView: View {
                     // Pulse rings
                     Circle()
                         .fill(Color.mabelTeal.opacity(0.1))
-                        .frame(width: 100, height: 100)
+                        .frame(width: scaled(100), height: scaled(100))
                         .scaleEffect(micPulse ? 1.3 : 1.0)
                         .opacity(micPulse ? 0.0 : 0.5)
                         .animation(
@@ -52,7 +52,7 @@ struct RecordPromptView: View {
 
                     Circle()
                         .fill(Color.mabelTeal.opacity(0.15))
-                        .frame(width: 100, height: 100)
+                        .frame(width: scaled(100), height: scaled(100))
                         .scaleEffect(micPulse ? 1.15 : 1.0)
                         .opacity(micPulse ? 0.0 : 0.6)
                         .animation(
@@ -63,11 +63,11 @@ struct RecordPromptView: View {
                     // Main circle
                     Circle()
                         .fill(Color.mabelTeal)
-                        .frame(width: 80, height: 80)
+                        .frame(width: scaled(80), height: scaled(80))
                         .shadow(color: Color.mabelTeal.opacity(0.3), radius: 8, x: 0, y: 4)
 
                     Image(systemName: "mic.fill")
-                        .font(.system(size: 30))
+                        .font(.system(size: scaled(30)))
                         .foregroundColor(.white)
                 }
             }
@@ -153,7 +153,7 @@ struct RecordPromptView: View {
         }
         .padding(.horizontal, 24)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.mabelBackground)
+        .background(Color.mabelBackground.ignoresSafeArea())
         .navigationBarHidden(true)
         .onAppear {
             micPulse = true

@@ -1,5 +1,12 @@
 import SwiftUI
 
+/// Scale a size relative to a 390pt-wide baseline (iPhone 15).
+/// On iPhone SE (375pt): 200 → 192, on iPhone 15 Pro Max (430pt): 200 → 220.
+func scaled(_ value: CGFloat) -> CGFloat {
+    let screenWidth = UIScreen.main.bounds.width
+    return value * (screenWidth / 390)
+}
+
 enum ComfortaaWeight: String {
     case light
     case regular

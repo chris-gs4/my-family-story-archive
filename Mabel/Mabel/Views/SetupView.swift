@@ -52,14 +52,14 @@ struct SetupView: View {
                 // Wordmark
                 HStack {
                     Spacer()
-                    MabelWordmark(height: 26)
+                    MabelWordmark(height: scaled(26))
                     Spacer()
                 }
                 .padding(.top, 8)
 
                 // Heading
                 Text("Whose Story Are We Telling?")
-                    .font(.comfortaa(24, weight: .bold))
+                    .font(.comfortaa(scaled(24), weight: .bold))
                     .foregroundColor(.mabelText)
 
                 // Name field
@@ -164,7 +164,7 @@ struct SetupView: View {
             .padding(.bottom, 32)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.mabelBackground)
+        .background(Color.mabelBackground.ignoresSafeArea())
         .navigationBarHidden(true)
     }
 }

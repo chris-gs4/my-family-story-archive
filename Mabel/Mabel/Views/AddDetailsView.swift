@@ -27,7 +27,7 @@ struct AddDetailsView: View {
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(Color.mabelBackground)
+            .background(Color.mabelBackground.ignoresSafeArea())
         }
     }
 
@@ -36,7 +36,7 @@ struct AddDetailsView: View {
         VStack(alignment: .leading, spacing: 20) {
             // Header
             Text("Add Details")
-                .font(.comfortaa(24, weight: .bold))
+                .font(.comfortaa(scaled(24), weight: .bold))
                 .foregroundColor(.mabelText)
                 .padding(.top, 24)
 

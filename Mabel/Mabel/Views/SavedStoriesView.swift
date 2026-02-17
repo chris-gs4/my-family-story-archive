@@ -12,13 +12,13 @@ struct SavedStoriesView: View {
             ScrollView {
                 VStack(spacing: 20) {
                     // Wordmark
-                    MabelWordmark(height: 26)
+                    MabelWordmark(height: scaled(26))
                         .padding(.top, 12)
 
                     // Section header
                     HStack {
                         Text("Your Stories")
-                            .font(.comfortaa(24, weight: .bold))
+                            .font(.comfortaa(scaled(24), weight: .bold))
                             .foregroundColor(.mabelText)
                         Spacer()
                     }
@@ -65,9 +65,9 @@ struct SavedStoriesView: View {
             // Floating action button
             Button(action: onNewRecording) {
                 Image(systemName: "plus")
-                    .font(.system(size: 24, weight: .semibold))
+                    .font(.system(size: scaled(24), weight: .semibold))
                     .foregroundColor(.mabelBackground)
-                    .frame(width: 56, height: 56)
+                    .frame(width: scaled(56), height: scaled(56))
                     .background(
                         Circle()
                             .fill(Color.mabelTeal)
@@ -78,7 +78,7 @@ struct SavedStoriesView: View {
             .padding(.bottom, 24)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.mabelBackground)
+        .background(Color.mabelBackground.ignoresSafeArea())
         .navigationBarHidden(true)
         .sheet(isPresented: $isShowingAddDetails) {
             if let story = selectedStory,

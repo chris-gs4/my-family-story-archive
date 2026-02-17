@@ -31,14 +31,14 @@ struct RecordingView: View {
     var body: some View {
         VStack(spacing: 0) {
             // Wordmark
-            MabelWordmark(height: 26)
+            MabelWordmark(height: scaled(26))
                 .padding(.top, 12)
-                .padding(.bottom, 24)
+                .padding(.bottom, scaled(24))
 
             // Prompt header
             if let prompt = prompt {
                 Text(prompt)
-                    .font(.comfortaa(20, weight: .bold))
+                    .font(.comfortaa(scaled(20), weight: .bold))
                     .foregroundColor(.mabelText)
                     .multilineTextAlignment(.center)
                     .lineSpacing(2)
@@ -46,14 +46,14 @@ struct RecordingView: View {
                     .padding(.bottom, 4)
 
                 Text("Selected prompt")
-                    .font(.comfortaa(12, weight: .regular))
+                    .font(.comfortaa(scaled(12), weight: .regular))
                     .foregroundColor(.mabelSubtle)
-                    .padding(.bottom, 24)
+                    .padding(.bottom, scaled(24))
             } else {
                 Text("Free Recording")
-                    .font(.comfortaa(20, weight: .bold))
+                    .font(.comfortaa(scaled(20), weight: .bold))
                     .foregroundColor(.mabelText)
-                    .padding(.bottom, 24)
+                    .padding(.bottom, scaled(24))
             }
 
             Spacer()
@@ -64,7 +64,7 @@ struct RecordingView: View {
                 if isRecording && !isPaused {
                     Circle()
                         .fill(micColor.opacity(0.15))
-                        .frame(width: 120, height: 120)
+                        .frame(width: scaled(120), height: scaled(120))
                         .scaleEffect(isRecording ? 1.2 : 1.0)
                         .animation(
                             .easeInOut(duration: 1.0).repeatForever(autoreverses: true),
@@ -74,14 +74,14 @@ struct RecordingView: View {
 
                 Circle()
                     .fill(micColor)
-                    .frame(width: 88, height: 88)
+                    .frame(width: scaled(88), height: scaled(88))
                     .shadow(color: micColor.opacity(0.3), radius: 10, x: 0, y: 4)
 
                 Image(systemName: isPaused ? "pause.fill" : "mic.fill")
-                    .font(.system(size: 34))
+                    .font(.system(size: scaled(34)))
                     .foregroundColor(.white)
             }
-            .padding(.bottom, 24)
+            .padding(.bottom, scaled(24))
 
             // Waveform
             WaveformView(
@@ -94,7 +94,7 @@ struct RecordingView: View {
 
             // Timer
             Text(formattedTime)
-                .font(.comfortaa(36, weight: .bold))
+                .font(.comfortaa(scaled(36), weight: .bold))
                 .foregroundColor(.mabelText)
                 .monospacedDigit()
                 .padding(.bottom, 4)
@@ -107,14 +107,14 @@ struct RecordingView: View {
                         .frame(width: 8, height: 8)
                 }
                 Text(statusText)
-                    .font(.comfortaa(14, weight: .medium))
+                    .font(.comfortaa(scaled(14), weight: .medium))
                     .foregroundColor(.mabelSubtle)
             }
 
             Spacer()
 
             // Bottom controls
-            HStack(spacing: 20) {
+            HStack(spacing: scaled(20)) {
                 // Clear button
                 Button(action: {
                     stopTimer()
@@ -122,12 +122,12 @@ struct RecordingView: View {
                 }) {
                     VStack(spacing: 6) {
                         Image(systemName: "xmark.circle")
-                            .font(.system(size: 24))
+                            .font(.system(size: scaled(24)))
                         Text("Clear")
-                            .font(.comfortaa(12, weight: .medium))
+                            .font(.comfortaa(scaled(12), weight: .medium))
                     }
                     .foregroundColor(.mabelSubtle)
-                    .frame(width: 72, height: 60)
+                    .frame(width: scaled(72), height: scaled(60))
                     .background(
                         RoundedRectangle(cornerRadius: 12)
                             .fill(Color.mabelSurface)
@@ -146,12 +146,12 @@ struct RecordingView: View {
                 }) {
                     VStack(spacing: 6) {
                         Image(systemName: isPaused ? "play.fill" : "pause.fill")
-                            .font(.system(size: 24))
+                            .font(.system(size: scaled(24)))
                         Text(isPaused ? "Resume" : "Pause")
-                            .font(.comfortaa(12, weight: .medium))
+                            .font(.comfortaa(scaled(12), weight: .medium))
                     }
                     .foregroundColor(.mabelTeal)
-                    .frame(width: 72, height: 60)
+                    .frame(width: scaled(72), height: scaled(60))
                     .background(
                         RoundedRectangle(cornerRadius: 12)
                             .fill(Color.mabelSurface)
@@ -165,13 +165,13 @@ struct RecordingView: View {
                 }) {
                     VStack(spacing: 6) {
                         Image(systemName: "checkmark.circle.fill")
-                            .font(.system(size: 24))
+                            .font(.system(size: scaled(24)))
                         Text("Save\nMemory")
-                            .font(.comfortaa(11, weight: .bold))
+                            .font(.comfortaa(scaled(11), weight: .bold))
                             .multilineTextAlignment(.center)
                     }
                     .foregroundColor(.mabelBackground)
-                    .frame(width: 72, height: 60)
+                    .frame(width: scaled(72), height: scaled(60))
                     .background(
                         RoundedRectangle(cornerRadius: 12)
                             .fill(Color.mabelTeal)
@@ -182,7 +182,7 @@ struct RecordingView: View {
         }
         .padding(.horizontal, 24)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.mabelBackground)
+        .background(Color.mabelBackground.ignoresSafeArea())
         .navigationBarHidden(true)
         .onAppear {
             startTimer()
