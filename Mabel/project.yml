@@ -1,0 +1,50 @@
+name: Mabel
+options:
+  bundleIdPrefix: com.mabel
+  deploymentTarget:
+    iOS: "17.0"
+  xcodeVersion: "15.0"
+  groupSortPosition: top
+  createIntermediateGroups: true
+
+settings:
+  base:
+    MARKETING_VERSION: "1.0.0"
+    CURRENT_PROJECT_VERSION: "1"
+    DEVELOPMENT_TEAM: ""
+    SWIFT_VERSION: "5.9"
+
+targets:
+  Mabel:
+    type: application
+    platform: iOS
+    sources:
+      - path: Mabel
+    resources:
+      - path: Mabel/Assets.xcassets
+      - path: Mabel/Fonts
+    settings:
+      base:
+        INFOPLIST_FILE: Mabel/Info.plist
+        PRODUCT_BUNDLE_IDENTIFIER: com.mabel.app
+        PRODUCT_NAME: Mabel
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        TARGETED_DEVICE_FAMILY: "1"
+        SUPPORTED_INTERFACE_ORIENTATIONS: "UIInterfaceOrientationPortrait"
+        INFOPLIST_KEY_UILaunchScreen_Generation: true
+    info:
+      path: Mabel/Info.plist
+      properties:
+        UIAppFonts:
+          - Comfortaa-Variable.ttf
+        NSMicrophoneUsageDescription: "Mabel needs microphone access to record your stories."
+        CFBundleName: Mabel
+        CFBundleDisplayName: Mabel
+
+  MabelTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: MabelTests
+    dependencies:
+      - target: Mabel

@@ -1,0 +1,530 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		08F401DCF24259367775270E /* StoryCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00E70160353431C57537F5FA /* StoryCard.swift */; };
+		0B2694DE10A76C72E13A6C8F /* SuggestionCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF3988DBFC8A4BBEA4E148D1 /* SuggestionCard.swift */; };
+		0C3A08593450F81908F185F0 /* MabelFonts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E5C754C7035FCAB426E34C0 /* MabelFonts.swift */; };
+		10D371C201E9BBD4C0D0AA23 /* CTAButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 382FF0578D1F342556D6B446 /* CTAButton.swift */; };
+		116F4E95F2059F650D51A1A7 /* SetupData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CA5AF5CF2494664CA439512 /* SetupData.swift */; };
+		370E69C609C3FD03BB9E4DDB /* WaveformView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69BAB34C868B293BAC9F2A0E /* WaveformView.swift */; };
+		3B1CBCD719E7F0C68278428A /* RecordPromptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9DB4DDD8E854C2301ACBBAF /* RecordPromptView.swift */; };
+		433FB9554046089B7F4274A5 /* AddDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC9C661494650AAB8985C6D7 /* AddDetailsView.swift */; };
+		5C1097C784EA25FB512A9F81 /* MabelApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABB24DE0618903DE68C06153 /* MabelApp.swift */; };
+		60D38AEEEA8026ED08225174 /* MabelColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3042620F7E213AF3FC7B9E49 /* MabelColors.swift */; };
+		71C2D3A783ED7A2EF9C406E0 /* MabelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 559250AE118047B34ED66150 /* MabelTests.swift */; };
+		743819BE8EDF87B75DE14786 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D5FDF2EF878B61D179960D79 /* Assets.xcassets */; };
+		76AEFD3B3EE12EF90CAEA3EC /* PillButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BBF357783A66732C0B0523B /* PillButton.swift */; };
+		78A17D318DCB33213FA37F68 /* SetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0C2451C222B33C06C68B6FA /* SetupView.swift */; };
+		83A1C2D0B3D7A1C74448AD04 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10B3443FE98920BBA19F972E /* ContentView.swift */; };
+		8DDD55576AB174C8778908E2 /* RecordingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A28730F23F9B24BDA342EC /* RecordingView.swift */; };
+		8E23EC0A01ADC4B0EBE88E0D /* MabelStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9172F33589E66F396552AA6D /* MabelStyle.swift */; };
+		97099A06C393E61E571B035B /* WelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28E923E74FD9F74D3FBFCFB8 /* WelcomeView.swift */; };
+		A8A3E3DE49368CF948036F4F /* StoryEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0996C460BE8A3B34A7C33B /* StoryEntry.swift */; };
+		D4646E71CE8CC83C26A6EB16 /* Comfortaa-Variable.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8BDC2A50B95B1EEF1A53BCE3 /* Comfortaa-Variable.ttf */; };
+		E4332695D7A9053C07C9C820 /* MabelWordmark.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61DD224D61070C052EF867D1 /* MabelWordmark.swift */; };
+		F9C4AABCC9960833E7F45FA3 /* SavedStoriesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12479B29D9BC0CE476852822 /* SavedStoriesView.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		7D0C379A5BE46D5C0E645C4B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6B144D8BB005D5F6ACC0FB6D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 7BA1D10DF46361BA700E8BDA;
+			remoteInfo = Mabel;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		00E70160353431C57537F5FA /* StoryCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryCard.swift; sourceTree = "<group>"; };
+		0CA5AF5CF2494664CA439512 /* SetupData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupData.swift; sourceTree = "<group>"; };
+		10B3443FE98920BBA19F972E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		12479B29D9BC0CE476852822 /* SavedStoriesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedStoriesView.swift; sourceTree = "<group>"; };
+		1BBF357783A66732C0B0523B /* PillButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PillButton.swift; sourceTree = "<group>"; };
+		1C0996C460BE8A3B34A7C33B /* StoryEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryEntry.swift; sourceTree = "<group>"; };
+		28E923E74FD9F74D3FBFCFB8 /* WelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeView.swift; sourceTree = "<group>"; };
+		3042620F7E213AF3FC7B9E49 /* MabelColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MabelColors.swift; sourceTree = "<group>"; };
+		382FF0578D1F342556D6B446 /* CTAButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CTAButton.swift; sourceTree = "<group>"; };
+		559250AE118047B34ED66150 /* MabelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MabelTests.swift; sourceTree = "<group>"; };
+		61DD224D61070C052EF867D1 /* MabelWordmark.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MabelWordmark.swift; sourceTree = "<group>"; };
+		69BAB34C868B293BAC9F2A0E /* WaveformView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaveformView.swift; sourceTree = "<group>"; };
+		7E5C754C7035FCAB426E34C0 /* MabelFonts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MabelFonts.swift; sourceTree = "<group>"; };
+		8BDC2A50B95B1EEF1A53BCE3 /* Comfortaa-Variable.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Comfortaa-Variable.ttf"; sourceTree = "<group>"; };
+		90F285CDA92F652EF7CC925A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		9172F33589E66F396552AA6D /* MabelStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MabelStyle.swift; sourceTree = "<group>"; };
+		ABB24DE0618903DE68C06153 /* MabelApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MabelApp.swift; sourceTree = "<group>"; };
+		AF3988DBFC8A4BBEA4E148D1 /* SuggestionCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionCard.swift; sourceTree = "<group>"; };
+		C0C2451C222B33C06C68B6FA /* SetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupView.swift; sourceTree = "<group>"; };
+		D5FDF2EF878B61D179960D79 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		DEB88A7AA3EC5BAE4EF65545 /* Mabel.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Mabel.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E9DB4DDD8E854C2301ACBBAF /* RecordPromptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordPromptView.swift; sourceTree = "<group>"; };
+		EC9C661494650AAB8985C6D7 /* AddDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddDetailsView.swift; sourceTree = "<group>"; };
+		F1A28730F23F9B24BDA342EC /* RecordingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordingView.swift; sourceTree = "<group>"; };
+		FFF6661D7ED18ED80DF75E58 /* MabelTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = MabelTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		23037DAD15C6FE4E1C4E8479 /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				8BDC2A50B95B1EEF1A53BCE3 /* Comfortaa-Variable.ttf */,
+			);
+			path = Fonts;
+			sourceTree = "<group>";
+		};
+		29B35A0E6BD0DAEE4A78772E = {
+			isa = PBXGroup;
+			children = (
+				9FD528901BA8446427BDADB6 /* Mabel */,
+				4273D5B48F1904DB16D489DB /* MabelTests */,
+				CF94CE84567E3AD9ED1D8397 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		4273D5B48F1904DB16D489DB /* MabelTests */ = {
+			isa = PBXGroup;
+			children = (
+				559250AE118047B34ED66150 /* MabelTests.swift */,
+			);
+			path = MabelTests;
+			sourceTree = "<group>";
+		};
+		571611EB08B1DEA6BDE04C14 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				382FF0578D1F342556D6B446 /* CTAButton.swift */,
+				61DD224D61070C052EF867D1 /* MabelWordmark.swift */,
+				1BBF357783A66732C0B0523B /* PillButton.swift */,
+				00E70160353431C57537F5FA /* StoryCard.swift */,
+				AF3988DBFC8A4BBEA4E148D1 /* SuggestionCard.swift */,
+				69BAB34C868B293BAC9F2A0E /* WaveformView.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		9FD528901BA8446427BDADB6 /* Mabel */ = {
+			isa = PBXGroup;
+			children = (
+				571611EB08B1DEA6BDE04C14 /* Components */,
+				23037DAD15C6FE4E1C4E8479 /* Fonts */,
+				B52995992E9FA578A53E54DB /* Models */,
+				B0613055B5587B8CC9F9362D /* Theme */,
+				F8F3F12D63EEF7AE633BFF3D /* Views */,
+				D5FDF2EF878B61D179960D79 /* Assets.xcassets */,
+				10B3443FE98920BBA19F972E /* ContentView.swift */,
+				90F285CDA92F652EF7CC925A /* Info.plist */,
+				ABB24DE0618903DE68C06153 /* MabelApp.swift */,
+			);
+			path = Mabel;
+			sourceTree = "<group>";
+		};
+		B0613055B5587B8CC9F9362D /* Theme */ = {
+			isa = PBXGroup;
+			children = (
+				3042620F7E213AF3FC7B9E49 /* MabelColors.swift */,
+				7E5C754C7035FCAB426E34C0 /* MabelFonts.swift */,
+				9172F33589E66F396552AA6D /* MabelStyle.swift */,
+			);
+			path = Theme;
+			sourceTree = "<group>";
+		};
+		B52995992E9FA578A53E54DB /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				0CA5AF5CF2494664CA439512 /* SetupData.swift */,
+				1C0996C460BE8A3B34A7C33B /* StoryEntry.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		CF94CE84567E3AD9ED1D8397 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				DEB88A7AA3EC5BAE4EF65545 /* Mabel.app */,
+				FFF6661D7ED18ED80DF75E58 /* MabelTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		F8F3F12D63EEF7AE633BFF3D /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				EC9C661494650AAB8985C6D7 /* AddDetailsView.swift */,
+				F1A28730F23F9B24BDA342EC /* RecordingView.swift */,
+				E9DB4DDD8E854C2301ACBBAF /* RecordPromptView.swift */,
+				12479B29D9BC0CE476852822 /* SavedStoriesView.swift */,
+				C0C2451C222B33C06C68B6FA /* SetupView.swift */,
+				28E923E74FD9F74D3FBFCFB8 /* WelcomeView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		26DD30B753D29C044F302C77 /* MabelTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 170A578758138C297CC38B03 /* Build configuration list for PBXNativeTarget "MabelTests" */;
+			buildPhases = (
+				919563C77412E8BEAFCA9AC7 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				D8B2EC48778B9A75DC55977A /* PBXTargetDependency */,
+			);
+			name = MabelTests;
+			packageProductDependencies = (
+			);
+			productName = MabelTests;
+			productReference = FFF6661D7ED18ED80DF75E58 /* MabelTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		7BA1D10DF46361BA700E8BDA /* Mabel */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A49F8814FAD7735C52216B58 /* Build configuration list for PBXNativeTarget "Mabel" */;
+			buildPhases = (
+				C465ED26A27C513E64426946 /* Sources */,
+				9E85761460104EC88942EBBA /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Mabel;
+			packageProductDependencies = (
+			);
+			productName = Mabel;
+			productReference = DEB88A7AA3EC5BAE4EF65545 /* Mabel.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		6B144D8BB005D5F6ACC0FB6D /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+					26DD30B753D29C044F302C77 = {
+						DevelopmentTeam = "";
+					};
+					7BA1D10DF46361BA700E8BDA = {
+						DevelopmentTeam = "";
+					};
+				};
+			};
+			buildConfigurationList = 7BC79295EE34E817D7EE2C6F /* Build configuration list for PBXProject "Mabel" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 29B35A0E6BD0DAEE4A78772E;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				7BA1D10DF46361BA700E8BDA /* Mabel */,
+				26DD30B753D29C044F302C77 /* MabelTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		9E85761460104EC88942EBBA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				743819BE8EDF87B75DE14786 /* Assets.xcassets in Resources */,
+				D4646E71CE8CC83C26A6EB16 /* Comfortaa-Variable.ttf in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		919563C77412E8BEAFCA9AC7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				71C2D3A783ED7A2EF9C406E0 /* MabelTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C465ED26A27C513E64426946 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				433FB9554046089B7F4274A5 /* AddDetailsView.swift in Sources */,
+				10D371C201E9BBD4C0D0AA23 /* CTAButton.swift in Sources */,
+				83A1C2D0B3D7A1C74448AD04 /* ContentView.swift in Sources */,
+				5C1097C784EA25FB512A9F81 /* MabelApp.swift in Sources */,
+				60D38AEEEA8026ED08225174 /* MabelColors.swift in Sources */,
+				0C3A08593450F81908F185F0 /* MabelFonts.swift in Sources */,
+				8E23EC0A01ADC4B0EBE88E0D /* MabelStyle.swift in Sources */,
+				E4332695D7A9053C07C9C820 /* MabelWordmark.swift in Sources */,
+				76AEFD3B3EE12EF90CAEA3EC /* PillButton.swift in Sources */,
+				3B1CBCD719E7F0C68278428A /* RecordPromptView.swift in Sources */,
+				8DDD55576AB174C8778908E2 /* RecordingView.swift in Sources */,
+				F9C4AABCC9960833E7F45FA3 /* SavedStoriesView.swift in Sources */,
+				116F4E95F2059F650D51A1A7 /* SetupData.swift in Sources */,
+				78A17D318DCB33213FA37F68 /* SetupView.swift in Sources */,
+				08F401DCF24259367775270E /* StoryCard.swift in Sources */,
+				A8A3E3DE49368CF948036F4F /* StoryEntry.swift in Sources */,
+				0B2694DE10A76C72E13A6C8F /* SuggestionCard.swift in Sources */,
+				370E69C609C3FD03BB9E4DDB /* WaveformView.swift in Sources */,
+				97099A06C393E61E571B035B /* WelcomeView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		D8B2EC48778B9A75DC55977A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 7BA1D10DF46361BA700E8BDA /* Mabel */;
+			targetProxy = 7D0C379A5BE46D5C0E645C4B /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		0C7DD5F9DC09DE61378F6C5A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.9;
+			};
+			name = Debug;
+		};
+		0D974FB6285A084952C482F7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				INFOPLIST_FILE = Mabel/Info.plist;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.mabel.app;
+				PRODUCT_NAME = Mabel;
+				SDKROOT = iphoneos;
+				SUPPORTED_INTERFACE_ORIENTATIONS = UIInterfaceOrientationPortrait;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		A9637AE5EFD43E9840495CBC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				INFOPLIST_FILE = Mabel/Info.plist;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.mabel.app;
+				PRODUCT_NAME = Mabel;
+				SDKROOT = iphoneos;
+				SUPPORTED_INTERFACE_ORIENTATIONS = UIInterfaceOrientationPortrait;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		D7474F39B3DB656572E4E2C9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.mabel.MabelTests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Mabel.app/Mabel";
+			};
+			name = Release;
+		};
+		D822A14159A07F0FFD855C7B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = "";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.9;
+			};
+			name = Release;
+		};
+		E272021320ABA6443F87ABE5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.mabel.MabelTests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Mabel.app/Mabel";
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		170A578758138C297CC38B03 /* Build configuration list for PBXNativeTarget "MabelTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E272021320ABA6443F87ABE5 /* Debug */,
+				D7474F39B3DB656572E4E2C9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		7BC79295EE34E817D7EE2C6F /* Build configuration list for PBXProject "Mabel" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0C7DD5F9DC09DE61378F6C5A /* Debug */,
+				D822A14159A07F0FFD855C7B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		A49F8814FAD7735C52216B58 /* Build configuration list for PBXNativeTarget "Mabel" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A9637AE5EFD43E9840495CBC /* Debug */,
+				0D974FB6285A084952C482F7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 6B144D8BB005D5F6ACC0FB6D /* Project object */;
+}
