@@ -10,6 +10,13 @@ struct RecordingView: View {
     @State private var isPaused = false
     @State private var elapsedSeconds: Int = 0
     @State private var timer: AnyCancellable?
+    @State private var typewriterText: String = ""
+
+    private let boilerplateLines = [
+        "Mabel is listening...",
+        "Capturing your words...",
+        "Your story is being written..."
+    ]
 
     private var formattedTime: String {
         let minutes = elapsedSeconds / 60
@@ -30,12 +37,12 @@ struct RecordingView: View {
 
     var body: some View {
         ZStack {
-            // BACKGROUND
+            // BACKGROUND — fills entire screen
             MabelGradientBackground()
 
             // CONTENT
             VStack(spacing: 0) {
-                // Prompt header
+                // Prompt header at top
                 if let prompt = prompt {
                     Text(prompt)
                         .font(.comfortaa(20, weight: .bold))
@@ -60,7 +67,7 @@ struct RecordingView: View {
 
                 Spacer()
 
-                // Mic circle
+                // Mic circle — changes color: teal (idle) → burgundy (recording)
                 ZStack {
                     // Outer glow when recording
                     if isRecording && !isPaused {
@@ -85,7 +92,7 @@ struct RecordingView: View {
                 }
                 .padding(.bottom, 24)
 
-                // Waveform
+                // Waveform — animated vertical bars
                 WaveformView(
                     isAnimating: isRecording && !isPaused,
                     barCount: 24,
@@ -94,14 +101,14 @@ struct RecordingView: View {
                 .padding(.horizontal, 40)
                 .padding(.bottom, 20)
 
-                // Timer
+                // Timer — 24pt medium
                 Text(formattedTime)
                     .font(.comfortaa(24, weight: .medium))
                     .foregroundColor(.mabelText)
                     .monospacedDigit()
                     .padding(.bottom, 4)
 
-                // Status
+                // Status — "Recording" / "Paused"
                 HStack(spacing: 6) {
                     if isRecording && !isPaused {
                         Circle()
@@ -112,12 +119,23 @@ struct RecordingView: View {
                         .font(.comfortaa(14, weight: .medium))
                         .foregroundColor(.mabelSubtle)
                 }
+                .padding(.bottom, 16)
+
+                // Boilerplate typewriter text — cosmetic "Mabel is writing..." effect
+                if isRecording && !isPaused {
+                    Text(typewriterText)
+                        .font(.comfortaa(14, weight: .regular))
+                        .foregroundColor(.mabelSubtle)
+                        .multilineTextAlignment(.center)
+                        .frame(height: 20)
+                        .padding(.bottom, 8)
+                }
 
                 Spacer()
 
-                // Bottom controls
+                // Bottom controls — three buttons in a row
                 HStack(spacing: 24) {
-                    // Clear button — text only, burgundy
+                    // Clear — text only, burgundy
                     Button(action: {
                         stopTimer()
                         onClear()
@@ -129,7 +147,7 @@ struct RecordingView: View {
 
                     Spacer()
 
-                    // Pause/Resume button — secondary style
+                    // Pause/Resume — secondary style
                     Button(action: {
                         if isPaused {
                             isPaused = false
@@ -152,7 +170,7 @@ struct RecordingView: View {
 
                     Spacer()
 
-                    // Save Memory button — teal CTA style
+                    // Save Memory — teal CTA style
                     Button(action: {
                         stopTimer()
                         onSave()
@@ -175,6 +193,7 @@ struct RecordingView: View {
         .navigationBarHidden(true)
         .onAppear {
             startTimer()
+            startTypewriterEffect()
         }
         .onDisappear {
             stopTimer()
@@ -192,6 +211,32 @@ struct RecordingView: View {
     private func stopTimer() {
         timer?.cancel()
         timer = nil
+    }
+
+    private func startTypewriterEffect() {
+        let line = boilerplateLines[Int.random(in: 0..<boilerplateLines.count)]
+        typewriterText = ""
+        var charIndex = 0
+        func appendNext() {
+            guard charIndex < line.count else {
+                // Pause then start a new line
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                    if isRecording && !isPaused {
+                        startTypewriterEffect()
+                    }
+                }
+                return
+            }
+            let index = line.index(line.startIndex, offsetBy: charIndex)
+            typewriterText.append(line[index])
+            charIndex += 1
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+                if isRecording && !isPaused {
+                    appendNext()
+                }
+            }
+        }
+        appendNext()
     }
 }
 

@@ -17,22 +17,31 @@ struct AddDetailsView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                // BACKGROUND
-                MabelGradientBackground()
+                // BACKGROUND — gradient fills entire sheet
+                LinearGradient(
+                    colors: [
+                        Color.mabelGradientTop,
+                        Color.mabelGradientMid,
+                        Color(red: 0.922, green: 0.961, blue: 0.918),
+                        Color.mabelGradientBot
+                    ],
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+                .ignoresSafeArea(.all, edges: .all)
 
-                // CONTENT
-                Group {
-                    switch currentScreen {
-                    case .menu:
-                        menuView
-                    case .addCharacter:
-                        addCharacterView
-                    case .addDetails:
-                        addSceneView
-                    }
+                // CONTENT — fills available space
+                switch currentScreen {
+                case .menu:
+                    menuView
+                case .addCharacter:
+                    addCharacterView
+                case .addDetails:
+                    addSceneView
                 }
             }
         }
+        .presentationBackground(.clear)
     }
 
     // MARK: - Menu View
@@ -44,6 +53,7 @@ struct AddDetailsView: View {
                 .foregroundColor(.mabelText)
                 .padding(.top, 24)
 
+            // Subtext
             Text("Help us craft a better story by describing at least one of the following:")
                 .font(.comfortaa(14, weight: .regular))
                 .foregroundColor(.mabelSubtle)
@@ -52,7 +62,7 @@ struct AddDetailsView: View {
             Spacer()
                 .frame(height: 8)
 
-            // Add Character card
+            // "+ Add Character" card
             Button(action: {
                 characterText = story.characters
                 withAnimation(.easeInOut(duration: 0.25)) {
@@ -78,7 +88,7 @@ struct AddDetailsView: View {
                 )
             }
 
-            // Add Details card
+            // "+ Add Details" card
             Button(action: {
                 sceneText = story.sceneDetails
                 withAnimation(.easeInOut(duration: 0.25)) {
@@ -113,6 +123,7 @@ struct AddDetailsView: View {
             .padding(.bottom, 40)
         }
         .padding(.horizontal, 24)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
     }
 
     // MARK: - Add Character View
@@ -133,10 +144,12 @@ struct AddDetailsView: View {
             }
             .padding(.top, 16)
 
+            // Header
             Text("Who's in this story?")
                 .font(.comfortaa(28, weight: .bold))
                 .foregroundColor(.mabelText)
 
+            // Large free-text TextEditor
             TextEditor(text: $characterText)
                 .font(.comfortaa(16, weight: .regular))
                 .foregroundColor(.mabelText)
@@ -147,7 +160,7 @@ struct AddDetailsView: View {
                     RoundedRectangle(cornerRadius: 16)
                         .fill(Color.mabelSurface.opacity(0.9))
                 )
-                .overlay(alignment: .topLeading, content: {
+                .overlay(alignment: .topLeading) {
                     if characterText.isEmpty {
                         Text("Describe them — name, how you know them, what they looked like, anything you remember...")
                             .font(.comfortaa(16, weight: .regular))
@@ -155,8 +168,9 @@ struct AddDetailsView: View {
                             .padding(20)
                             .allowsHitTesting(false)
                     }
-                })
+                }
 
+            // Save button
             CTAButton(title: "Save") {
                 story.characters = characterText
                 withAnimation(.easeInOut(duration: 0.25)) {
@@ -166,6 +180,7 @@ struct AddDetailsView: View {
             .padding(.bottom, 40)
         }
         .padding(.horizontal, 24)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
     }
 
     // MARK: - Add Scene Details View
@@ -186,10 +201,12 @@ struct AddDetailsView: View {
             }
             .padding(.top, 16)
 
+            // Header
             Text("Set the Scene")
                 .font(.comfortaa(28, weight: .bold))
                 .foregroundColor(.mabelText)
 
+            // Large free-text TextEditor
             TextEditor(text: $sceneText)
                 .font(.comfortaa(16, weight: .regular))
                 .foregroundColor(.mabelText)
@@ -200,7 +217,7 @@ struct AddDetailsView: View {
                     RoundedRectangle(cornerRadius: 16)
                         .fill(Color.mabelSurface.opacity(0.9))
                 )
-                .overlay(alignment: .topLeading, content: {
+                .overlay(alignment: .topLeading) {
                     if sceneText.isEmpty {
                         Text("Where were you? What did it feel like? Describe the place, the weather, the mood — anything that brings this memory to life...")
                             .font(.comfortaa(16, weight: .regular))
@@ -208,8 +225,9 @@ struct AddDetailsView: View {
                             .padding(20)
                             .allowsHitTesting(false)
                     }
-                })
+                }
 
+            // Save button
             CTAButton(title: "Save") {
                 story.sceneDetails = sceneText
                 withAnimation(.easeInOut(duration: 0.25)) {
@@ -219,6 +237,7 @@ struct AddDetailsView: View {
             .padding(.bottom, 40)
         }
         .padding(.horizontal, 24)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
     }
 }
 

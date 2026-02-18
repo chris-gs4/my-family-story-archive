@@ -14,17 +14,8 @@ enum ComfortaaWeight: String {
     case semiBold
     case bold
 
-    var fontWeight: Font.Weight {
-        switch self {
-        case .light: return .light
-        case .regular: return .regular
-        case .medium: return .medium
-        case .semiBold: return .semibold
-        case .bold: return .bold
-        }
-    }
-
-    var uiFontWeight: CGFloat {
+    /// CSS/OpenType weight value for the `wght` variation axis
+    var axisValue: CGFloat {
         switch self {
         case .light: return 300
         case .regular: return 400
@@ -36,19 +27,43 @@ enum ComfortaaWeight: String {
 }
 
 extension Font {
+    /// Create a Comfortaa font at the given size and weight.
+    /// Bridges through UIFont to set the variable-font weight axis correctly.
+    /// SwiftUI's `.weight()` modifier does NOT work with `.custom()` fonts.
     static func comfortaa(_ size: CGFloat, weight: ComfortaaWeight = .regular) -> Font {
-        // The variable font registers with the family name "Comfortaa"
-        // Use the custom font with weight variation
-        return .custom("Comfortaa", size: size).weight(weight.fontWeight)
+        return Font(UIFont.comfortaa(size, weight: weight))
     }
 }
 
 extension UIFont {
+    /// The OpenType tag for the `wght` (weight) variation axis.
+    /// Decimal value of the tag bytes 'w','g','h','t'.
+    private static let wghtAxisTag: Int = 2003265652
+
     static func comfortaa(_ size: CGFloat, weight: ComfortaaWeight = .regular) -> UIFont {
+        // First, try the variation-axis approach: get the base font by PostScript name,
+        // then apply the wght axis to select the desired weight.
+        if let baseFont = UIFont(name: "Comfortaa-Regular", size: size) {
+            let variationAttributes: [UIFontDescriptor.AttributeName: Any] = [
+                kCTFontVariationAttribute as UIFontDescriptor.AttributeName: [
+                    wghtAxisTag: weight.axisValue
+                ]
+            ]
+            let varDescriptor = baseFont.fontDescriptor.addingAttributes(variationAttributes)
+            return UIFont(descriptor: varDescriptor, size: size)
+        }
+
+        // Fallback: try by family name with trait weight
         let descriptor = UIFontDescriptor(fontAttributes: [
-            .family: "Comfortaa",
-            .traits: [UIFontDescriptor.TraitKey.weight: weight.uiFontWeight]
+            .family: "Comfortaa"
         ])
-        return UIFont(descriptor: descriptor, size: size)
+        let font = UIFont(descriptor: descriptor, size: size)
+        if font.familyName.lowercased().contains("comfortaa") {
+            return font
+        }
+
+        // Should never reach here if font is bundled correctly
+        print("⚠️ Comfortaa font not found! Check Info.plist UIAppFonts and Copy Bundle Resources.")
+        return .systemFont(ofSize: size)
     }
 }

@@ -48,24 +48,30 @@ struct SetupView: View {
 
     var body: some View {
         ZStack {
-            // BACKGROUND
+            // BACKGROUND — fills entire screen
             MabelGradientBackground()
 
-            // CONTENT
+            // CONTENT — in ScrollView since this screen has a lot of content
             ScrollView {
-                VStack(alignment: .leading, spacing: 24) {
-                    // Wordmark
+                VStack(alignment: .leading, spacing: 0) {
+                    // Wordmark IMAGE centered
                     HStack {
                         Spacer()
-                        MabelWordmark(height: 32)
+                        Image("MabelWordmark")
+                            .renderingMode(.original)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(height: 24)
                         Spacer()
                     }
                     .padding(.top, 16)
+                    .padding(.bottom, 24)
 
                     // Heading
                     Text("Whose Story Are We Telling?")
                         .font(.comfortaa(28, weight: .bold))
                         .foregroundColor(.mabelText)
+                        .padding(.bottom, 32)
 
                     // Name field
                     VStack(alignment: .leading, spacing: 8) {
@@ -83,8 +89,9 @@ struct SetupView: View {
                                     .fill(Color.mabelSurface.opacity(0.9))
                             )
                     }
+                    .padding(.bottom, 32)
 
-                    // Relationship
+                    // Relationship — single-select
                     VStack(alignment: .leading, spacing: 10) {
                         Text("Relationship")
                             .font(.comfortaa(14, weight: .bold))
@@ -101,14 +108,15 @@ struct SetupView: View {
                             }
                         }
                     }
+                    .padding(.bottom, 32)
 
-                    // Topics
+                    // Topics — multi-select (max 3)
                     VStack(alignment: .leading, spacing: 10) {
                         Text("Topics")
                             .font(.comfortaa(14, weight: .bold))
                             .foregroundColor(.mabelText)
 
-                        // Free journaling as subtle text link ABOVE pills
+                        // "I'll figure it out" — subtle text link, NOT a pill
                         Button(action: {
                             setupData.isFreeJournaling.toggle()
                             if setupData.isFreeJournaling {
@@ -144,11 +152,9 @@ struct SetupView: View {
                             }
                         }
                     }
+                    .padding(.bottom, 32)
 
-                    Spacer()
-                        .frame(height: 16)
-
-                    // CTA
+                    // CTA — disabled until name filled AND (1+ topic OR free journaling)
                     CTAButton(
                         title: "Let's Start",
                         isDisabled: !setupData.isComplete,

@@ -15,18 +15,22 @@ struct RecordPromptView: View {
 
     var body: some View {
         ZStack {
-            // BACKGROUND
+            // BACKGROUND — fills entire screen
             MabelGradientBackground()
 
             // CONTENT
             ScrollView {
                 VStack(spacing: 0) {
-                    // Wordmark
-                    MabelWordmark(height: 32)
+                    // Wordmark IMAGE centered
+                    Image("MabelWordmark")
+                        .renderingMode(.original)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(height: 24)
                         .padding(.top, 16)
                         .padding(.bottom, 24)
 
-                    // Heading
+                    // Heading — 28pt bold
                     Text("What story would you\nlike to tell?")
                         .font(.comfortaa(28, weight: .bold))
                         .foregroundColor(.mabelText)
@@ -40,7 +44,7 @@ struct RecordPromptView: View {
                         .foregroundColor(.mabelSubtle)
                         .padding(.bottom, 28)
 
-                    // Mic button with pulse
+                    // Mic button — 80pt circle, teal, white mic icon, with pulse
                     Button(action: {
                         onStartRecording(nil)
                     }) {
@@ -79,7 +83,7 @@ struct RecordPromptView: View {
                     }
                     .padding(.bottom, 16)
 
-                    // "or write here" text link
+                    // "or write here" — tappable text link
                     if !isShowingWriteInput {
                         Button(action: {
                             withAnimation(.easeInOut(duration: 0.25)) {
@@ -130,7 +134,7 @@ struct RecordPromptView: View {
                         .padding(.bottom, 20)
                     }
 
-                    // Suggestions
+                    // Suggestions section
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Suggestions")
                             .font(.comfortaa(16, weight: .bold))

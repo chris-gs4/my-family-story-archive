@@ -9,14 +9,18 @@ struct SavedStoriesView: View {
 
     var body: some View {
         ZStack(alignment: .bottomTrailing) {
-            // BACKGROUND
+            // BACKGROUND — fills entire screen
             MabelGradientBackground()
 
-            // CONTENT
+            // CONTENT — vertical ScrollView of StoryCards
             ScrollView {
                 VStack(spacing: 20) {
-                    // Wordmark
-                    MabelWordmark(height: 32)
+                    // Wordmark IMAGE centered
+                    Image("MabelWordmark")
+                        .renderingMode(.original)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(height: 24)
                         .padding(.top, 16)
 
                     // Section header
@@ -28,7 +32,7 @@ struct SavedStoriesView: View {
                     }
 
                     if stories.isEmpty {
-                        // Empty state with mascot
+                        // Empty state — mascot at 80pt with text
                         VStack(spacing: 16) {
                             Spacer()
                                 .frame(height: 40)
@@ -45,7 +49,7 @@ struct SavedStoriesView: View {
                                 .multilineTextAlignment(.center)
                         }
                     } else {
-                        // Story cards
+                        // Story cards — continuous scrollable list
                         ForEach(stories) { story in
                             StoryCard(
                                 entry: story,
@@ -67,7 +71,7 @@ struct SavedStoriesView: View {
                 .padding(.horizontal, 24)
             }
 
-            // Floating action button
+            // Floating action button — bottom-right, 56pt circle, teal, "+" icon
             Button(action: onNewRecording) {
                 Image(systemName: "plus")
                     .font(.system(size: 24, weight: .semibold))
