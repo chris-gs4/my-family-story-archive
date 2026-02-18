@@ -26,5 +26,7 @@
 	<array>
 		<string>Comfortaa-Variable.ttf</string>
 	</array>
+	<key>UILaunchScreen</key>
+	<dict/>
 </dict>
 </plist>

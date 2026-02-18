@@ -47,124 +47,120 @@ struct SetupView: View {
     let onStart: () -> Void
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 24) {
-                // Wordmark
-                HStack {
-                    Spacer()
-                    MabelWordmark(height: scaled(26))
-                    Spacer()
-                }
-                .padding(.top, 8)
+        ZStack {
+            // BACKGROUND
+            MabelGradientBackground()
 
-                // Heading
-                Text("Whose Story Are We Telling?")
-                    .font(.comfortaa(scaled(24), weight: .bold))
-                    .foregroundColor(.mabelText)
-
-                // Name field
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("Name")
-                        .font(.comfortaa(14, weight: .bold))
-                        .foregroundColor(.mabelText)
-
-                    TextField("Enter their name", text: $setupData.name)
-                        .font(.comfortaa(16, weight: .regular))
-                        .padding(.horizontal, 16)
-                        .padding(.vertical, 14)
-                        .background(
-                            RoundedRectangle(cornerRadius: 12)
-                                .fill(Color.white)
-                        )
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 12)
-                                .strokeBorder(Color.mabelSubtle.opacity(0.3), lineWidth: 1)
-                        )
-                }
-
-                // Relationship
-                VStack(alignment: .leading, spacing: 10) {
-                    Text("Relationship")
-                        .font(.comfortaa(14, weight: .bold))
-                        .foregroundColor(.mabelText)
-
-                    FlowLayout(spacing: 8) {
-                        ForEach(SetupData.relationships, id: \.self) { relationship in
-                            PillButton(
-                                title: relationship,
-                                isSelected: setupData.relationship == relationship
-                            ) {
-                                setupData.relationship = relationship
-                            }
-                        }
-                    }
-                }
-
-                // Topics
-                VStack(alignment: .leading, spacing: 10) {
+            // CONTENT
+            ScrollView {
+                VStack(alignment: .leading, spacing: 24) {
+                    // Wordmark
                     HStack {
-                        Text("Topics")
-                            .font(.comfortaa(14, weight: .bold))
-                            .foregroundColor(.mabelText)
+                        Spacer()
+                        MabelWordmark(height: 32)
                         Spacer()
                     }
+                    .padding(.top, 16)
 
-                    // Free journaling option
-                    Button(action: {
-                        setupData.isFreeJournaling.toggle()
-                        if setupData.isFreeJournaling {
-                            setupData.topics.removeAll()
-                        }
-                    }) {
-                        HStack(spacing: 6) {
-                            Image(systemName: setupData.isFreeJournaling ? "checkmark.circle.fill" : "circle")
-                                .font(.system(size: 16))
-                                .foregroundColor(setupData.isFreeJournaling ? .mabelTeal : .mabelSubtle)
-                            Text("I'll figure it out as I go")
-                                .font(.comfortaa(13, weight: .medium))
-                                .foregroundColor(.mabelSubtle)
-                        }
+                    // Heading
+                    Text("Whose Story Are We Telling?")
+                        .font(.comfortaa(28, weight: .bold))
+                        .foregroundColor(.mabelText)
+
+                    // Name field
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Name")
+                            .font(.comfortaa(14, weight: .bold))
+                            .foregroundColor(.mabelText)
+
+                        TextField("Enter their name", text: $setupData.name)
+                            .font(.comfortaa(16, weight: .regular))
+                            .foregroundColor(.mabelText)
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 14)
+                            .background(
+                                RoundedRectangle(cornerRadius: 12)
+                                    .fill(Color.mabelSurface.opacity(0.9))
+                            )
                     }
 
-                    if !setupData.isFreeJournaling {
+                    // Relationship
+                    VStack(alignment: .leading, spacing: 10) {
+                        Text("Relationship")
+                            .font(.comfortaa(14, weight: .bold))
+                            .foregroundColor(.mabelText)
+
                         FlowLayout(spacing: 8) {
-                            ForEach(SetupData.topics, id: \.self) { topic in
+                            ForEach(SetupData.relationships, id: \.self) { relationship in
                                 PillButton(
-                                    title: topic,
-                                    isSelected: setupData.topics.contains(topic)
+                                    title: relationship,
+                                    isSelected: setupData.relationship == relationship
                                 ) {
-                                    if setupData.topics.contains(topic) {
-                                        setupData.topics.remove(topic)
-                                    } else if setupData.topics.count < 3 {
-                                        setupData.topics.insert(topic)
-                                    }
+                                    setupData.relationship = relationship
                                 }
                             }
                         }
+                    }
 
-                        if setupData.topics.count >= 3 {
-                            Text("Maximum 3 topics selected")
-                                .font(.comfortaa(11, weight: .regular))
+                    // Topics
+                    VStack(alignment: .leading, spacing: 10) {
+                        Text("Topics")
+                            .font(.comfortaa(14, weight: .bold))
+                            .foregroundColor(.mabelText)
+
+                        // Free journaling as subtle text link ABOVE pills
+                        Button(action: {
+                            setupData.isFreeJournaling.toggle()
+                            if setupData.isFreeJournaling {
+                                setupData.topics.removeAll()
+                            }
+                        }) {
+                            Text("I'll figure it out as I go")
+                                .font(.comfortaa(14, weight: .regular))
                                 .foregroundColor(.mabelSubtle)
+                                .underline(setupData.isFreeJournaling, color: .mabelSubtle)
+                        }
+
+                        if !setupData.isFreeJournaling {
+                            FlowLayout(spacing: 8) {
+                                ForEach(SetupData.topics, id: \.self) { topic in
+                                    PillButton(
+                                        title: topic,
+                                        isSelected: setupData.topics.contains(topic)
+                                    ) {
+                                        if setupData.topics.contains(topic) {
+                                            setupData.topics.remove(topic)
+                                        } else if setupData.topics.count < 3 {
+                                            setupData.topics.insert(topic)
+                                        }
+                                    }
+                                }
+                            }
+
+                            if setupData.topics.count >= 3 {
+                                Text("Maximum 3 topics selected")
+                                    .font(.comfortaa(12, weight: .regular))
+                                    .foregroundColor(.mabelSubtle)
+                            }
                         }
                     }
+
+                    Spacer()
+                        .frame(height: 16)
+
+                    // CTA
+                    CTAButton(
+                        title: "Let's Start",
+                        isDisabled: !setupData.isComplete,
+                        action: onStart
+                    )
+
+                    Spacer()
+                        .frame(height: 40)
                 }
-
-                Spacer()
-                    .frame(height: 16)
-
-                // CTA
-                CTAButton(
-                    title: "Let's Start",
-                    isDisabled: !setupData.isComplete,
-                    action: onStart
-                )
+                .padding(.horizontal, 24)
             }
-            .padding(.horizontal, 24)
-            .padding(.bottom, 32)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.mabelBackground.ignoresSafeArea())
         .navigationBarHidden(true)
     }
 }

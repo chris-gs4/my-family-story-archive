@@ -9,34 +9,39 @@ struct SavedStoriesView: View {
 
     var body: some View {
         ZStack(alignment: .bottomTrailing) {
+            // BACKGROUND
+            MabelGradientBackground()
+
+            // CONTENT
             ScrollView {
                 VStack(spacing: 20) {
                     // Wordmark
-                    MabelWordmark(height: scaled(26))
-                        .padding(.top, 12)
+                    MabelWordmark(height: 32)
+                        .padding(.top, 16)
 
                     // Section header
                     HStack {
                         Text("Your Stories")
-                            .font(.comfortaa(scaled(24), weight: .bold))
+                            .font(.comfortaa(28, weight: .bold))
                             .foregroundColor(.mabelText)
                         Spacer()
                     }
 
                     if stories.isEmpty {
-                        // Empty state
+                        // Empty state with mascot
                         VStack(spacing: 16) {
                             Spacer()
                                 .frame(height: 40)
-                            Image(systemName: "book.closed")
-                                .font(.system(size: 48))
-                                .foregroundColor(.mabelSubtle.opacity(0.5))
+                            Image("MabelMascot")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 80, height: 80)
                             Text("No stories yet")
                                 .font(.comfortaa(18, weight: .medium))
                                 .foregroundColor(.mabelSubtle)
-                            Text("Tap the + button to record your first memory")
+                            Text("Tap + to start recording.")
                                 .font(.comfortaa(14, weight: .regular))
-                                .foregroundColor(.mabelSubtle.opacity(0.8))
+                                .foregroundColor(.mabelSubtle)
                                 .multilineTextAlignment(.center)
                         }
                     } else {
@@ -65,9 +70,9 @@ struct SavedStoriesView: View {
             // Floating action button
             Button(action: onNewRecording) {
                 Image(systemName: "plus")
-                    .font(.system(size: scaled(24), weight: .semibold))
-                    .foregroundColor(.mabelBackground)
-                    .frame(width: scaled(56), height: scaled(56))
+                    .font(.system(size: 24, weight: .semibold))
+                    .foregroundColor(.white)
+                    .frame(width: 56, height: 56)
                     .background(
                         Circle()
                             .fill(Color.mabelTeal)
@@ -75,10 +80,8 @@ struct SavedStoriesView: View {
                     )
             }
             .padding(.trailing, 24)
-            .padding(.bottom, 24)
+            .padding(.bottom, 40)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.mabelBackground.ignoresSafeArea())
         .navigationBarHidden(true)
         .sheet(isPresented: $isShowingAddDetails) {
             if let story = selectedStory,

@@ -1,10 +1,11 @@
 import SwiftUI
 
 struct MabelWordmark: View {
-    var height: CGFloat = 28
+    var height: CGFloat = 32
 
     var body: some View {
         Image("MabelWordmark")
+            .renderingMode(.original)
             .resizable()
             .scaledToFit()
             .frame(height: height)

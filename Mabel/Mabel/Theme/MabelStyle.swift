@@ -5,16 +5,18 @@ struct CTAButtonStyle: ButtonStyle {
 
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .font(.comfortaa(17, weight: .bold))
+            .font(.comfortaa(18, weight: .bold))
             .foregroundColor(isDisabled ? .mabelSubtle : .mabelBackground)
             .frame(maxWidth: .infinity)
-            .padding(.vertical, 16)
+            .frame(height: 56)
             .background(
                 Capsule()
                     .fill(isDisabled ? Color.mabelSurface : Color.mabelTeal)
             )
-            .opacity(configuration.isPressed ? 0.85 : 1.0)
-            .animation(.easeInOut(duration: 0.15), value: configuration.isPressed)
+            .clipShape(Capsule())
+            .opacity(isDisabled ? 0.4 : 1.0)
+            .scaleEffect(configuration.isPressed ? 0.97 : 1.0)
+            .animation(.spring(response: 0.3), value: configuration.isPressed)
     }
 }
 
@@ -23,10 +25,10 @@ struct PillButtonStyle: ButtonStyle {
 
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .font(.comfortaa(14, weight: isSelected ? .bold : .regular))
-            .foregroundColor(isSelected ? .mabelBackground : .mabelText)
-            .padding(.horizontal, 18)
-            .padding(.vertical, 10)
+            .font(.comfortaa(15, weight: isSelected ? .bold : .regular))
+            .foregroundColor(isSelected ? .white : .mabelText)
+            .padding(.horizontal, 20)
+            .frame(height: 44)
             .background(
                 Capsule()
                     .fill(isSelected ? Color.mabelTeal : Color.mabelSurface)
@@ -35,8 +37,8 @@ struct PillButtonStyle: ButtonStyle {
                 Capsule()
                     .strokeBorder(isSelected ? Color.clear : Color.mabelSubtle.opacity(0.3), lineWidth: 1)
             )
-            .opacity(configuration.isPressed ? 0.85 : 1.0)
-            .animation(.easeInOut(duration: 0.15), value: configuration.isPressed)
+            .scaleEffect(configuration.isPressed ? 0.97 : 1.0)
+            .animation(.spring(response: 0.3, dampingFraction: 0.6), value: configuration.isPressed)
     }
 }
 

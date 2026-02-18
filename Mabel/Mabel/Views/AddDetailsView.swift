@@ -16,18 +16,22 @@ struct AddDetailsView: View {
 
     var body: some View {
         NavigationStack {
-            Group {
-                switch currentScreen {
-                case .menu:
-                    menuView
-                case .addCharacter:
-                    addCharacterView
-                case .addDetails:
-                    addSceneView
+            ZStack {
+                // BACKGROUND
+                MabelGradientBackground()
+
+                // CONTENT
+                Group {
+                    switch currentScreen {
+                    case .menu:
+                        menuView
+                    case .addCharacter:
+                        addCharacterView
+                    case .addDetails:
+                        addSceneView
+                    }
                 }
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(Color.mabelBackground.ignoresSafeArea())
         }
     }
 
@@ -36,7 +40,7 @@ struct AddDetailsView: View {
         VStack(alignment: .leading, spacing: 20) {
             // Header
             Text("Add Details")
-                .font(.comfortaa(scaled(24), weight: .bold))
+                .font(.comfortaa(28, weight: .bold))
                 .foregroundColor(.mabelText)
                 .padding(.top, 24)
 
@@ -67,14 +71,10 @@ struct AddDetailsView: View {
                     Image(systemName: "chevron.right")
                         .foregroundColor(.mabelSubtle)
                 }
-                .padding(20)
+                .padding(16)
                 .background(
-                    RoundedRectangle(cornerRadius: 14)
-                        .fill(Color.white)
-                )
-                .overlay(
-                    RoundedRectangle(cornerRadius: 14)
-                        .strokeBorder(Color.mabelSubtle.opacity(0.2), lineWidth: 1)
+                    RoundedRectangle(cornerRadius: 16)
+                        .fill(Color.mabelSurface.opacity(0.9))
                 )
             }
 
@@ -97,14 +97,10 @@ struct AddDetailsView: View {
                     Image(systemName: "chevron.right")
                         .foregroundColor(.mabelSubtle)
                 }
-                .padding(20)
+                .padding(16)
                 .background(
-                    RoundedRectangle(cornerRadius: 14)
-                        .fill(Color.white)
-                )
-                .overlay(
-                    RoundedRectangle(cornerRadius: 14)
-                        .strokeBorder(Color.mabelSubtle.opacity(0.2), lineWidth: 1)
+                    RoundedRectangle(cornerRadius: 16)
+                        .fill(Color.mabelSurface.opacity(0.9))
                 )
             }
 
@@ -114,7 +110,7 @@ struct AddDetailsView: View {
             CTAButton(title: "Save") {
                 dismiss()
             }
-            .padding(.bottom, 24)
+            .padding(.bottom, 40)
         }
         .padding(.horizontal, 24)
     }
@@ -138,28 +134,24 @@ struct AddDetailsView: View {
             .padding(.top, 16)
 
             Text("Who's in this story?")
-                .font(.comfortaa(22, weight: .bold))
+                .font(.comfortaa(28, weight: .bold))
                 .foregroundColor(.mabelText)
 
             TextEditor(text: $characterText)
-                .font(.comfortaa(15, weight: .regular))
+                .font(.comfortaa(16, weight: .regular))
                 .foregroundColor(.mabelText)
                 .scrollContentBackground(.hidden)
-                .frame(maxHeight: .infinity)
+                .frame(minHeight: 200, maxHeight: .infinity)
                 .padding(16)
                 .background(
-                    RoundedRectangle(cornerRadius: 14)
-                        .fill(Color.white)
-                )
-                .overlay(
-                    RoundedRectangle(cornerRadius: 14)
-                        .strokeBorder(Color.mabelSubtle.opacity(0.2), lineWidth: 1)
+                    RoundedRectangle(cornerRadius: 16)
+                        .fill(Color.mabelSurface.opacity(0.9))
                 )
                 .overlay(alignment: .topLeading, content: {
                     if characterText.isEmpty {
                         Text("Describe them — name, how you know them, what they looked like, anything you remember...")
-                            .font(.comfortaa(14, weight: .regular))
-                            .foregroundColor(.mabelSubtle.opacity(0.6))
+                            .font(.comfortaa(16, weight: .regular))
+                            .foregroundColor(.mabelSubtle)
                             .padding(20)
                             .allowsHitTesting(false)
                     }
@@ -171,7 +163,7 @@ struct AddDetailsView: View {
                     currentScreen = .menu
                 }
             }
-            .padding(.bottom, 24)
+            .padding(.bottom, 40)
         }
         .padding(.horizontal, 24)
     }
@@ -195,28 +187,24 @@ struct AddDetailsView: View {
             .padding(.top, 16)
 
             Text("Set the Scene")
-                .font(.comfortaa(22, weight: .bold))
+                .font(.comfortaa(28, weight: .bold))
                 .foregroundColor(.mabelText)
 
             TextEditor(text: $sceneText)
-                .font(.comfortaa(15, weight: .regular))
+                .font(.comfortaa(16, weight: .regular))
                 .foregroundColor(.mabelText)
                 .scrollContentBackground(.hidden)
-                .frame(maxHeight: .infinity)
+                .frame(minHeight: 200, maxHeight: .infinity)
                 .padding(16)
                 .background(
-                    RoundedRectangle(cornerRadius: 14)
-                        .fill(Color.white)
-                )
-                .overlay(
-                    RoundedRectangle(cornerRadius: 14)
-                        .strokeBorder(Color.mabelSubtle.opacity(0.2), lineWidth: 1)
+                    RoundedRectangle(cornerRadius: 16)
+                        .fill(Color.mabelSurface.opacity(0.9))
                 )
                 .overlay(alignment: .topLeading, content: {
                     if sceneText.isEmpty {
-                        Text("Where were you? What did it feel like? Describe the place, the weather, the mood...")
-                            .font(.comfortaa(14, weight: .regular))
-                            .foregroundColor(.mabelSubtle.opacity(0.6))
+                        Text("Where were you? What did it feel like? Describe the place, the weather, the mood — anything that brings this memory to life...")
+                            .font(.comfortaa(16, weight: .regular))
+                            .foregroundColor(.mabelSubtle)
                             .padding(20)
                             .allowsHitTesting(false)
                     }
@@ -228,7 +216,7 @@ struct AddDetailsView: View {
                     currentScreen = .menu
                 }
             }
-            .padding(.bottom, 24)
+            .padding(.bottom, 40)
         }
         .padding(.horizontal, 24)
     }

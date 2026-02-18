@@ -1,11 +1,11 @@
 {
   "images" : [
     {
+      "filename" : "gradient-app-background.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "mabel_type.png",
       "idiom" : "universal",
       "scale" : "2x"
     },

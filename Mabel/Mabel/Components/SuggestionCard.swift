@@ -8,7 +8,7 @@ struct SuggestionCard: View {
         Button(action: action) {
             HStack {
                 Text(prompt)
-                    .font(.comfortaa(14, weight: .regular))
+                    .font(.comfortaa(15, weight: .regular))
                     .foregroundColor(.mabelText)
                     .multilineTextAlignment(.leading)
                 Spacer()
@@ -16,17 +16,13 @@ struct SuggestionCard: View {
                     .font(.system(size: 12, weight: .semibold))
                     .foregroundColor(.mabelSubtle)
             }
-            .padding(.horizontal, 16)
-            .padding(.vertical, 14)
+            .padding(16)
             .background(
                 RoundedRectangle(cornerRadius: 12)
-                    .fill(Color.mabelSurface)
-            )
-            .overlay(
-                RoundedRectangle(cornerRadius: 12)
-                    .strokeBorder(Color.mabelSubtle.opacity(0.2), lineWidth: 1)
+                    .fill(Color.mabelSurface.opacity(0.95))
             )
         }
+        .buttonStyle(.plain)
     }
 }
 

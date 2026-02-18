@@ -15,19 +15,13 @@ struct StoryCard: View {
         VStack(alignment: .leading, spacing: 12) {
             // Title
             Text(entry.title)
-                .font(.comfortaa(22, weight: .bold))
+                .font(.comfortaa(20, weight: .bold))
                 .foregroundColor(.mabelText)
 
-            // Date pill
+            // Date
             Text(formattedDate)
-                .font(.comfortaa(12, weight: .medium))
+                .font(.comfortaa(12, weight: .light))
                 .foregroundColor(.mabelSubtle)
-                .padding(.horizontal, 12)
-                .padding(.vertical, 6)
-                .background(
-                    Capsule()
-                        .fill(Color.mabelSurface)
-                )
 
             // Divider
             Rectangle()
@@ -38,13 +32,13 @@ struct StoryCard: View {
             Text(entry.previewText)
                 .font(.comfortaa(14, weight: .regular))
                 .foregroundColor(.mabelText.opacity(0.85))
-                .lineLimit(4)
+                .lineLimit(3)
                 .lineSpacing(4)
 
             // Read More button
             Button(action: onReadMore) {
                 Text("Read More")
-                    .font(.comfortaa(13, weight: .bold))
+                    .font(.comfortaa(14, weight: .medium))
                     .foregroundColor(.mabelTeal)
             }
 
@@ -63,22 +57,16 @@ struct StoryCard: View {
 
                 Button(action: onAddDetails) {
                     Text("Add Details")
-                        .font(.comfortaa(13, weight: .bold))
+                        .font(.comfortaa(14, weight: .medium))
                         .foregroundColor(.mabelTeal)
-                        .padding(.horizontal, 16)
-                        .padding(.vertical, 8)
-                        .background(
-                            Capsule()
-                                .strokeBorder(Color.mabelTeal, lineWidth: 1.5)
-                        )
                 }
             }
         }
-        .padding(20)
+        .padding(16)
         .background(
             RoundedRectangle(cornerRadius: 16)
-                .fill(Color.white)
-                .shadow(color: Color.mabelText.opacity(0.06), radius: 8, x: 0, y: 2)
+                .fill(Color.mabelSurface.opacity(0.95))
+                .shadow(color: Color.mabelText.opacity(0.05), radius: 8, x: 0, y: 2)
         )
     }
 }

@@ -10,13 +10,14 @@ struct SetupData {
 
     static let topics = [
         "Childhood",
-        "Family traditions",
-        "Career & work",
-        "Love & relationships",
-        "Travel & adventure",
-        "Health & adversity",
-        "Life lessons",
-        "Milestones"
+        "Immigration",
+        "Career",
+        "Family",
+        "War / Service",
+        "Education",
+        "Faith",
+        "Love / Relationships",
+        "Health / Overcoming Adversity"
     ]
 
     var isComplete: Bool {

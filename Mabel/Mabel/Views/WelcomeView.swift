@@ -6,75 +6,80 @@ struct WelcomeView: View {
     @State private var mascotGlow = false
 
     var body: some View {
-        VStack(spacing: 0) {
-            Spacer()
-                .frame(height: scaled(20))
+        ZStack {
+            // BACKGROUND — fills entire screen
+            MabelGradientBackground()
 
-            // Wordmark
-            MabelWordmark(height: scaled(30))
-                .padding(.bottom, scaled(32))
+            // CONTENT — respects safe areas
+            VStack(spacing: 0) {
+                // Brand anchor — wordmark at top
+                MabelWordmark(height: 32)
+                    .padding(.top, 16)
+                    .padding(.bottom, 20)
 
-            // Mascot with warm glow
-            ZStack {
-                // Soft radial glow behind mascot
-                Circle()
-                    .fill(
-                        RadialGradient(
-                            gradient: Gradient(colors: [
-                                Color.mabelGold.opacity(0.25),
-                                Color.mabelGold.opacity(0.08),
-                                Color.clear
-                            ]),
-                            center: .center,
-                            startRadius: scaled(20),
-                            endRadius: scaled(140)
+                // Mascot with warm glow — top third, tight to headline
+                ZStack {
+                    // Soft radial glow behind mascot
+                    Circle()
+                        .fill(
+                            RadialGradient(
+                                gradient: Gradient(colors: [
+                                    Color.mabelGold.opacity(0.15),
+                                    Color.mabelGold.opacity(0.05),
+                                    Color.clear
+                                ]),
+                                center: .center,
+                                startRadius: 20,
+                                endRadius: 140
+                            )
                         )
-                    )
-                    .frame(width: scaled(280), height: scaled(280))
-                    .scaleEffect(mascotGlow ? 1.05 : 1.0)
-                    .animation(
-                        .easeInOut(duration: 2.5).repeatForever(autoreverses: true),
-                        value: mascotGlow
-                    )
+                        .frame(width: 280, height: 280)
+                        .scaleEffect(mascotGlow ? 1.05 : 1.0)
+                        .animation(
+                            .easeInOut(duration: 2.5).repeatForever(autoreverses: true),
+                            value: mascotGlow
+                        )
 
-                Image("MabelMascot")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: scaled(200), height: scaled(200))
+                    Image("MabelMascot")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 200, height: 200)
+                }
+                .padding(.bottom, 16)
+
+                // Headline — grouped tightly with mascot and subcopy
+                Text("Tell your story")
+                    .font(.comfortaa(32, weight: .bold))
+                    .foregroundColor(.mabelText)
+                    .padding(.bottom, 6)
+
+                // Subcopy — tighter, warmer, slightly larger
+                Text("Your stories, written with care.")
+                    .font(.comfortaa(17, weight: .medium))
+                    .foregroundColor(.mabelText.opacity(0.65))
+                    .multilineTextAlignment(.center)
+
+                // Push CTA toward bottom
+                Spacer()
+
+                // CTA
+                CTAButton(title: "Start telling", action: onGetStarted)
+
+                // Sign-in link
+                Button(action: {}) {
+                    HStack(spacing: 4) {
+                        Text("Already have an account?")
+                            .foregroundColor(.mabelSubtle)
+                        Text("Sign in")
+                            .foregroundColor(.mabelTeal)
+                    }
+                    .font(.comfortaa(14, weight: .regular))
+                }
+                .padding(.top, 12)
+                .padding(.bottom, 40)
             }
-            .padding(.bottom, scaled(32))
-
-            // Headline
-            Text("Tell your story")
-                .font(.comfortaa(scaled(28), weight: .bold))
-                .foregroundColor(.mabelText)
-                .padding(.bottom, 8)
-
-            // Subtext
-            Text("Record your memories.\nMabel will turn them into something beautiful.")
-                .font(.comfortaa(scaled(16), weight: .regular))
-                .foregroundColor(.mabelSubtle)
-                .multilineTextAlignment(.center)
-                .lineSpacing(4)
-                .padding(.horizontal, 32)
-
-            Spacer()
-
-            // CTA
-            CTAButton(title: "Get Started", action: onGetStarted)
-                .padding(.horizontal, 24)
-
-            // Sign-in link placeholder
-            Button(action: {}) {
-                Text("Already have an account? Sign in")
-                    .font(.comfortaa(scaled(13), weight: .regular))
-                    .foregroundColor(.mabelSubtle)
-            }
-            .padding(.top, 12)
-            .padding(.bottom, 32)
+            .padding(.horizontal, 24)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.mabelBackground.ignoresSafeArea())
         .navigationBarHidden(true)
         .onAppear {
             mascotGlow = true

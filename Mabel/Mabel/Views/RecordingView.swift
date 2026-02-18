@@ -29,160 +29,149 @@ struct RecordingView: View {
     }
 
     var body: some View {
-        VStack(spacing: 0) {
-            // Wordmark
-            MabelWordmark(height: scaled(26))
-                .padding(.top, 12)
-                .padding(.bottom, scaled(24))
+        ZStack {
+            // BACKGROUND
+            MabelGradientBackground()
 
-            // Prompt header
-            if let prompt = prompt {
-                Text(prompt)
-                    .font(.comfortaa(scaled(20), weight: .bold))
+            // CONTENT
+            VStack(spacing: 0) {
+                // Prompt header
+                if let prompt = prompt {
+                    Text(prompt)
+                        .font(.comfortaa(20, weight: .bold))
+                        .foregroundColor(.mabelText)
+                        .multilineTextAlignment(.center)
+                        .lineSpacing(2)
+                        .padding(.horizontal, 16)
+                        .padding(.top, 16)
+                        .padding(.bottom, 4)
+
+                    Text("Selected prompt")
+                        .font(.comfortaa(12, weight: .regular))
+                        .foregroundColor(.mabelSubtle)
+                        .padding(.bottom, 24)
+                } else {
+                    Text("Free Recording")
+                        .font(.comfortaa(20, weight: .bold))
+                        .foregroundColor(.mabelText)
+                        .padding(.top, 16)
+                        .padding(.bottom, 24)
+                }
+
+                Spacer()
+
+                // Mic circle
+                ZStack {
+                    // Outer glow when recording
+                    if isRecording && !isPaused {
+                        Circle()
+                            .fill(micColor.opacity(0.15))
+                            .frame(width: 120, height: 120)
+                            .scaleEffect(isRecording ? 1.2 : 1.0)
+                            .animation(
+                                .easeInOut(duration: 1.0).repeatForever(autoreverses: true),
+                                value: isRecording
+                            )
+                    }
+
+                    Circle()
+                        .fill(micColor)
+                        .frame(width: 88, height: 88)
+                        .shadow(color: micColor.opacity(0.3), radius: 10, x: 0, y: 4)
+
+                    Image(systemName: isPaused ? "pause.fill" : "mic.fill")
+                        .font(.system(size: 34))
+                        .foregroundColor(.white)
+                }
+                .padding(.bottom, 24)
+
+                // Waveform
+                WaveformView(
+                    isAnimating: isRecording && !isPaused,
+                    barCount: 24,
+                    tintColor: micColor
+                )
+                .padding(.horizontal, 40)
+                .padding(.bottom, 20)
+
+                // Timer
+                Text(formattedTime)
+                    .font(.comfortaa(24, weight: .medium))
                     .foregroundColor(.mabelText)
-                    .multilineTextAlignment(.center)
-                    .lineSpacing(2)
-                    .padding(.horizontal, 16)
+                    .monospacedDigit()
                     .padding(.bottom, 4)
 
-                Text("Selected prompt")
-                    .font(.comfortaa(scaled(12), weight: .regular))
-                    .foregroundColor(.mabelSubtle)
-                    .padding(.bottom, scaled(24))
-            } else {
-                Text("Free Recording")
-                    .font(.comfortaa(scaled(20), weight: .bold))
-                    .foregroundColor(.mabelText)
-                    .padding(.bottom, scaled(24))
-            }
-
-            Spacer()
-
-            // Mic circle
-            ZStack {
-                // Outer glow when recording
-                if isRecording && !isPaused {
-                    Circle()
-                        .fill(micColor.opacity(0.15))
-                        .frame(width: scaled(120), height: scaled(120))
-                        .scaleEffect(isRecording ? 1.2 : 1.0)
-                        .animation(
-                            .easeInOut(duration: 1.0).repeatForever(autoreverses: true),
-                            value: isRecording
-                        )
-                }
-
-                Circle()
-                    .fill(micColor)
-                    .frame(width: scaled(88), height: scaled(88))
-                    .shadow(color: micColor.opacity(0.3), radius: 10, x: 0, y: 4)
-
-                Image(systemName: isPaused ? "pause.fill" : "mic.fill")
-                    .font(.system(size: scaled(34)))
-                    .foregroundColor(.white)
-            }
-            .padding(.bottom, scaled(24))
-
-            // Waveform
-            WaveformView(
-                isAnimating: isRecording && !isPaused,
-                barCount: 24,
-                tintColor: micColor
-            )
-            .padding(.horizontal, 40)
-            .padding(.bottom, 20)
-
-            // Timer
-            Text(formattedTime)
-                .font(.comfortaa(scaled(36), weight: .bold))
-                .foregroundColor(.mabelText)
-                .monospacedDigit()
-                .padding(.bottom, 4)
-
-            // Status
-            HStack(spacing: 6) {
-                if isRecording && !isPaused {
-                    Circle()
-                        .fill(Color.mabelBurgundy)
-                        .frame(width: 8, height: 8)
-                }
-                Text(statusText)
-                    .font(.comfortaa(scaled(14), weight: .medium))
-                    .foregroundColor(.mabelSubtle)
-            }
-
-            Spacer()
-
-            // Bottom controls
-            HStack(spacing: scaled(20)) {
-                // Clear button
-                Button(action: {
-                    stopTimer()
-                    onClear()
-                }) {
-                    VStack(spacing: 6) {
-                        Image(systemName: "xmark.circle")
-                            .font(.system(size: scaled(24)))
-                        Text("Clear")
-                            .font(.comfortaa(scaled(12), weight: .medium))
+                // Status
+                HStack(spacing: 6) {
+                    if isRecording && !isPaused {
+                        Circle()
+                            .fill(Color.mabelBurgundy)
+                            .frame(width: 8, height: 8)
                     }
-                    .foregroundColor(.mabelSubtle)
-                    .frame(width: scaled(72), height: scaled(60))
-                    .background(
-                        RoundedRectangle(cornerRadius: 12)
-                            .fill(Color.mabelSurface)
-                    )
+                    Text(statusText)
+                        .font(.comfortaa(14, weight: .medium))
+                        .foregroundColor(.mabelSubtle)
                 }
 
-                // Pause/Resume button
-                Button(action: {
-                    if isPaused {
-                        isPaused = false
-                        startTimer()
-                    } else {
-                        isPaused = true
+                Spacer()
+
+                // Bottom controls
+                HStack(spacing: 24) {
+                    // Clear button — text only, burgundy
+                    Button(action: {
                         stopTimer()
+                        onClear()
+                    }) {
+                        Text("Clear")
+                            .font(.comfortaa(14, weight: .medium))
+                            .foregroundColor(.mabelBurgundy)
                     }
-                }) {
-                    VStack(spacing: 6) {
-                        Image(systemName: isPaused ? "play.fill" : "pause.fill")
-                            .font(.system(size: scaled(24)))
-                        Text(isPaused ? "Resume" : "Pause")
-                            .font(.comfortaa(scaled(12), weight: .medium))
-                    }
-                    .foregroundColor(.mabelTeal)
-                    .frame(width: scaled(72), height: scaled(60))
-                    .background(
-                        RoundedRectangle(cornerRadius: 12)
-                            .fill(Color.mabelSurface)
-                    )
-                }
 
-                // Save Memory button
-                Button(action: {
-                    stopTimer()
-                    onSave()
-                }) {
-                    VStack(spacing: 6) {
-                        Image(systemName: "checkmark.circle.fill")
-                            .font(.system(size: scaled(24)))
-                        Text("Save\nMemory")
-                            .font(.comfortaa(scaled(11), weight: .bold))
-                            .multilineTextAlignment(.center)
+                    Spacer()
+
+                    // Pause/Resume button — secondary style
+                    Button(action: {
+                        if isPaused {
+                            isPaused = false
+                            startTimer()
+                        } else {
+                            isPaused = true
+                            stopTimer()
+                        }
+                    }) {
+                        Text(isPaused ? "Resume" : "Pause")
+                            .font(.comfortaa(14, weight: .medium))
+                            .foregroundColor(.mabelTeal)
+                            .padding(.horizontal, 20)
+                            .padding(.vertical, 10)
+                            .background(
+                                Capsule()
+                                    .strokeBorder(Color.mabelTeal, lineWidth: 1.5)
+                            )
                     }
-                    .foregroundColor(.mabelBackground)
-                    .frame(width: scaled(72), height: scaled(60))
-                    .background(
-                        RoundedRectangle(cornerRadius: 12)
-                            .fill(Color.mabelTeal)
-                    )
+
+                    Spacer()
+
+                    // Save Memory button — teal CTA style
+                    Button(action: {
+                        stopTimer()
+                        onSave()
+                    }) {
+                        Text("Save Memory")
+                            .font(.comfortaa(14, weight: .bold))
+                            .foregroundColor(.white)
+                            .padding(.horizontal, 20)
+                            .padding(.vertical, 10)
+                            .background(
+                                Capsule()
+                                    .fill(Color.mabelTeal)
+                            )
+                    }
                 }
+                .padding(.bottom, 40)
             }
-            .padding(.bottom, 40)
+            .padding(.horizontal, 24)
         }
-        .padding(.horizontal, 24)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.mabelBackground.ignoresSafeArea())
         .navigationBarHidden(true)
         .onAppear {
             startTimer()
