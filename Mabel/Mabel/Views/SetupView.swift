@@ -43,18 +43,23 @@ struct FlowLayout: Layout {
 }
 
 struct SetupView: View {
-    @Binding var setupData: SetupData
-    let onStart: () -> Void
+    @Environment(AppState.self) private var appState
+    @State private var displayName = ""
+    @State private var selectedGoal: String? = nil
+
+    private let writingGoals = ["1x week", "2x week", "3x week", "I'll write when I want"]
+
+    private var isFormValid: Bool {
+        !displayName.trimmingCharacters(in: .whitespaces).isEmpty
+    }
 
     var body: some View {
         ZStack {
-            // BACKGROUND — fills entire screen
             MabelGradientBackground()
 
-            // CONTENT — in ScrollView since this screen has a lot of content
             ScrollView {
                 VStack(alignment: .leading, spacing: 0) {
-                    // Wordmark IMAGE centered
+                    // Wordmark centered
                     HStack {
                         Spacer()
                         Image("MabelWordmark")
@@ -65,21 +70,15 @@ struct SetupView: View {
                         Spacer()
                     }
                     .padding(.top, 16)
-                    .padding(.bottom, 24)
-
-                    // Heading
-                    Text("Whose Story Are We Telling?")
-                        .font(.comfortaa(28, weight: .bold))
-                        .foregroundColor(.mabelText)
-                        .padding(.bottom, 32)
+                    .padding(.bottom, 40)
 
                     // Name field
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("Name")
-                            .font(.comfortaa(14, weight: .bold))
+                        Text("Tell us your name:")
+                            .font(.comfortaa(16, weight: .bold))
                             .foregroundColor(.mabelText)
 
-                        TextField("Enter their name", text: $setupData.name)
+                        TextField("Your name", text: $displayName)
                             .font(.comfortaa(16, weight: .regular))
                             .foregroundColor(.mabelText)
                             .padding(.horizontal, 16)
@@ -91,74 +90,39 @@ struct SetupView: View {
                     }
                     .padding(.bottom, 32)
 
-                    // Relationship — single-select
-                    VStack(alignment: .leading, spacing: 10) {
-                        Text("Relationship")
-                            .font(.comfortaa(14, weight: .bold))
+                    // Writing goal
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text("Set a writing goal:")
+                            .font(.comfortaa(16, weight: .bold))
                             .foregroundColor(.mabelText)
 
-                        FlowLayout(spacing: 8) {
-                            ForEach(SetupData.relationships, id: \.self) { relationship in
+                        // 2x2 grid
+                        LazyVGrid(columns: [
+                            GridItem(.flexible(), spacing: 8),
+                            GridItem(.flexible(), spacing: 8)
+                        ], spacing: 8) {
+                            ForEach(writingGoals, id: \.self) { goal in
                                 PillButton(
-                                    title: relationship,
-                                    isSelected: setupData.relationship == relationship
+                                    title: goal,
+                                    isSelected: selectedGoal == goal
                                 ) {
-                                    setupData.relationship = relationship
+                                    selectedGoal = goal
                                 }
                             }
                         }
                     }
-                    .padding(.bottom, 32)
+                    .padding(.bottom, 40)
 
-                    // Topics — multi-select (max 3)
-                    VStack(alignment: .leading, spacing: 10) {
-                        Text("Topics")
-                            .font(.comfortaa(14, weight: .bold))
-                            .foregroundColor(.mabelText)
-
-                        // "I'll figure it out" — subtle text link, NOT a pill
-                        Button(action: {
-                            setupData.isFreeJournaling.toggle()
-                            if setupData.isFreeJournaling {
-                                setupData.topics.removeAll()
-                            }
-                        }) {
-                            Text("I'll figure it out as I go")
-                                .font(.comfortaa(14, weight: .regular))
-                                .foregroundColor(.mabelSubtle)
-                                .underline(setupData.isFreeJournaling, color: .mabelSubtle)
-                        }
-
-                        if !setupData.isFreeJournaling {
-                            FlowLayout(spacing: 8) {
-                                ForEach(SetupData.topics, id: \.self) { topic in
-                                    PillButton(
-                                        title: topic,
-                                        isSelected: setupData.topics.contains(topic)
-                                    ) {
-                                        if setupData.topics.contains(topic) {
-                                            setupData.topics.remove(topic)
-                                        } else if setupData.topics.count < 3 {
-                                            setupData.topics.insert(topic)
-                                        }
-                                    }
-                                }
-                            }
-
-                            if setupData.topics.count >= 3 {
-                                Text("Maximum 3 topics selected")
-                                    .font(.comfortaa(12, weight: .regular))
-                                    .foregroundColor(.mabelSubtle)
-                            }
-                        }
-                    }
-                    .padding(.bottom, 32)
-
-                    // CTA — disabled until name filled AND (1+ topic OR free journaling)
+                    // CTA
                     CTAButton(
-                        title: "Let's Start",
-                        isDisabled: !setupData.isComplete,
-                        action: onStart
+                        title: "START RECORDING",
+                        isDisabled: !isFormValid,
+                        action: {
+                            appState.completeOnboarding(
+                                displayName: displayName.trimmingCharacters(in: .whitespaces),
+                                writingGoal: selectedGoal ?? "1x week"
+                            )
+                        }
                     )
 
                     Spacer()
@@ -173,9 +137,7 @@ struct SetupView: View {
 
 #Preview {
     NavigationStack {
-        SetupView(
-            setupData: .constant(SetupData()),
-            onStart: {}
-        )
+        SetupView()
+            .environment(AppState())
     }
 }

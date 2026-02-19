@@ -7,14 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		08F401DCF24259367775270E /* StoryCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00E70160353431C57537F5FA /* StoryCard.swift */; };
+/* StoryCard.swift archived — not in MVP build */
 		0B2694DE10A76C72E13A6C8F /* SuggestionCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF3988DBFC8A4BBEA4E148D1 /* SuggestionCard.swift */; };
 		0C3A08593450F81908F185F0 /* MabelFonts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E5C754C7035FCAB426E34C0 /* MabelFonts.swift */; };
 		10D371C201E9BBD4C0D0AA23 /* CTAButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 382FF0578D1F342556D6B446 /* CTAButton.swift */; };
-		116F4E95F2059F650D51A1A7 /* SetupData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CA5AF5CF2494664CA439512 /* SetupData.swift */; };
 		370E69C609C3FD03BB9E4DDB /* WaveformView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69BAB34C868B293BAC9F2A0E /* WaveformView.swift */; };
-		3B1CBCD719E7F0C68278428A /* RecordPromptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9DB4DDD8E854C2301ACBBAF /* RecordPromptView.swift */; };
-		433FB9554046089B7F4274A5 /* AddDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC9C661494650AAB8985C6D7 /* AddDetailsView.swift */; };
+/* AddDetailsView.swift archived — not in MVP build */
 		5C1097C784EA25FB512A9F81 /* MabelApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABB24DE0618903DE68C06153 /* MabelApp.swift */; };
 		60D38AEEEA8026ED08225174 /* MabelColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3042620F7E213AF3FC7B9E49 /* MabelColors.swift */; };
 		71C2D3A783ED7A2EF9C406E0 /* MabelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 559250AE118047B34ED66150 /* MabelTests.swift */; };
@@ -25,10 +23,23 @@
 		8DDD55576AB174C8778908E2 /* RecordingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A28730F23F9B24BDA342EC /* RecordingView.swift */; };
 		8E23EC0A01ADC4B0EBE88E0D /* MabelStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9172F33589E66F396552AA6D /* MabelStyle.swift */; };
 		97099A06C393E61E571B035B /* WelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28E923E74FD9F74D3FBFCFB8 /* WelcomeView.swift */; };
-		A8A3E3DE49368CF948036F4F /* StoryEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0996C460BE8A3B34A7C33B /* StoryEntry.swift */; };
 		D4646E71CE8CC83C26A6EB16 /* Comfortaa-Variable.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8BDC2A50B95B1EEF1A53BCE3 /* Comfortaa-Variable.ttf */; };
 		E4332695D7A9053C07C9C820 /* MabelWordmark.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61DD224D61070C052EF867D1 /* MabelWordmark.swift */; };
-		F9C4AABCC9960833E7F45FA3 /* SavedStoriesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12479B29D9BC0CE476852822 /* SavedStoriesView.swift */; };
+		AA0001010000000000000001 /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0002010000000000000001 /* UserProfile.swift */; };
+		AA0001010000000000000002 /* Memory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0002010000000000000002 /* Memory.swift */; };
+		AA0001010000000000000003 /* Chapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0002010000000000000003 /* Chapter.swift */; };
+		AA0001010000000000000004 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0002010000000000000004 /* AppState.swift */; };
+		AA0001010000000000000005 /* ChapterPrompts.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0002010000000000000005 /* ChapterPrompts.swift */; };
+		AA0001010000000000000006 /* LibraryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0002010000000000000006 /* LibraryView.swift */; };
+		AA0001010000000000000007 /* RecordingSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0002010000000000000007 /* RecordingSetupView.swift */; };
+		AA0001010000000000000008 /* MyStoriesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0002010000000000000008 /* MyStoriesView.swift */; };
+		AA0001010000000000000009 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0002010000000000000009 /* ProfileView.swift */; };
+		AA0001010000000000000010 /* ChapterCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0002010000000000000010 /* ChapterCard.swift */; };
+		AA0001010000000000000011 /* FeaturedChapterCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0002010000000000000011 /* FeaturedChapterCard.swift */; };
+		AA0001010000000000000012 /* ProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0002010000000000000012 /* ProgressBar.swift */; };
+		AA0001010000000000000013 /* AudioRecorderService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0002010000000000000013 /* AudioRecorderService.swift */; };
+		AA0001010000000000000014 /* OpenAIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0002010000000000000014 /* OpenAIService.swift */; };
+		AA0001010000000000000015 /* StoryProcessingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0002010000000000000015 /* StoryProcessingService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -43,11 +54,8 @@
 
 /* Begin PBXFileReference section */
 		00E70160353431C57537F5FA /* StoryCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryCard.swift; sourceTree = "<group>"; };
-		0CA5AF5CF2494664CA439512 /* SetupData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupData.swift; sourceTree = "<group>"; };
 		10B3443FE98920BBA19F972E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		12479B29D9BC0CE476852822 /* SavedStoriesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedStoriesView.swift; sourceTree = "<group>"; };
 		1BBF357783A66732C0B0523B /* PillButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PillButton.swift; sourceTree = "<group>"; };
-		1C0996C460BE8A3B34A7C33B /* StoryEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryEntry.swift; sourceTree = "<group>"; };
 		28E923E74FD9F74D3FBFCFB8 /* WelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeView.swift; sourceTree = "<group>"; };
 		3042620F7E213AF3FC7B9E49 /* MabelColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MabelColors.swift; sourceTree = "<group>"; };
 		382FF0578D1F342556D6B446 /* CTAButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CTAButton.swift; sourceTree = "<group>"; };
@@ -63,10 +71,24 @@
 		C0C2451C222B33C06C68B6FA /* SetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupView.swift; sourceTree = "<group>"; };
 		D5FDF2EF878B61D179960D79 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		DEB88A7AA3EC5BAE4EF65545 /* Mabel.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Mabel.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		E9DB4DDD8E854C2301ACBBAF /* RecordPromptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordPromptView.swift; sourceTree = "<group>"; };
 		EC9C661494650AAB8985C6D7 /* AddDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddDetailsView.swift; sourceTree = "<group>"; };
 		F1A28730F23F9B24BDA342EC /* RecordingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordingView.swift; sourceTree = "<group>"; };
 		FFF6661D7ED18ED80DF75E58 /* MabelTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MabelTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		AA0002010000000000000001 /* UserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfile.swift; sourceTree = "<group>"; };
+		AA0002010000000000000002 /* Memory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Memory.swift; sourceTree = "<group>"; };
+		AA0002010000000000000003 /* Chapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Chapter.swift; sourceTree = "<group>"; };
+		AA0002010000000000000004 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
+		AA0002010000000000000005 /* ChapterPrompts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChapterPrompts.swift; sourceTree = "<group>"; };
+		AA0002010000000000000006 /* LibraryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryView.swift; sourceTree = "<group>"; };
+		AA0002010000000000000007 /* RecordingSetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordingSetupView.swift; sourceTree = "<group>"; };
+		AA0002010000000000000008 /* MyStoriesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyStoriesView.swift; sourceTree = "<group>"; };
+		AA0002010000000000000009 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
+		AA0002010000000000000010 /* ChapterCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChapterCard.swift; sourceTree = "<group>"; };
+		AA0002010000000000000011 /* FeaturedChapterCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeaturedChapterCard.swift; sourceTree = "<group>"; };
+		AA0002010000000000000012 /* ProgressBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressBar.swift; sourceTree = "<group>"; };
+		AA0002010000000000000013 /* AudioRecorderService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioRecorderService.swift; sourceTree = "<group>"; };
+		AA0002010000000000000014 /* OpenAIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenAIService.swift; sourceTree = "<group>"; };
+		AA0002010000000000000015 /* StoryProcessingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryProcessingService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -98,9 +120,12 @@
 		571611EB08B1DEA6BDE04C14 /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				AA0002010000000000000010 /* ChapterCard.swift */,
 				382FF0578D1F342556D6B446 /* CTAButton.swift */,
+				AA0002010000000000000011 /* FeaturedChapterCard.swift */,
 				61DD224D61070C052EF867D1 /* MabelWordmark.swift */,
 				1BBF357783A66732C0B0523B /* PillButton.swift */,
+				AA0002010000000000000012 /* ProgressBar.swift */,
 				00E70160353431C57537F5FA /* StoryCard.swift */,
 				AF3988DBFC8A4BBEA4E148D1 /* SuggestionCard.swift */,
 				69BAB34C868B293BAC9F2A0E /* WaveformView.swift */,
@@ -114,6 +139,7 @@
 				571611EB08B1DEA6BDE04C14 /* Components */,
 				23037DAD15C6FE4E1C4E8479 /* Fonts */,
 				B52995992E9FA578A53E54DB /* Models */,
+				AA0003010000000000000001 /* Services */,
 				B0613055B5587B8CC9F9362D /* Theme */,
 				F8F3F12D63EEF7AE633BFF3D /* Views */,
 				D5FDF2EF878B61D179960D79 /* Assets.xcassets */,
@@ -137,10 +163,23 @@
 		B52995992E9FA578A53E54DB /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				0CA5AF5CF2494664CA439512 /* SetupData.swift */,
-				1C0996C460BE8A3B34A7C33B /* StoryEntry.swift */,
+				AA0002010000000000000004 /* AppState.swift */,
+				AA0002010000000000000003 /* Chapter.swift */,
+				AA0002010000000000000005 /* ChapterPrompts.swift */,
+				AA0002010000000000000002 /* Memory.swift */,
+				AA0002010000000000000001 /* UserProfile.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		AA0003010000000000000001 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				AA0002010000000000000013 /* AudioRecorderService.swift */,
+				AA0002010000000000000014 /* OpenAIService.swift */,
+				AA0002010000000000000015 /* StoryProcessingService.swift */,
+			);
+			path = Services;
 			sourceTree = "<group>";
 		};
 		CF94CE84567E3AD9ED1D8397 /* Products */ = {
@@ -156,9 +195,11 @@
 			isa = PBXGroup;
 			children = (
 				EC9C661494650AAB8985C6D7 /* AddDetailsView.swift */,
+				AA0002010000000000000006 /* LibraryView.swift */,
+				AA0002010000000000000008 /* MyStoriesView.swift */,
+				AA0002010000000000000009 /* ProfileView.swift */,
+				AA0002010000000000000007 /* RecordingSetupView.swift */,
 				F1A28730F23F9B24BDA342EC /* RecordingView.swift */,
-				E9DB4DDD8E854C2301ACBBAF /* RecordPromptView.swift */,
-				12479B29D9BC0CE476852822 /* SavedStoriesView.swift */,
 				C0C2451C222B33C06C68B6FA /* SetupView.swift */,
 				28E923E74FD9F74D3FBFCFB8 /* WelcomeView.swift */,
 			);
@@ -265,23 +306,34 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				433FB9554046089B7F4274A5 /* AddDetailsView.swift in Sources */,
-				10D371C201E9BBD4C0D0AA23 /* CTAButton.swift in Sources */,
+/* AddDetailsView.swift removed from build */
+				AA0001010000000000000004 /* AppState.swift in Sources */,
+				AA0001010000000000000013 /* AudioRecorderService.swift in Sources */,
+				AA0001010000000000000003 /* Chapter.swift in Sources */,
+				AA0001010000000000000010 /* ChapterCard.swift in Sources */,
+				AA0001010000000000000005 /* ChapterPrompts.swift in Sources */,
 				83A1C2D0B3D7A1C74448AD04 /* ContentView.swift in Sources */,
+				10D371C201E9BBD4C0D0AA23 /* CTAButton.swift in Sources */,
+				AA0001010000000000000011 /* FeaturedChapterCard.swift in Sources */,
+				AA0001010000000000000006 /* LibraryView.swift in Sources */,
 				5C1097C784EA25FB512A9F81 /* MabelApp.swift in Sources */,
 				60D38AEEEA8026ED08225174 /* MabelColors.swift in Sources */,
 				0C3A08593450F81908F185F0 /* MabelFonts.swift in Sources */,
 				8E23EC0A01ADC4B0EBE88E0D /* MabelStyle.swift in Sources */,
 				E4332695D7A9053C07C9C820 /* MabelWordmark.swift in Sources */,
+				AA0001010000000000000002 /* Memory.swift in Sources */,
+				AA0001010000000000000008 /* MyStoriesView.swift in Sources */,
+				AA0001010000000000000014 /* OpenAIService.swift in Sources */,
 				76AEFD3B3EE12EF90CAEA3EC /* PillButton.swift in Sources */,
-				3B1CBCD719E7F0C68278428A /* RecordPromptView.swift in Sources */,
+				AA0001010000000000000009 /* ProfileView.swift in Sources */,
+				AA0001010000000000000012 /* ProgressBar.swift in Sources */,
+				AA0001010000000000000007 /* RecordingSetupView.swift in Sources */,
 				8DDD55576AB174C8778908E2 /* RecordingView.swift in Sources */,
-				F9C4AABCC9960833E7F45FA3 /* SavedStoriesView.swift in Sources */,
-				116F4E95F2059F650D51A1A7 /* SetupData.swift in Sources */,
 				78A17D318DCB33213FA37F68 /* SetupView.swift in Sources */,
-				08F401DCF24259367775270E /* StoryCard.swift in Sources */,
-				A8A3E3DE49368CF948036F4F /* StoryEntry.swift in Sources */,
+/* StoryCard.swift removed from build */
+				AA0001010000000000000015 /* StoryProcessingService.swift in Sources */,
 				0B2694DE10A76C72E13A6C8F /* SuggestionCard.swift in Sources */,
+				AA0001010000000000000001 /* UserProfile.swift in Sources */,
 				370E69C609C3FD03BB9E4DDB /* WaveformView.swift in Sources */,
 				97099A06C393E61E571B035B /* WelcomeView.swift in Sources */,
 			);

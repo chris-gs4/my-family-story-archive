@@ -1,66 +1,66 @@
 import SwiftUI
 
-enum AppScreen: Hashable {
-    case welcome
-    case setup
-    case recordPrompt
-    case recording(prompt: String?)
-    case savedStories
-}
-
 struct ContentView: View {
-    @State private var path = NavigationPath()
-    @State private var setupData = SetupData()
-    @State private var stories: [StoryEntry] = StoryEntry.mockEntries
+    @Environment(AppState.self) private var appState
 
     var body: some View {
-        NavigationStack(path: $path) {
+        if !appState.isOnboardingComplete {
+            OnboardingFlow()
+        } else {
+            MainTabView()
+        }
+    }
+}
+
+// MARK: - Onboarding Flow
+
+struct OnboardingFlow: View {
+    @Environment(AppState.self) private var appState
+    @State private var showSetup = false
+
+    var body: some View {
+        NavigationStack {
             WelcomeView(onGetStarted: {
-                path.append(AppScreen.setup)
+                showSetup = true
             })
-            .navigationDestination(for: AppScreen.self) { screen in
-                switch screen {
-                case .welcome:
-                    WelcomeView(onGetStarted: {
-                        path.append(AppScreen.setup)
-                    })
-                case .setup:
-                    SetupView(setupData: $setupData, onStart: {
-                        path.append(AppScreen.recordPrompt)
-                    })
-                case .recordPrompt:
-                    RecordPromptView(
-                        onStartRecording: { prompt in
-                            path.append(AppScreen.recording(prompt: prompt))
-                        }
-                    )
-                case .recording(let prompt):
-                    RecordingView(
-                        prompt: prompt,
-                        onSave: {
-                            // Navigate to saved stories, replacing the stack
-                            path = NavigationPath()
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                                path.append(AppScreen.savedStories)
-                            }
-                        },
-                        onClear: {
-                            path.removeLast()
-                        }
-                    )
-                case .savedStories:
-                    SavedStoriesView(
-                        stories: $stories,
-                        onNewRecording: {
-                            path.append(AppScreen.recordPrompt)
-                        }
-                    )
-                }
+            .navigationDestination(isPresented: $showSetup) {
+                SetupView()
             }
         }
     }
 }
 
+// MARK: - Main Tab View
+
+struct MainTabView: View {
+    @Environment(AppState.self) private var appState
+    @State private var selectedTab = 0
+
+    var body: some View {
+        TabView(selection: $selectedTab) {
+            NavigationStack {
+                LibraryView()
+            }
+            .tabItem {
+                Image(systemName: "book.fill")
+                Text("Home")
+            }
+            .tag(0)
+
+            NavigationStack {
+                MyStoriesView()
+            }
+            .tabItem {
+                Image(systemName: "text.book.closed.fill")
+                Text("My Stories")
+            }
+            .tag(1)
+        }
+        .tint(.mabelTeal)
+    }
+}
+
 #Preview {
     ContentView()
+        .environment(AppState())
 }

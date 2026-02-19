@@ -2,6 +2,8 @@ import SwiftUI
 
 @main
 struct MabelApp: App {
+    @State private var appState = AppState()
+
     init() {
         for family in UIFont.familyNames.sorted() {
             if family.lowercased().contains("comfortaa") {
@@ -16,6 +18,7 @@ struct MabelApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environment(appState)
         }
     }
 }
