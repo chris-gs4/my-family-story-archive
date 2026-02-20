@@ -19,6 +19,9 @@ struct MabelApp: App {
         WindowGroup {
             ContentView()
                 .environment(appState)
+                .task {
+                    appState.processStuckTypedEntries()
+                }
         }
     }
 }

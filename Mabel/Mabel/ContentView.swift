@@ -34,12 +34,15 @@ struct OnboardingFlow: View {
 
 struct MainTabView: View {
     @Environment(AppState.self) private var appState
-    @State private var selectedTab = 0
 
     var body: some View {
-        TabView(selection: $selectedTab) {
-            NavigationStack {
+        @Bindable var appState = appState
+        TabView(selection: $appState.selectedTab) {
+            NavigationStack(path: $appState.navigationPath) {
                 LibraryView()
+                    .navigationDestination(for: Int.self) { chapterIndex in
+                        RecordingSetupView(chapterIndex: chapterIndex)
+                    }
             }
             .tabItem {
                 Image(systemName: "book.fill")

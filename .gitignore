@@ -35,6 +35,9 @@ test-results/
 playwright-report/
 test-downloads/
 
+# API Keys / Secrets
+Mabel/Mabel/Config.plist
+
 # Misc
 *.log
 .turbo

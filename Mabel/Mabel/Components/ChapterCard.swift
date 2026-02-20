@@ -2,7 +2,6 @@ import SwiftUI
 
 struct ChapterCard: View {
     let chapter: Chapter
-    let action: () -> Void
 
     private var statusIcon: String {
         if chapter.isCompleted {
@@ -25,47 +24,44 @@ struct ChapterCard: View {
     }
 
     var body: some View {
-        Button(action: action) {
-            VStack(alignment: .leading, spacing: 8) {
-                HStack {
-                    Text("Ch. \(chapter.id)")
-                        .font(.comfortaa(12, weight: .medium))
-                        .foregroundColor(.mabelSubtle)
+        VStack(alignment: .leading, spacing: 8) {
+            HStack {
+                Text("Ch. \(chapter.id)")
+                    .font(.comfortaa(12, weight: .medium))
+                    .foregroundColor(.mabelSubtle)
 
-                    Spacer()
+                Spacer()
 
-                    Image(systemName: statusIcon)
-                        .font(.system(size: 16))
-                        .foregroundColor(statusColor)
-                }
-
-                Text(chapter.title)
-                    .font(.comfortaa(15, weight: .bold))
-                    .foregroundColor(.mabelText)
-                    .lineLimit(2)
-                    .multilineTextAlignment(.leading)
-
-                if chapter.completedMemoryCount > 0 && !chapter.isCompleted {
-                    Text("\(chapter.completedMemoryCount)/5")
-                        .font(.comfortaa(11, weight: .regular))
-                        .foregroundColor(.mabelSubtle)
-                }
+                Image(systemName: statusIcon)
+                    .font(.system(size: 16))
+                    .foregroundColor(statusColor)
             }
-            .padding(14)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(
-                RoundedRectangle(cornerRadius: 14)
-                    .fill(Color.mabelSurface.opacity(0.95))
-            )
+
+            Text(chapter.title)
+                .font(.comfortaa(15, weight: .bold))
+                .foregroundColor(.mabelText)
+                .lineLimit(2)
+                .multilineTextAlignment(.leading)
+
+            if chapter.completedMemoryCount > 0 && !chapter.isCompleted {
+                Text("\(chapter.completedMemoryCount)/5")
+                    .font(.comfortaa(11, weight: .regular))
+                    .foregroundColor(.mabelSubtle)
+            }
         }
-        .buttonStyle(.plain)
+        .padding(14)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(
+            RoundedRectangle(cornerRadius: 14)
+                .fill(Color.mabelSurface.opacity(0.95))
+        )
     }
 }
 
 #Preview {
     LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
-        ChapterCard(chapter: Chapter.allChapters[0]) {}
-        ChapterCard(chapter: Chapter.allChapters[1]) {}
+        ChapterCard(chapter: Chapter.allChapters[0])
+        ChapterCard(chapter: Chapter.allChapters[1])
     }
     .padding()
 }

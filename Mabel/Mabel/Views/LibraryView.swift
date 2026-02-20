@@ -9,30 +9,32 @@ struct LibraryView: View {
     }
 
     var body: some View {
-        ZStack {
-            MabelGradientBackground()
-
-            ScrollView {
-                VStack(alignment: .leading, spacing: 0) {
-                    // Top bar
-                    HStack {
-                        MabelWordmark(height: 20)
-                        Spacer()
-                        ProfileButton { showProfile = true }
-                    }
-                    .padding(.top, 16)
-                    .padding(.bottom, 24)
-
-                    if allCompleted {
-                        completedBookView
-                    } else {
-                        activeBookView
-                    }
+        VStack(spacing: 0) {
+                // FIXED top bar (below safe area)
+                HStack {
+                    MabelWordmark(height: 20)
+                    Spacer()
+                    ProfileButton { showProfile = true }
                 }
                 .padding(.horizontal, 24)
-            }
+                .padding(.top, 8)
+                .padding(.bottom, 8)
+
+                // Scrollable content
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 0) {
+                        if allCompleted {
+                            completedBookView
+                        } else {
+                            activeBookView
+                        }
+                    }
+                    .padding(.horizontal, 24)
+                    .padding(.top, 8)
+                }
         }
-        .navigationBarHidden(true)
+        .background(MabelGradientBackground())
+        .toolbar(.hidden, for: .navigationBar)
         .sheet(isPresented: $showProfile) {
             ProfileView()
         }
@@ -63,8 +65,7 @@ struct LibraryView: View {
             if let current = appState.currentChapter {
                 let chapterIndex = current.id - 1
                 NavigationLink(value: chapterIndex) {
-                    FeaturedChapterCard(chapter: current, action: {})
-                        .allowsHitTesting(false)
+                    FeaturedChapterCard(chapter: current)
                 }
                 .buttonStyle(.plain)
                 .padding(.bottom, 24)
@@ -83,16 +84,12 @@ struct LibraryView: View {
             ], spacing: 12) {
                 ForEach(appState.chapters) { chapter in
                     NavigationLink(value: chapter.id - 1) {
-                        ChapterCard(chapter: chapter, action: {})
-                            .allowsHitTesting(false)
+                        ChapterCard(chapter: chapter)
                     }
                     .buttonStyle(.plain)
                 }
             }
-            .padding(.bottom, 40)
-        }
-        .navigationDestination(for: Int.self) { chapterIndex in
-            RecordingSetupView(chapterIndex: chapterIndex)
+            .padding(.bottom, 60)
         }
     }
 

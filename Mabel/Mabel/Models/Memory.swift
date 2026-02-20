@@ -5,6 +5,7 @@ enum MemoryState: String, Codable {
     case submitted
     case processing
     case processed
+    case failed
 }
 
 struct Memory: Identifiable, Codable {
@@ -16,6 +17,7 @@ struct Memory: Identifiable, Codable {
     var state: MemoryState
     var duration: TimeInterval
     var typedEntry: String?
+    var errorMessage: String?
     var createdAt: Date?
 
     init(
@@ -27,6 +29,7 @@ struct Memory: Identifiable, Codable {
         state: MemoryState = .notStarted,
         duration: TimeInterval = 0,
         typedEntry: String? = nil,
+        errorMessage: String? = nil,
         createdAt: Date? = nil
     ) {
         self.id = id
@@ -37,6 +40,7 @@ struct Memory: Identifiable, Codable {
         self.state = state
         self.duration = duration
         self.typedEntry = typedEntry
+        self.errorMessage = errorMessage
         self.createdAt = createdAt
     }
 }

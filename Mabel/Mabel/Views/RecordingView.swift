@@ -50,15 +50,29 @@ struct RecordingView: View {
     }
 
     var body: some View {
-        ZStack {
-            MabelGradientBackground()
+        VStack(spacing: 0) {
+                // Top bar with back button (below safe area)
+                HStack {
+                    Button(action: { dismiss() }) {
+                        HStack(spacing: 6) {
+                            Image(systemName: "chevron.left")
+                                .font(.system(size: 16, weight: .semibold))
+                            Text("Back")
+                                .font(.comfortaa(14, weight: .medium))
+                        }
+                        .foregroundColor(.mabelTeal)
+                        .frame(height: 44)
+                        .contentShape(Rectangle())
+                    }
+                    Spacer()
+                }
+                .padding(.top, 8)
+                .padding(.bottom, 4)
 
-            VStack(spacing: 0) {
                 // Chapter heading
                 Text("Chapter \(chapter.id) – \(chapter.title)")
                     .font(.comfortaa(18, weight: .bold))
                     .foregroundColor(.mabelText)
-                    .padding(.top, 16)
                     .padding(.bottom, 4)
 
                 Text("\(chapter.completedMemoryCount) of 5 memories recorded")
@@ -180,7 +194,7 @@ struct RecordingView: View {
                     }
 
                     // Stop & Save
-                    Button(action: {}) {
+                    Button(action: saveMemory) {
                         Text("Stop & Save")
                             .font(.comfortaa(14, weight: .bold))
                             .foregroundColor(.white)
@@ -188,10 +202,10 @@ struct RecordingView: View {
                             .frame(height: 48)
                             .background(
                                 Capsule()
-                                    .fill(Color.mabelSubtle.opacity(0.4))
+                                    .fill(hasStartedOnce && !isProcessing ? Color.mabelTeal : Color.mabelSubtle.opacity(0.4))
                             )
                     }
-                    .disabled(true)
+                    .disabled(!hasStartedOnce || isProcessing)
                 }
                 .padding(.bottom, 16)
 
@@ -203,10 +217,10 @@ struct RecordingView: View {
                     saveMemory()
                 }
                 .padding(.bottom, 40)
-            }
-            .padding(.horizontal, 24)
         }
-        .navigationBarHidden(true)
+        .padding(.horizontal, 24)
+        .background(MabelGradientBackground())
+        .toolbar(.hidden, for: .navigationBar)
         .onDisappear {
             if recorder.isRecording || recorder.isPaused {
                 recorder.cancelRecording()
@@ -251,7 +265,7 @@ struct RecordingView: View {
         // Stop recording and get the file
         let result = recorder.stopRecording()
 
-        var memory = Memory(
+        let memory = Memory(
             promptUsed: prompt,
             audioFileName: result?.fileName,
             state: .submitted,

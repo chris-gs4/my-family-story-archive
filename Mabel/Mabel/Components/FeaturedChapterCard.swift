@@ -2,7 +2,6 @@ import SwiftUI
 
 struct FeaturedChapterCard: View {
     let chapter: Chapter
-    let action: () -> Void
 
     private var ctaTitle: String {
         chapter.completedMemoryCount > 0 ? "CONTINUE CHAPTER" : "START CHAPTER"
@@ -24,7 +23,13 @@ struct FeaturedChapterCard: View {
             )
             .padding(.bottom, 4)
 
-            CTAButton(title: ctaTitle, action: action)
+            // CTA label (non-interactive — NavigationLink handles tap)
+            Text(ctaTitle)
+                .font(.comfortaa(16, weight: .bold))
+                .foregroundColor(.white)
+                .frame(maxWidth: .infinity)
+                .frame(height: 52)
+                .background(Capsule().fill(Color.mabelTeal))
         }
         .padding(20)
         .background(
@@ -35,6 +40,6 @@ struct FeaturedChapterCard: View {
 }
 
 #Preview {
-    FeaturedChapterCard(chapter: Chapter.allChapters[0]) {}
+    FeaturedChapterCard(chapter: Chapter.allChapters[0])
         .padding()
 }

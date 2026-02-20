@@ -40,6 +40,7 @@
 		AA0001010000000000000013 /* AudioRecorderService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0002010000000000000013 /* AudioRecorderService.swift */; };
 		AA0001010000000000000014 /* OpenAIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0002010000000000000014 /* OpenAIService.swift */; };
 		AA0001010000000000000015 /* StoryProcessingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0002010000000000000015 /* StoryProcessingService.swift */; };
+		AA0001010000000000000016 /* Config.plist in Resources */ = {isa = PBXBuildFile; fileRef = AA0002010000000000000016 /* Config.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -89,6 +90,7 @@
 		AA0002010000000000000013 /* AudioRecorderService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioRecorderService.swift; sourceTree = "<group>"; };
 		AA0002010000000000000014 /* OpenAIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenAIService.swift; sourceTree = "<group>"; };
 		AA0002010000000000000015 /* StoryProcessingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryProcessingService.swift; sourceTree = "<group>"; };
+		AA0002010000000000000016 /* Config.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Config.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -143,6 +145,7 @@
 				B0613055B5587B8CC9F9362D /* Theme */,
 				F8F3F12D63EEF7AE633BFF3D /* Views */,
 				D5FDF2EF878B61D179960D79 /* Assets.xcassets */,
+				AA0002010000000000000016 /* Config.plist */,
 				10B3443FE98920BBA19F972E /* ContentView.swift */,
 				90F285CDA92F652EF7CC925A /* Info.plist */,
 				ABB24DE0618903DE68C06153 /* MabelApp.swift */,
@@ -288,6 +291,7 @@
 			files = (
 				743819BE8EDF87B75DE14786 /* Assets.xcassets in Resources */,
 				D4646E71CE8CC83C26A6EB16 /* Comfortaa-Variable.ttf in Resources */,
+				AA0001010000000000000016 /* Config.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

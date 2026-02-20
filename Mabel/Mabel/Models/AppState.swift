@@ -1,10 +1,13 @@
 import Foundation
 import Observation
+import SwiftUI
 
 @Observable
 class AppState {
     var userProfile: UserProfile?
     var chapters: [Chapter] = []
+    var selectedTab: Int = 0
+    var navigationPath = NavigationPath()
 
     var isOnboardingComplete: Bool {
         userProfile?.hasCompletedOnboarding ?? false
@@ -129,6 +132,25 @@ class AppState {
             chapters = try JSONDecoder().decode([Chapter].self, from: data)
         } catch {
             chapters = []
+        }
+    }
+
+    /// Process any typed entries that are stuck at .submitted (no audio, have typedEntry text)
+    func processStuckTypedEntries() {
+        for (chapterIndex, chapter) in chapters.enumerated() {
+            let stuckMemories = chapter.memories.filter { $0.state == .submitted && $0.typedEntry != nil && $0.audioFileName == nil }
+            for memory in stuckMemories {
+                Task {
+                    await StoryProcessingService.shared.processTypedMemory(
+                        memoryID: memory.id,
+                        chapterIndex: chapterIndex,
+                        text: memory.typedEntry!,
+                        chapter: chapter,
+                        userName: userProfile?.displayName ?? "Narrator",
+                        appState: self
+                    )
+                }
+            }
         }
     }
 

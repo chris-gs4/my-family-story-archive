@@ -26,6 +26,29 @@ struct SuggestionCard: View {
     }
 }
 
+/// Non-interactive label version for use inside NavigationLink
+struct SuggestionCardLabel: View {
+    let prompt: String
+
+    var body: some View {
+        HStack {
+            Text(prompt)
+                .font(.comfortaa(15, weight: .regular))
+                .foregroundColor(.mabelText)
+                .multilineTextAlignment(.leading)
+            Spacer()
+            Image(systemName: "chevron.right")
+                .font(.system(size: 12, weight: .semibold))
+                .foregroundColor(.mabelSubtle)
+        }
+        .padding(16)
+        .background(
+            RoundedRectangle(cornerRadius: 12)
+                .fill(Color.mabelSurface.opacity(0.95))
+        )
+    }
+}
+
 #Preview {
     VStack(spacing: 8) {
         SuggestionCard(prompt: "What are your favorite family traditions?") {}
