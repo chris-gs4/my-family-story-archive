@@ -7,6 +7,7 @@ struct RecordingSetupView: View {
     @State private var typedEntry = ""
     @State private var suggestionPrompts: [String] = []
     @State private var showProfile = false
+    @State private var showChapterReview = false
 
     private var chapter: Chapter {
         guard chapterIndex >= 0, chapterIndex < appState.chapters.count else {
@@ -84,6 +85,9 @@ struct RecordingSetupView: View {
         .sheet(isPresented: $showProfile) {
             ProfileView()
         }
+        .sheet(isPresented: $showChapterReview) {
+            ChapterReviewView(chapterIndex: chapterIndex)
+        }
         .onAppear {
             if suggestionPrompts.isEmpty {
                 suggestionPrompts = ChapterPrompts.getPrompts(for: chapter.id, count: 3)
@@ -134,23 +138,60 @@ struct RecordingSetupView: View {
                 )
             }
 
-            Image(systemName: "checkmark.circle.fill")
-                .font(.system(size: 48))
-                .foregroundColor(.mabelTeal)
-                .padding(.top, 20)
+            if chapter.isApproved {
+                // Approved state
+                Image(systemName: "checkmark.seal.fill")
+                    .font(.system(size: 48))
+                    .foregroundColor(.mabelTeal)
+                    .padding(.top, 20)
 
-            Text("Chapter complete!")
-                .font(.comfortaa(22, weight: .bold))
-                .foregroundColor(.mabelText)
+                Text("Chapter approved!")
+                    .font(.comfortaa(22, weight: .bold))
+                    .foregroundColor(.mabelText)
 
-            Text("All 5 memories have been recorded. Your stories are being woven into a narrative.")
-                .font(.comfortaa(14, weight: .regular))
-                .foregroundColor(.mabelSubtle)
-                .multilineTextAlignment(.center)
+                Text("This chapter is finalized and ready for your book.")
+                    .font(.comfortaa(14, weight: .regular))
+                    .foregroundColor(.mabelSubtle)
+                    .multilineTextAlignment(.center)
 
-            CTAButton(title: "VIEW IN MY STORIES") {
-                appState.navigationPath = NavigationPath()
-                appState.selectedTab = 1
+                CTAButton(title: "VIEW IN MY STORIES") {
+                    appState.navigationPath = NavigationPath()
+                    appState.selectedTab = 1
+                }
+            } else if chapter.generatedNarrative != nil {
+                // Narrative ready for review
+                Image(systemName: "doc.text.magnifyingglass")
+                    .font(.system(size: 48))
+                    .foregroundColor(.mabelTeal)
+                    .padding(.top, 20)
+
+                Text("Your chapter is ready!")
+                    .font(.comfortaa(22, weight: .bold))
+                    .foregroundColor(.mabelText)
+
+                Text("Review your generated narrative. You can approve it or request changes.")
+                    .font(.comfortaa(14, weight: .regular))
+                    .foregroundColor(.mabelSubtle)
+                    .multilineTextAlignment(.center)
+
+                CTAButton(title: "REVIEW CHAPTER") {
+                    showChapterReview = true
+                }
+            } else {
+                // Still processing
+                Image(systemName: "text.badge.star")
+                    .font(.system(size: 48))
+                    .foregroundColor(.mabelTeal)
+                    .padding(.top, 20)
+
+                Text("All memories recorded!")
+                    .font(.comfortaa(22, weight: .bold))
+                    .foregroundColor(.mabelText)
+
+                Text("Your stories are being woven into a chapter narrative. This may take a moment.")
+                    .font(.comfortaa(14, weight: .regular))
+                    .foregroundColor(.mabelSubtle)
+                    .multilineTextAlignment(.center)
             }
         }
         .padding(.top, 16)

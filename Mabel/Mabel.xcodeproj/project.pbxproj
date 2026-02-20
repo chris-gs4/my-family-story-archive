@@ -41,6 +41,7 @@
 		AA0001010000000000000014 /* OpenAIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0002010000000000000014 /* OpenAIService.swift */; };
 		AA0001010000000000000015 /* StoryProcessingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0002010000000000000015 /* StoryProcessingService.swift */; };
 		AA0001010000000000000016 /* Config.plist in Resources */ = {isa = PBXBuildFile; fileRef = AA0002010000000000000016 /* Config.plist */; };
+		AA0001010000000000000017 /* ChapterReviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0002010000000000000017 /* ChapterReviewView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -91,6 +92,7 @@
 		AA0002010000000000000014 /* OpenAIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenAIService.swift; sourceTree = "<group>"; };
 		AA0002010000000000000015 /* StoryProcessingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryProcessingService.swift; sourceTree = "<group>"; };
 		AA0002010000000000000016 /* Config.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Config.plist; sourceTree = "<group>"; };
+		AA0002010000000000000017 /* ChapterReviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChapterReviewView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -198,6 +200,7 @@
 			isa = PBXGroup;
 			children = (
 				EC9C661494650AAB8985C6D7 /* AddDetailsView.swift */,
+				AA0002010000000000000017 /* ChapterReviewView.swift */,
 				AA0002010000000000000006 /* LibraryView.swift */,
 				AA0002010000000000000008 /* MyStoriesView.swift */,
 				AA0002010000000000000009 /* ProfileView.swift */,
@@ -331,6 +334,7 @@
 				76AEFD3B3EE12EF90CAEA3EC /* PillButton.swift in Sources */,
 				AA0001010000000000000009 /* ProfileView.swift in Sources */,
 				AA0001010000000000000012 /* ProgressBar.swift in Sources */,
+				AA0001010000000000000017 /* ChapterReviewView.swift in Sources */,
 				AA0001010000000000000007 /* RecordingSetupView.swift in Sources */,
 				8DDD55576AB174C8778908E2 /* RecordingView.swift in Sources */,
 				78A17D318DCB33213FA37F68 /* SetupView.swift in Sources */,

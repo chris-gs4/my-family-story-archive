@@ -3,6 +3,8 @@ import SwiftUI
 struct MyStoriesView: View {
     @Environment(AppState.self) private var appState
     @State private var showProfile = false
+    @State private var showChapterReview = false
+    @State private var reviewingChapterIndex: Int = 0
 
     private var chaptersWithNarratives: [Chapter] {
         appState.chapters.filter { chapter in
@@ -64,6 +66,9 @@ struct MyStoriesView: View {
         .sheet(isPresented: $showProfile) {
             ProfileView()
         }
+        .sheet(isPresented: $showChapterReview) {
+            ChapterReviewView(chapterIndex: reviewingChapterIndex)
+        }
     }
 
     // MARK: - Empty State
@@ -91,9 +96,31 @@ struct MyStoriesView: View {
 
     private func chapterNarrativeCard(_ chapter: Chapter) -> some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Chapter \(chapter.id) – \(chapter.title)")
-                .font(.comfortaa(18, weight: .bold))
-                .foregroundColor(.mabelText)
+            HStack {
+                Text("Chapter \(chapter.id) – \(chapter.title)")
+                    .font(.comfortaa(18, weight: .bold))
+                    .foregroundColor(.mabelText)
+                Spacer()
+                if chapter.isApproved {
+                    Text("Approved")
+                        .font(.comfortaa(11, weight: .bold))
+                        .foregroundColor(.mabelTeal)
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 4)
+                        .background(
+                            Capsule().fill(Color.mabelTeal.opacity(0.12))
+                        )
+                } else if chapter.generatedNarrative != nil {
+                    Text("Draft")
+                        .font(.comfortaa(11, weight: .bold))
+                        .foregroundColor(.mabelBurgundy)
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 4)
+                        .background(
+                            Capsule().fill(Color.mabelBurgundy.opacity(0.1))
+                        )
+                }
+            }
 
             if let narrative = chapter.generatedNarrative {
                 Text(narrative)
@@ -115,12 +142,30 @@ struct MyStoriesView: View {
                     }
                 }
             }
+
+            // Review button for unapproved chapters with narratives
+            if chapter.generatedNarrative != nil && !chapter.isApproved {
+                Button(action: {
+                    reviewingChapterIndex = chapter.id - 1
+                    showChapterReview = true
+                }) {
+                    Text("REVIEW & APPROVE")
+                        .font(.comfortaa(12, weight: .bold))
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 40)
+                        .background(
+                            Capsule().fill(Color.mabelTeal)
+                        )
+                }
+                .padding(.top, 4)
+            }
         }
         .padding(20)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(
             RoundedRectangle(cornerRadius: 16)
-                .fill(Color(red: 1.0, green: 0.98, blue: 0.95))
+                .strokeBorder(Color.mabelText.opacity(0.15), lineWidth: 1)
         )
     }
 }

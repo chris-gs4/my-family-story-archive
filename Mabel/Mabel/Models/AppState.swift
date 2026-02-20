@@ -84,6 +84,13 @@ class AppState {
     func updateNarrative(chapterIndex: Int, text: String) {
         guard chapterIndex >= 0, chapterIndex < chapters.count else { return }
         chapters[chapterIndex].generatedNarrative = text
+        chapters[chapterIndex].isApproved = false
+        saveChapters()
+    }
+
+    func approveChapter(chapterIndex: Int) {
+        guard chapterIndex >= 0, chapterIndex < chapters.count else { return }
+        chapters[chapterIndex].isApproved = true
         saveChapters()
     }
 

@@ -201,6 +201,78 @@ class OpenAIService {
 
         return content
     }
+    // MARK: - Regenerate Chapter with Feedback
+
+    func regenerateChapterNarrative(
+        currentNarrative: String,
+        feedback: String,
+        memories: [String],
+        chapterTitle: String,
+        chapterTopic: String,
+        userName: String
+    ) async throws -> String {
+        guard !apiKey.isEmpty else {
+            throw OpenAIError.missingAPIKey
+        }
+
+        let combinedMemories = memories.enumerated().map { index, text in
+            "Memory \(index + 1):\n\(text)"
+        }.joined(separator: "\n\n")
+
+        let systemPrompt = """
+        You are a ghostwriter helping someone write their memoir. You previously wrote a chapter about "\(chapterTopic)" for \(userName). The user has reviewed it and wants changes.
+
+        Their feedback: "\(feedback)"
+
+        Rewrite the chapter incorporating this feedback. Keep writing in first person, warm and personal. Maintain all the original details and meaning from the source memories, but adjust the style, tone, or content based on the feedback.
+        """
+
+        let url = URL(string: "https://api.openai.com/v1/chat/completions")!
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        let requestBody: [String: Any] = [
+            "model": "gpt-4o",
+            "messages": [
+                ["role": "system", "content": systemPrompt],
+                ["role": "user", "content": "Source memories:\n\n\(combinedMemories)\n\nPrevious chapter draft:\n\n\(currentNarrative)"]
+            ],
+            "temperature": 0.7,
+            "max_tokens": 3000
+        ]
+
+        request.httpBody = try JSONSerialization.data(withJSONObject: requestBody)
+
+        let (data, response) = try await URLSession.shared.data(for: request)
+
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw OpenAIError.invalidResponse
+        }
+
+        guard httpResponse.statusCode == 200 else {
+            let errorBody = String(data: data, encoding: .utf8) ?? "Unknown error"
+            throw OpenAIError.apiError(statusCode: httpResponse.statusCode, message: errorBody)
+        }
+
+        struct ChatResponse: Codable {
+            struct Choice: Codable {
+                struct Message: Codable {
+                    let content: String
+                }
+                let message: Message
+            }
+            let choices: [Choice]
+        }
+
+        let chatResponse = try JSONDecoder().decode(ChatResponse.self, from: data)
+        guard let content = chatResponse.choices.first?.message.content else {
+            throw OpenAIError.noContent
+        }
+
+        return content
+    }
 }
 
 // MARK: - Errors

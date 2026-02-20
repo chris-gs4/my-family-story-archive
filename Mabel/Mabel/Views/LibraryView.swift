@@ -129,7 +129,13 @@ struct LibraryView: View {
 // MARK: - Profile Button
 
 struct ProfileButton: View {
+    @Environment(AppState.self) private var appState
     let action: () -> Void
+
+    private var initial: String {
+        guard let name = appState.userProfile?.displayName, !name.isEmpty else { return "?" }
+        return String(name.prefix(1)).uppercased()
+    }
 
     var body: some View {
         Button(action: action) {
@@ -138,7 +144,7 @@ struct ProfileButton: View {
                     .fill(Color.mabelSurface)
                     .frame(width: 36, height: 36)
 
-                Text("P")
+                Text(initial)
                     .font(.comfortaa(16, weight: .bold))
                     .foregroundColor(.mabelText)
             }

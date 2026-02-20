@@ -6,17 +6,43 @@ struct Chapter: Identifiable, Codable {
     let topic: String
     var memories: [Memory]
     var generatedNarrative: String?
+    var isApproved: Bool = false
 
     var completedMemoryCount: Int {
         memories.filter { $0.state == .submitted || $0.state == .processing || $0.state == .processed }.count
     }
 
     var isCompleted: Bool {
-        completedMemoryCount >= 5 && generatedNarrative != nil
+        completedMemoryCount >= 5 && generatedNarrative != nil && isApproved
+    }
+
+    /// Chapter has a narrative ready for review (but not yet approved)
+    var isReadyForReview: Bool {
+        generatedNarrative != nil && !isApproved
     }
 
     var isAvailable: Bool {
         true // no paywall for MVP
+    }
+
+    // Custom decoder to handle existing data without isApproved field
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decode(Int.self, forKey: .id)
+        title = try container.decode(String.self, forKey: .title)
+        topic = try container.decode(String.self, forKey: .topic)
+        memories = try container.decode([Memory].self, forKey: .memories)
+        generatedNarrative = try container.decodeIfPresent(String.self, forKey: .generatedNarrative)
+        isApproved = try container.decodeIfPresent(Bool.self, forKey: .isApproved) ?? false
+    }
+
+    init(id: Int, title: String, topic: String, memories: [Memory], generatedNarrative: String? = nil, isApproved: Bool = false) {
+        self.id = id
+        self.title = title
+        self.topic = topic
+        self.memories = memories
+        self.generatedNarrative = generatedNarrative
+        self.isApproved = isApproved
     }
 
     static let allChapters: [Chapter] = [
