@@ -108,6 +108,40 @@ struct ProfileView: View {
                             )
                     }
 
+                    #if DEBUG
+                    // Developer Tools
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text("Developer Tools")
+                            .font(.comfortaa(14, weight: .bold))
+                            .foregroundColor(.mabelSubtle)
+                            .padding(.top, 24)
+
+                        Button(action: {
+                            appState.seedDummyData()
+                            dismiss()
+                        }) {
+                            Text("SEED DUMMY DATA")
+                                .font(.comfortaa(14, weight: .bold))
+                                .foregroundColor(.white)
+                                .frame(maxWidth: .infinity)
+                                .frame(height: 48)
+                                .background(Capsule().fill(Color.orange))
+                        }
+
+                        Button(action: {
+                            appState.resetAll()
+                            dismiss()
+                        }) {
+                            Text("RESET ALL DATA")
+                                .font(.comfortaa(14, weight: .bold))
+                                .foregroundColor(.white)
+                                .frame(maxWidth: .infinity)
+                                .frame(height: 48)
+                                .background(Capsule().fill(Color.red))
+                        }
+                    }
+                    #endif
+
                     Spacer()
                         .frame(height: 40)
                 }
