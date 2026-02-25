@@ -43,6 +43,7 @@
 		AA0001010000000000000016 /* Config.plist in Resources */ = {isa = PBXBuildFile; fileRef = AA0002010000000000000016 /* Config.plist */; };
 		AA0001010000000000000017 /* ChapterReviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0002010000000000000017 /* ChapterReviewView.swift */; };
 		AA0001010000000000000018 /* PDFExportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0002010000000000000018 /* PDFExportService.swift */; };
+		AA0001010000000000000019 /* MemoryCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0002010000000000000019 /* MemoryCard.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -95,6 +96,7 @@
 		AA0002010000000000000016 /* Config.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Config.plist; sourceTree = "<group>"; };
 		AA0002010000000000000017 /* ChapterReviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChapterReviewView.swift; sourceTree = "<group>"; };
 		AA0002010000000000000018 /* PDFExportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFExportService.swift; sourceTree = "<group>"; };
+		AA0002010000000000000019 /* MemoryCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryCard.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -130,6 +132,7 @@
 				382FF0578D1F342556D6B446 /* CTAButton.swift */,
 				AA0002010000000000000011 /* FeaturedChapterCard.swift */,
 				61DD224D61070C052EF867D1 /* MabelWordmark.swift */,
+				AA0002010000000000000019 /* MemoryCard.swift */,
 				1BBF357783A66732C0B0523B /* PillButton.swift */,
 				AA0002010000000000000012 /* ProgressBar.swift */,
 				00E70160353431C57537F5FA /* StoryCard.swift */,
@@ -332,6 +335,7 @@
 				8E23EC0A01ADC4B0EBE88E0D /* MabelStyle.swift in Sources */,
 				E4332695D7A9053C07C9C820 /* MabelWordmark.swift in Sources */,
 				AA0001010000000000000002 /* Memory.swift in Sources */,
+				AA0001010000000000000019 /* MemoryCard.swift in Sources */,
 				AA0001010000000000000008 /* MyStoriesView.swift in Sources */,
 				AA0001010000000000000014 /* OpenAIService.swift in Sources */,
 				AA0001010000000000000018 /* PDFExportService.swift in Sources */,

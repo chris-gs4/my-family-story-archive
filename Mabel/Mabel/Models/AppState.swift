@@ -81,6 +81,71 @@ class AppState {
         }
     }
 
+    func deleteMemory(chapterIndex: Int, memoryID: UUID) {
+        guard chapterIndex >= 0, chapterIndex < chapters.count else { return }
+        guard let memoryIndex = chapters[chapterIndex].memories.firstIndex(where: { $0.id == memoryID }) else { return }
+
+        let memory = chapters[chapterIndex].memories[memoryIndex]
+
+        // Delete associated audio file if it exists
+        if let audioFileName = memory.audioFileName {
+            let audioURL = Self.documentsDirectory.appendingPathComponent(audioFileName)
+            try? FileManager.default.removeItem(at: audioURL)
+        }
+
+        chapters[chapterIndex].memories.remove(at: memoryIndex)
+
+        // If completed count drops below 5, clear stale narrative and approval
+        if chapters[chapterIndex].completedMemoryCount < 5 {
+            chapters[chapterIndex].generatedNarrative = nil
+            chapters[chapterIndex].isApproved = false
+        }
+
+        saveChapters()
+    }
+
+    func retryMemory(chapterIndex: Int, memoryID: UUID) {
+        guard chapterIndex >= 0, chapterIndex < chapters.count else { return }
+        guard let memoryIndex = chapters[chapterIndex].memories.firstIndex(where: { $0.id == memoryID }) else { return }
+
+        let memory = chapters[chapterIndex].memories[memoryIndex]
+
+        // Reset state
+        chapters[chapterIndex].memories[memoryIndex].state = .submitted
+        chapters[chapterIndex].memories[memoryIndex].errorMessage = nil
+        saveChapters()
+
+        let chapter = chapters[chapterIndex]
+        let userName = userProfile?.displayName ?? "Narrator"
+
+        if let typedEntry = memory.typedEntry, memory.audioFileName == nil {
+            // Re-process typed memory
+            Task {
+                await StoryProcessingService.shared.processTypedMemory(
+                    memoryID: memoryID,
+                    chapterIndex: chapterIndex,
+                    text: typedEntry,
+                    chapter: chapter,
+                    userName: userName,
+                    appState: self
+                )
+            }
+        } else if let audioFileName = memory.audioFileName {
+            // Re-process audio memory
+            let audioURL = Self.documentsDirectory.appendingPathComponent(audioFileName)
+            Task {
+                await StoryProcessingService.shared.processMemory(
+                    memoryID: memoryID,
+                    chapterIndex: chapterIndex,
+                    audioURL: audioURL,
+                    chapter: chapter,
+                    userName: userName,
+                    appState: self
+                )
+            }
+        }
+    }
+
     func updateNarrative(chapterIndex: Int, text: String) {
         guard chapterIndex >= 0, chapterIndex < chapters.count else { return }
         chapters[chapterIndex].generatedNarrative = text

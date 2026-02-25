@@ -9,12 +9,18 @@ struct RecordingSetupView: View {
     @State private var isLoadingPrompts = false
     @State private var showProfile = false
     @State private var showChapterReview = false
+    @State private var memoryToDelete: Memory? = nil
+    @State private var showDeleteConfirmation = false
 
     private var chapter: Chapter {
         guard chapterIndex >= 0, chapterIndex < appState.chapters.count else {
             return Chapter.allChapters[0]
         }
         return appState.chapters[chapterIndex]
+    }
+
+    private var displayableMemories: [Memory] {
+        chapter.memories.filter { $0.state != .notStarted }
     }
 
     var body: some View {
@@ -62,7 +68,32 @@ struct RecordingSetupView: View {
                             progress: Double(chapter.completedMemoryCount) / 5.0,
                             height: 6
                         )
-                        .padding(.bottom, 32)
+                        .padding(.bottom, 24)
+
+                        // MARK: - Memory List
+                        if !displayableMemories.isEmpty {
+                            Text("Your memories")
+                                .font(.comfortaa(16, weight: .bold))
+                                .foregroundColor(.mabelText)
+                                .padding(.bottom, 10)
+
+                            VStack(spacing: 8) {
+                                ForEach(Array(displayableMemories.enumerated()), id: \.element.id) { index, memory in
+                                    MemoryCard(
+                                        memory: memory,
+                                        index: index,
+                                        onDelete: {
+                                            memoryToDelete = memory
+                                            showDeleteConfirmation = true
+                                        },
+                                        onRetry: {
+                                            appState.retryMemory(chapterIndex: chapterIndex, memoryID: memory.id)
+                                        }
+                                    )
+                                }
+                            }
+                            .padding(.bottom, 24)
+                        }
 
                         if chapter.completedMemoryCount >= 5 {
                             // MARK: - Chapter Complete State
@@ -88,6 +119,25 @@ struct RecordingSetupView: View {
         }
         .sheet(isPresented: $showChapterReview) {
             ChapterReviewView(chapterIndex: chapterIndex)
+        }
+        .alert(
+            "Delete memory?",
+            isPresented: $showDeleteConfirmation,
+            presenting: memoryToDelete
+        ) { memory in
+            Button("Delete", role: .destructive) {
+                appState.deleteMemory(chapterIndex: chapterIndex, memoryID: memory.id)
+                memoryToDelete = nil
+            }
+            Button("Cancel", role: .cancel) {
+                memoryToDelete = nil
+            }
+        } message: { _ in
+            if chapter.completedMemoryCount >= 5 && chapter.generatedNarrative != nil {
+                Text("This will remove the memory and invalidate your chapter narrative. You'll need to record a replacement and regenerate.")
+            } else {
+                Text("This will permanently remove this memory.")
+            }
         }
         .task {
             if suggestionPrompts.isEmpty {
@@ -208,47 +258,6 @@ struct RecordingSetupView: View {
 
     private var recordingUI: some View {
         VStack(alignment: .leading, spacing: 0) {
-            // Processing indicator
-            if chapter.memories.contains(where: { $0.state == .processing }) {
-                HStack(spacing: 10) {
-                    ProgressView()
-                        .tint(.mabelTeal)
-                    Text("Processing your memory...")
-                        .font(.comfortaa(13, weight: .medium))
-                        .foregroundColor(.mabelSubtle)
-                }
-                .padding(14)
-                .frame(maxWidth: .infinity)
-                .background(
-                    RoundedRectangle(cornerRadius: 12)
-                        .fill(Color.mabelSurface.opacity(0.9))
-                )
-                .padding(.bottom, 16)
-            }
-
-            // Error indicator
-            if let failedMemory = chapter.memories.first(where: { $0.state == .failed }) {
-                HStack(spacing: 10) {
-                    Image(systemName: "exclamationmark.triangle.fill")
-                        .foregroundColor(.mabelBurgundy)
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text("Processing failed")
-                            .font(.comfortaa(13, weight: .bold))
-                            .foregroundColor(.mabelText)
-                        Text(failedMemory.errorMessage ?? "An error occurred. Please try again.")
-                            .font(.comfortaa(11, weight: .regular))
-                            .foregroundColor(.mabelSubtle)
-                    }
-                }
-                .padding(14)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .background(
-                    RoundedRectangle(cornerRadius: 12)
-                        .fill(Color.mabelBurgundy.opacity(0.08))
-                )
-                .padding(.bottom, 16)
-            }
-
             // Mic button — centered
             HStack {
                 Spacer()
