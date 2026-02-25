@@ -3,6 +3,9 @@ import SwiftUI
 struct LibraryView: View {
     @Environment(AppState.self) private var appState
     @State private var showProfile = false
+    @State private var showShareSheet = false
+    @State private var pdfURL: URL?
+    @State private var isGeneratingPDF = false
 
     private var allCompleted: Bool {
         appState.completedChapterCount == 10
@@ -37,6 +40,11 @@ struct LibraryView: View {
         .toolbar(.hidden, for: .navigationBar)
         .sheet(isPresented: $showProfile) {
             ProfileView()
+        }
+        .sheet(isPresented: $showShareSheet) {
+            if let pdfURL {
+                ShareSheet(activityItems: [pdfURL])
+            }
         }
     }
 
@@ -93,6 +101,29 @@ struct LibraryView: View {
         }
     }
 
+    // MARK: - PDF Export
+
+    private func generateAndSharePDF() {
+        isGeneratingPDF = true
+        let name = appState.userProfile?.displayName ?? "Your"
+        let bookTitle = "\(name)'s Book"
+
+        DispatchQueue.global(qos: .userInitiated).async {
+            let url = PDFExportService.generateBookPDF(
+                title: bookTitle,
+                authorName: name,
+                chapters: appState.chapters
+            )
+            DispatchQueue.main.async {
+                isGeneratingPDF = false
+                if let url {
+                    pdfURL = url
+                    showShareSheet = true
+                }
+            }
+        }
+    }
+
     // MARK: - Completed Book View
 
     private var completedBookView: some View {
@@ -113,9 +144,12 @@ struct LibraryView: View {
                 .foregroundColor(.mabelSubtle)
                 .multilineTextAlignment(.center)
 
-            // PDF Download (non-functional for MVP)
-            CTAButton(title: "PDF DOWNLOAD") {
-                // Non-functional for MVP
+            // PDF Download
+            CTAButton(
+                title: isGeneratingPDF ? "GENERATING..." : "PDF DOWNLOAD",
+                isDisabled: isGeneratingPDF
+            ) {
+                generateAndSharePDF()
             }
 
             // Audiobook (grayed out)
@@ -150,6 +184,18 @@ struct ProfileButton: View {
             }
         }
     }
+}
+
+// MARK: - Share Sheet
+
+struct ShareSheet: UIViewControllerRepresentable {
+    let activityItems: [Any]
+
+    func makeUIViewController(context: Context) -> UIActivityViewController {
+        UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
+    }
+
+    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
 }
 
 #Preview {

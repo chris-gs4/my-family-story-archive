@@ -13,6 +13,8 @@ struct RecordingView: View {
     @State private var typewriterText: String = ""
     @State private var micPulse = false
     @State private var isProcessing = false
+    @State private var showWriteBox = false
+    @State private var typedEntry = ""
 
     private let boilerplateLines = [
         "Mabel is listening...",
@@ -51,172 +53,202 @@ struct RecordingView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-                // Top bar with back button (below safe area)
-                HStack {
-                    Button(action: { dismiss() }) {
-                        HStack(spacing: 6) {
-                            Image(systemName: "chevron.left")
-                                .font(.system(size: 16, weight: .semibold))
-                            Text("Back")
-                                .font(.comfortaa(14, weight: .medium))
-                        }
-                        .foregroundColor(.mabelTeal)
-                        .frame(height: 44)
-                        .contentShape(Rectangle())
+            // Top bar with back button (below safe area)
+            HStack {
+                Button(action: { dismiss() }) {
+                    HStack(spacing: 6) {
+                        Image(systemName: "chevron.left")
+                            .font(.system(size: 16, weight: .semibold))
+                        Text("Back")
+                            .font(.comfortaa(14, weight: .medium))
                     }
-                    Spacer()
+                    .foregroundColor(.mabelTeal)
+                    .frame(height: 44)
+                    .contentShape(Rectangle())
                 }
-                .padding(.top, 8)
-                .padding(.bottom, 4)
-
-                // Chapter heading
-                Text("Chapter \(chapter.id) – \(chapter.title)")
-                    .font(.comfortaa(18, weight: .bold))
-                    .foregroundColor(.mabelText)
-                    .padding(.bottom, 4)
-
-                Text("\(chapter.completedMemoryCount) of 5 memories recorded")
-                    .font(.comfortaa(12, weight: .regular))
-                    .foregroundColor(.mabelSubtle)
-                    .padding(.bottom, 4)
-
-                // Prompt if selected
-                if let prompt = prompt {
-                    Text(prompt)
-                        .font(.comfortaa(14, weight: .medium))
-                        .foregroundColor(.mabelText)
-                        .multilineTextAlignment(.center)
-                        .lineSpacing(2)
-                        .padding(.horizontal, 16)
-                        .padding(.bottom, 4)
-                }
-
                 Spacer()
+            }
+            .padding(.top, 8)
+            .padding(.bottom, 4)
 
-                // CENTER MIC BUTTON
-                Button(action: toggleRecording) {
-                    ZStack {
+            ScrollView {
+                VStack(spacing: 0) {
+                    // Chapter heading
+                    Text("Chapter \(chapter.id) – \(chapter.title)")
+                        .font(.comfortaa(18, weight: .bold))
+                        .foregroundColor(.mabelText)
+                        .padding(.bottom, 4)
+
+                    Text("\(chapter.completedMemoryCount) of 5 memories recorded")
+                        .font(.comfortaa(12, weight: .regular))
+                        .foregroundColor(.mabelSubtle)
+                        .padding(.bottom, 4)
+
+                    // Prompt if selected
+                    if let prompt = prompt {
+                        Text(prompt)
+                            .font(.comfortaa(14, weight: .medium))
+                            .foregroundColor(.mabelText)
+                            .multilineTextAlignment(.center)
+                            .lineSpacing(2)
+                            .padding(.horizontal, 16)
+                            .padding(.bottom, 4)
+                    }
+
+                    Spacer()
+                        .frame(height: 40)
+
+                    // CENTER MIC BUTTON
+                    Button(action: toggleRecording) {
+                        ZStack {
+                            if isActivelyRecording {
+                                Circle()
+                                    .fill(Color.mabelBurgundy.opacity(0.12))
+                                    .frame(width: 120, height: 120)
+                                    .scaleEffect(micPulse ? 1.25 : 1.0)
+                                    .opacity(micPulse ? 0.0 : 0.6)
+                                    .animation(
+                                        .easeOut(duration: 1.5).repeatForever(autoreverses: false),
+                                        value: micPulse
+                                    )
+                            }
+
+                            if !isActivelyRecording {
+                                Circle()
+                                    .fill(micColor.opacity(0.08))
+                                    .frame(width: 112, height: 112)
+                            }
+
+                            Circle()
+                                .fill(micColor)
+                                .frame(width: 88, height: 88)
+                                .shadow(color: micColor.opacity(0.3), radius: 10, x: 0, y: 4)
+
+                            Image(systemName: "mic.fill")
+                                .font(.system(size: 34))
+                                .foregroundColor(.white)
+                        }
+                    }
+                    .padding(.bottom, 24)
+
+                    // Waveform
+                    WaveformView(
+                        isAnimating: isActivelyRecording,
+                        barCount: 24,
+                        tintColor: isActivelyRecording ? .mabelBurgundy : .mabelSubtle.opacity(0.4)
+                    )
+                    .padding(.horizontal, 40)
+                    .padding(.bottom, 20)
+
+                    // Timer
+                    Text(formattedTime)
+                        .font(.comfortaa(24, weight: .medium))
+                        .foregroundColor(.mabelText)
+                        .monospacedDigit()
+                        .padding(.bottom, 4)
+
+                    // Status indicator
+                    HStack(spacing: 6) {
                         if isActivelyRecording {
                             Circle()
-                                .fill(Color.mabelBurgundy.opacity(0.12))
-                                .frame(width: 120, height: 120)
-                                .scaleEffect(micPulse ? 1.25 : 1.0)
-                                .opacity(micPulse ? 0.0 : 0.6)
-                                .animation(
-                                    .easeOut(duration: 1.5).repeatForever(autoreverses: false),
-                                    value: micPulse
+                                .fill(Color.mabelBurgundy)
+                                .frame(width: 8, height: 8)
+                        }
+                        Text(statusText)
+                            .font(.comfortaa(14, weight: .medium))
+                            .foregroundColor(.mabelSubtle)
+                    }
+                    .padding(.bottom, 16)
+
+                    // Typewriter text
+                    Text(isActivelyRecording ? typewriterText : "")
+                        .font(.comfortaa(14, weight: .regular))
+                        .foregroundColor(.mabelSubtle)
+                        .multilineTextAlignment(.center)
+                        .frame(height: 20)
+                        .padding(.bottom, 24)
+
+                    // BOTTOM CONTROLS
+                    HStack(spacing: 12) {
+                        // Clear
+                        Button(action: clearRecording) {
+                            Text("Clear")
+                                .font(.comfortaa(14, weight: .medium))
+                                .foregroundColor(.mabelBurgundy)
+                                .frame(maxWidth: .infinity)
+                                .frame(height: 48)
+                                .background(
+                                    Capsule()
+                                        .strokeBorder(Color.mabelBurgundy.opacity(0.3), lineWidth: 1.5)
                                 )
                         }
 
-                        if !isActivelyRecording {
-                            Circle()
-                                .fill(micColor.opacity(0.08))
-                                .frame(width: 112, height: 112)
+                        // Pause/Resume
+                        Button(action: toggleRecording) {
+                            Text(recorder.isRecording ? "Pause" : (hasStartedOnce ? "Resume" : "Record"))
+                                .font(.comfortaa(14, weight: .medium))
+                                .foregroundColor(.mabelTeal)
+                                .frame(maxWidth: .infinity)
+                                .frame(height: 48)
+                                .background(
+                                    Capsule()
+                                        .strokeBorder(Color.mabelTeal, lineWidth: 1.5)
+                                )
                         }
 
-                        Circle()
-                            .fill(micColor)
-                            .frame(width: 88, height: 88)
-                            .shadow(color: micColor.opacity(0.3), radius: 10, x: 0, y: 4)
-
-                        Image(systemName: "mic.fill")
-                            .font(.system(size: 34))
-                            .foregroundColor(.white)
+                        // Stop & Save
+                        Button(action: saveMemory) {
+                            Text("Stop & Save")
+                                .font(.comfortaa(14, weight: .bold))
+                                .foregroundColor(.white)
+                                .frame(maxWidth: .infinity)
+                                .frame(height: 48)
+                                .background(
+                                    Capsule()
+                                        .fill(hasStartedOnce && !isProcessing ? Color.mabelTeal : Color.mabelSubtle.opacity(0.4))
+                                )
+                        }
+                        .disabled(!hasStartedOnce || isProcessing)
                     }
-                }
-                .padding(.bottom, 24)
+                    .padding(.bottom, 16)
 
-                // Waveform
-                WaveformView(
-                    isAnimating: isActivelyRecording,
-                    barCount: 24,
-                    tintColor: isActivelyRecording ? .mabelBurgundy : .mabelSubtle.opacity(0.4)
-                )
-                .padding(.horizontal, 40)
-                .padding(.bottom, 20)
-
-                // Timer
-                Text(formattedTime)
-                    .font(.comfortaa(24, weight: .medium))
-                    .foregroundColor(.mabelText)
-                    .monospacedDigit()
-                    .padding(.bottom, 4)
-
-                // Status indicator
-                HStack(spacing: 6) {
-                    if isActivelyRecording {
-                        Circle()
-                            .fill(Color.mabelBurgundy)
-                            .frame(width: 8, height: 8)
+                    // Write here toggle
+                    Button(action: { showWriteBox.toggle() }) {
+                        HStack {
+                            Image(systemName: showWriteBox ? "chevron.down" : "chevron.right")
+                                .font(.system(size: 12, weight: .semibold))
+                            Text("Or write here...")
+                                .font(.comfortaa(14, weight: .medium))
+                        }
+                        .foregroundColor(.mabelTeal)
                     }
-                    Text(statusText)
-                        .font(.comfortaa(14, weight: .medium))
-                        .foregroundColor(.mabelSubtle)
-                }
-                .padding(.bottom, 16)
-
-                // Typewriter text
-                Text(isActivelyRecording ? typewriterText : "")
-                    .font(.comfortaa(14, weight: .regular))
-                    .foregroundColor(.mabelSubtle)
-                    .multilineTextAlignment(.center)
-                    .frame(height: 20)
                     .padding(.bottom, 8)
 
-                Spacer()
-
-                // BOTTOM CONTROLS
-                HStack(spacing: 12) {
-                    // Clear
-                    Button(action: clearRecording) {
-                        Text("Clear")
-                            .font(.comfortaa(14, weight: .medium))
-                            .foregroundColor(.mabelBurgundy)
-                            .frame(maxWidth: .infinity)
-                            .frame(height: 48)
+                    if showWriteBox {
+                        TextEditor(text: $typedEntry)
+                            .font(.comfortaa(14, weight: .regular))
+                            .foregroundColor(.mabelText)
+                            .scrollContentBackground(.hidden)
+                            .padding(12)
+                            .frame(minHeight: 120)
                             .background(
-                                Capsule()
-                                    .strokeBorder(Color.mabelBurgundy.opacity(0.3), lineWidth: 1.5)
+                                RoundedRectangle(cornerRadius: 12)
+                                    .fill(Color.mabelSurface.opacity(0.9))
                             )
+                            .padding(.bottom, 12)
+
+                        if !typedEntry.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                            CTAButton(title: "SAVE WRITTEN MEMORY") {
+                                saveTypedMemory()
+                            }
+                            .padding(.bottom, 12)
+                        }
                     }
 
-                    // Pause/Resume
-                    Button(action: toggleRecording) {
-                        Text(recorder.isRecording ? "Pause" : (hasStartedOnce ? "Resume" : "Record"))
-                            .font(.comfortaa(14, weight: .medium))
-                            .foregroundColor(.mabelTeal)
-                            .frame(maxWidth: .infinity)
-                            .frame(height: 48)
-                            .background(
-                                Capsule()
-                                    .strokeBorder(Color.mabelTeal, lineWidth: 1.5)
-                            )
-                    }
-
-                    // Stop & Save
-                    Button(action: saveMemory) {
-                        Text("Stop & Save")
-                            .font(.comfortaa(14, weight: .bold))
-                            .foregroundColor(.white)
-                            .frame(maxWidth: .infinity)
-                            .frame(height: 48)
-                            .background(
-                                Capsule()
-                                    .fill(hasStartedOnce && !isProcessing ? Color.mabelTeal : Color.mabelSubtle.opacity(0.4))
-                            )
-                    }
-                    .disabled(!hasStartedOnce || isProcessing)
+                    Spacer()
+                        .frame(height: 100)
                 }
-                .padding(.bottom, 16)
-
-                // SAVE MEMORY CTA
-                CTAButton(
-                    title: isProcessing ? "SAVING..." : "SAVE MEMORY",
-                    isDisabled: !hasStartedOnce || isProcessing
-                ) {
-                    saveMemory()
-                }
-                .padding(.bottom, 40)
+            }
         }
         .padding(.horizontal, 24)
         .background(MabelGradientBackground())
@@ -288,6 +320,33 @@ struct RecordingView: View {
                     appState: appState
                 )
             }
+        }
+
+        dismiss()
+    }
+
+    private func saveTypedMemory() {
+        let trimmed = typedEntry.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return }
+
+        let memory = Memory(
+            promptUsed: prompt,
+            state: .submitted,
+            typedEntry: trimmed,
+            createdAt: Date()
+        )
+        appState.addMemory(chapterIndex: chapterIndex, memory: memory)
+
+        let memoryID = memory.id
+        Task {
+            await StoryProcessingService.shared.processTypedMemory(
+                memoryID: memoryID,
+                chapterIndex: chapterIndex,
+                text: trimmed,
+                chapter: chapter,
+                userName: appState.userProfile?.displayName ?? "Narrator",
+                appState: appState
+            )
         }
 
         dismiss()

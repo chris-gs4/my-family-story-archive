@@ -4,8 +4,10 @@ struct ChapterCard: View {
     let chapter: Chapter
 
     private var statusIcon: String {
-        if chapter.isCompleted {
+        if chapter.isApproved {
             return "checkmark.circle.fill"
+        } else if chapter.isReadyForReview {
+            return "circle.fill"
         } else if chapter.completedMemoryCount > 0 {
             return "circle.lefthalf.filled"
         } else {
@@ -14,8 +16,10 @@ struct ChapterCard: View {
     }
 
     private var statusColor: Color {
-        if chapter.isCompleted {
+        if chapter.isApproved {
             return .mabelTeal
+        } else if chapter.isReadyForReview {
+            return .orange
         } else if chapter.completedMemoryCount > 0 {
             return .mabelGold
         } else {
@@ -43,7 +47,15 @@ struct ChapterCard: View {
                 .lineLimit(2)
                 .multilineTextAlignment(.leading)
 
-            if chapter.completedMemoryCount > 0 && !chapter.isCompleted {
+            if chapter.isApproved {
+                Text("Approved")
+                    .font(.comfortaa(11, weight: .medium))
+                    .foregroundColor(.mabelTeal)
+            } else if chapter.isReadyForReview {
+                Text("Ready for review")
+                    .font(.comfortaa(11, weight: .medium))
+                    .foregroundColor(.orange)
+            } else if chapter.completedMemoryCount > 0 {
                 Text("\(chapter.completedMemoryCount)/5")
                     .font(.comfortaa(11, weight: .regular))
                     .foregroundColor(.mabelSubtle)

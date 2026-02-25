@@ -201,6 +201,100 @@ class OpenAIService {
 
         return content
     }
+    // MARK: - AI-Generated Prompts
+
+    func generatePrompts(
+        chapterTitle: String,
+        chapterTopic: String,
+        userName: String,
+        previousMemories: [String],
+        count: Int = 3
+    ) async throws -> [String] {
+        guard !apiKey.isEmpty else {
+            throw OpenAIError.missingAPIKey
+        }
+
+        var contextBlock = ""
+        if !previousMemories.isEmpty {
+            let summaries = previousMemories.enumerated().map { i, text in
+                "Memory \(i + 1): \(String(text.prefix(200)))"
+            }.joined(separator: "\n")
+            contextBlock = """
+
+            The narrator has already shared these memories across their book so far:
+            \(summaries)
+
+            Reference specific details from these memories to create personalized, follow-up style questions. For example, if they mentioned a city, ask about a specific place there. If they mentioned a person, ask about a specific moment with them.
+            """
+        }
+
+        let systemPrompt = """
+        You are Mabel, a warm and caring AI interviewer helping someone write their memoir. Generate exactly \(count) thoughtful interview prompts for a chapter about "\(chapterTopic)".
+
+        The narrator's name is \(userName).
+        \(contextBlock)
+
+        Rules:
+        - Each prompt should be a single question, warm and conversational
+        - Questions should be specific and evocative, not generic
+        - If you have context from previous memories, reference specific details naturally
+        - Keep each prompt under 120 characters
+        - Return ONLY the questions, one per line, no numbering or bullets
+        """
+
+        let url = URL(string: "https://api.openai.com/v1/chat/completions")!
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        let requestBody: [String: Any] = [
+            "model": "gpt-4o-mini",
+            "messages": [
+                ["role": "system", "content": systemPrompt],
+                ["role": "user", "content": "Generate \(count) interview prompts for the chapter \"\(chapterTitle)\"."]
+            ],
+            "temperature": 0.9,
+            "max_tokens": 300
+        ]
+
+        request.httpBody = try JSONSerialization.data(withJSONObject: requestBody)
+
+        let (data, response) = try await URLSession.shared.data(for: request)
+
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw OpenAIError.invalidResponse
+        }
+
+        guard httpResponse.statusCode == 200 else {
+            let errorBody = String(data: data, encoding: .utf8) ?? "Unknown error"
+            throw OpenAIError.apiError(statusCode: httpResponse.statusCode, message: errorBody)
+        }
+
+        struct ChatResponse: Codable {
+            struct Choice: Codable {
+                struct Message: Codable {
+                    let content: String
+                }
+                let message: Message
+            }
+            let choices: [Choice]
+        }
+
+        let chatResponse = try JSONDecoder().decode(ChatResponse.self, from: data)
+        guard let content = chatResponse.choices.first?.message.content else {
+            throw OpenAIError.noContent
+        }
+
+        let prompts = content
+            .components(separatedBy: .newlines)
+            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+            .filter { !$0.isEmpty }
+            .prefix(count)
+
+        return Array(prompts)
+    }
+
     // MARK: - Regenerate Chapter with Feedback
 
     func regenerateChapterNarrative(

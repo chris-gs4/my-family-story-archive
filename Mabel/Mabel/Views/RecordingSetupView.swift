@@ -6,6 +6,7 @@ struct RecordingSetupView: View {
     @State private var showWriteBox = false
     @State private var typedEntry = ""
     @State private var suggestionPrompts: [String] = []
+    @State private var isLoadingPrompts = false
     @State private var showProfile = false
     @State private var showChapterReview = false
 
@@ -88,9 +89,15 @@ struct RecordingSetupView: View {
         .sheet(isPresented: $showChapterReview) {
             ChapterReviewView(chapterIndex: chapterIndex)
         }
-        .onAppear {
+        .task {
             if suggestionPrompts.isEmpty {
-                suggestionPrompts = ChapterPrompts.getPrompts(for: chapter.id, count: 3)
+                await loadPrompts()
+            }
+        }
+        .onChange(of: appState.chapters[chapterIndex].generatedNarrative) { oldValue, newValue in
+            // Auto-open review when narrative finishes generating
+            if oldValue == nil, newValue != nil, !appState.chapters[chapterIndex].isApproved {
+                showChapterReview = true
             }
         }
     }
@@ -270,15 +277,27 @@ struct RecordingSetupView: View {
                 .padding(.bottom, 16)
 
             // Suggestion cards
-            VStack(spacing: 8) {
-                ForEach(suggestionPrompts, id: \.self) { prompt in
-                    NavigationLink(value: RecordingDestination(chapterIndex: chapterIndex, prompt: prompt)) {
-                        SuggestionCardLabel(prompt: prompt)
+            if isLoadingPrompts {
+                HStack(spacing: 10) {
+                    ProgressView()
+                        .tint(.mabelTeal)
+                    Text("Generating prompts...")
+                        .font(.comfortaa(13, weight: .medium))
+                        .foregroundColor(.mabelSubtle)
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 20)
+            } else {
+                VStack(spacing: 8) {
+                    ForEach(suggestionPrompts, id: \.self) { prompt in
+                        NavigationLink(value: RecordingDestination(chapterIndex: chapterIndex, prompt: prompt)) {
+                            SuggestionCardLabel(prompt: prompt)
+                        }
+                        .buttonStyle(.plain)
                     }
-                    .buttonStyle(.plain)
                 }
             }
-            .padding(.bottom, 24)
+            Spacer().frame(height: 24)
 
             // Write here toggle
             Button(action: { showWriteBox.toggle() }) {
@@ -313,6 +332,36 @@ struct RecordingSetupView: View {
                 }
             }
         }
+    }
+
+    private func loadPrompts() async {
+        isLoadingPrompts = true
+
+        // Gather previous memory transcripts/narratives across all chapters for context
+        let previousMemories = appState.chapters
+            .flatMap { $0.memories }
+            .compactMap { $0.narrativeText ?? $0.transcript }
+
+        do {
+            let aiPrompts = try await OpenAIService.shared.generatePrompts(
+                chapterTitle: chapter.title,
+                chapterTopic: chapter.topic,
+                userName: appState.userProfile?.displayName ?? "Narrator",
+                previousMemories: previousMemories,
+                count: 3
+            )
+            if !aiPrompts.isEmpty {
+                suggestionPrompts = aiPrompts
+            } else {
+                suggestionPrompts = ChapterPrompts.getPrompts(for: chapter.id, count: 3)
+            }
+        } catch {
+            // Fall back to static prompts on any failure
+            print("AI prompts failed, using static: \(error.localizedDescription)")
+            suggestionPrompts = ChapterPrompts.getPrompts(for: chapter.id, count: 3)
+        }
+
+        isLoadingPrompts = false
     }
 
     private func saveTypedMemory() {

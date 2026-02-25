@@ -42,6 +42,7 @@
 		AA0001010000000000000015 /* StoryProcessingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0002010000000000000015 /* StoryProcessingService.swift */; };
 		AA0001010000000000000016 /* Config.plist in Resources */ = {isa = PBXBuildFile; fileRef = AA0002010000000000000016 /* Config.plist */; };
 		AA0001010000000000000017 /* ChapterReviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0002010000000000000017 /* ChapterReviewView.swift */; };
+		AA0001010000000000000018 /* PDFExportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0002010000000000000018 /* PDFExportService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -93,6 +94,7 @@
 		AA0002010000000000000015 /* StoryProcessingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryProcessingService.swift; sourceTree = "<group>"; };
 		AA0002010000000000000016 /* Config.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Config.plist; sourceTree = "<group>"; };
 		AA0002010000000000000017 /* ChapterReviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChapterReviewView.swift; sourceTree = "<group>"; };
+		AA0002010000000000000018 /* PDFExportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFExportService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -182,6 +184,7 @@
 			children = (
 				AA0002010000000000000013 /* AudioRecorderService.swift */,
 				AA0002010000000000000014 /* OpenAIService.swift */,
+				AA0002010000000000000018 /* PDFExportService.swift */,
 				AA0002010000000000000015 /* StoryProcessingService.swift */,
 			);
 			path = Services;
@@ -331,6 +334,7 @@
 				AA0001010000000000000002 /* Memory.swift in Sources */,
 				AA0001010000000000000008 /* MyStoriesView.swift in Sources */,
 				AA0001010000000000000014 /* OpenAIService.swift in Sources */,
+				AA0001010000000000000018 /* PDFExportService.swift in Sources */,
 				76AEFD3B3EE12EF90CAEA3EC /* PillButton.swift in Sources */,
 				AA0001010000000000000009 /* ProfileView.swift in Sources */,
 				AA0001010000000000000012 /* ProgressBar.swift in Sources */,
