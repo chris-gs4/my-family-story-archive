@@ -3,10 +3,10 @@
 ## Executive Summary
 
 ### Core Value Proposition
-Mabel enables users to effortlessly capture and preserve family stories by transforming interviews into written narratives and audiobooks using AI-driven technology.
+Mabel enables users to effortlessly capture and preserve their life stories through guided voice journaling, transforming spoken memories into polished written narratives using AI-driven technology.
 
 ### MVP Scope
-The MVP includes AI-guided interview questions, audio transcription, narrative generation, and audiobook creation with voice cloning. These features empower users to document and share family stories seamlessly.
+The MVP includes AI-guided questions, voice recording, audio transcription, narrative generation, and PDF export. These features empower users to capture their personal stories through a fun, voice-first journaling experience.
 
 ### Success Criteria
 - **Feature Completion:** All P0 features from the PRD implemented and tested
@@ -64,8 +64,8 @@ The MVP includes AI-guided interview questions, audio transcription, narrative g
 ## Module-Based Architecture ⭐ KEY INNOVATION
 
 ### Overview
-Mabel uses a **module-based workflow** where users build their family story incrementally, one chapter at a time. This architecture solves two critical UX problems:
-1. **Prevents overwhelm** - Users complete bite-sized modules instead of facing a massive upfront interview
+Mabel uses a **module-based workflow** where users build their life story incrementally, one chapter at a time. This architecture solves two critical UX problems:
+1. **Prevents overwhelm** - Users complete bite-sized modules instead of facing a massive writing project
 2. **Enables AI learning** - Each module's questions build upon previous responses, creating deeper narratives
 
 ### How It Works
@@ -358,7 +358,7 @@ enum ModuleStatus {
 #### Interview Question Routes
 
 - `POST /api/projects/:id/questions/generate`
-  - Generate AI interview questions based on interviewee profile
+  - Generate AI questions based on user profile and previous answers
   - Body: `{ questionCount?: number }` (default: 20)
   - Response: `{ jobId: string, message: string }`
   - Side effect: Creates job, returns immediately (async processing)
@@ -456,20 +456,20 @@ enum ModuleStatus {
 ## Interview Question Strategy
 
 ### Overview
-The interview question system generates structured, contextually relevant questions based on the interviewee's profile. Questions are generated **upfront** (not in real-time during the interview) to provide a clear roadmap for conducting the interview.
+The question system generates structured, contextually relevant questions based on the user's profile and previous responses. Questions are generated **upfront** for each module to provide a clear set of prompts that guide the user's voice recording.
 
 ### Question Generation Approach
 
-**MVP Approach (Post-Recording Adaptation):**
-1. User provides interviewee context (name, relationship, age/generation, topics)
-2. System generates 15-25 questions organized by category
-3. User conducts interview using questions as a guide
-4. After interview, system can analyze transcription and suggest additional follow-up questions for future sessions (Phase 3)
+**MVP Approach (Module-Based):**
+1. User provides profile context (name, age/generation, topics of interest)
+2. System generates 15-25 questions organized by category for Module 1
+3. User answers by voice recording or typing
+4. Subsequent modules analyze all previous answers to generate smarter follow-up questions
 
 **Post-MVP Enhancement (Phase 2):**
-- Real-time question adaptation during live interviews
+- Surprise prompts from Mabel between sessions ("I was thinking about what you said about your first pet...")
 - Dynamic follow-up generation based on responses
-- Sentiment analysis to adjust question tone
+- Gamified question delivery (daily prompts, streaks)
 
 ### Question Categories
 
@@ -544,15 +544,14 @@ Example structure:
 ### Question Generation Prompt Template
 
 ```
-You are helping create a personalized interview guide for capturing [RELATIONSHIP]'s life story.
+You are Mabel, a warm and thoughtful AI companion helping someone capture their life story through guided voice journaling.
 
-Interviewee Profile:
+Storyteller Profile:
 - Name: [NAME]
-- Relationship to interviewer: [RELATIONSHIP]
 - Generation: [GENERATION] (born ~[BIRTH_YEAR])
 - Topics of interest: [TOPICS]
 
-Generate [QUESTION_COUNT] interview questions organized by these categories:
+Generate [QUESTION_COUNT] journaling prompts organized by these categories:
 - Early Life & Childhood
 - Adolescence & Education
 - Career & Work Life
@@ -562,7 +561,7 @@ Generate [QUESTION_COUNT] interview questions organized by these categories:
 
 Requirements:
 1. Questions should be open-ended and invite storytelling
-2. Use warm, conversational tone appropriate for [RELATIONSHIP]
+2. Use warm, conversational tone — like a caring friend asking about their life
 3. Include specific historical/cultural context for [GENERATION]
 4. Emphasize [TOPICS] where relevant
 5. Order questions chronologically within each category
@@ -579,11 +578,11 @@ Output format: JSON array of question objects with category, order, question tex
 - Allow users to edit, reorder, or add custom questions
 - Track which questions were actually asked (for future analytics)
 
-### Future Enhancements (Phase 3+)
-- Multi-session interview support with progressive questioning
-- Adaptive questioning based on previous session transcripts
+### Future Enhancements (Phase 2+)
+- Surprise prompts from Mabel between sessions
+- Gamified question delivery (daily prompts, streaks, milestones)
 - Photo/artifact integration ("Tell me about this photo...")
-- Collaborative question building (family members suggest questions)
+- Family Plan — shared archive where family members contribute their own stories
 
 ## Job Queue Architecture
 
@@ -1458,7 +1457,7 @@ const ESTIMATED_DURATION: Record<ProjectStatus, string> = {
 
 ## Security & Privacy
 
-Family stories contain highly personal and sensitive information. Security and privacy are paramount.
+Life stories contain highly personal and sensitive information. Security and privacy are paramount.
 
 ### Data Protection Requirements
 
@@ -1644,7 +1643,7 @@ export async function deleteUserData(userId: string) {
       "Effect": "Deny",
       "Principal": "*",
       "Action": "s3:*",
-      "Resource": "arn:aws:s3:::family-stories-audio/*",
+      "Resource": "arn:aws:s3:::mabel-stories-audio/*",
       "Condition": {
         "Bool": { "aws:SecureTransport": "false" }
       }
@@ -2161,21 +2160,21 @@ async function trackJobPerformance(
 ```
 
 ## User Stories
-**Story:** As a user, I want the AI to guide me with structured questions so that I can conduct meaningful interviews without prior experience.
+**Story:** As a user, I want Mabel to guide me with thoughtful questions so that I can capture my life story without needing to figure out what to write about.
 
 **Priority:** P0
 
 **Acceptance Criteria:**
-- [ ] System generates initial questions based on user input
-- [ ] AI adapts follow-up questions based on conversation tone
-- [ ] Questions are contextually relevant and emotionally resonant
+- [ ] System generates initial questions based on user profile
+- [ ] AI adapts follow-up questions based on previous answers
+- [ ] Questions are contextually relevant and help users rediscover memories
 
 **Dependencies:** None
 
 **Estimated Complexity:** Medium
 
-### User Story 2: Audio Transcription
-**Story:** As a user, I want my recorded interviews to be accurately transcribed so that I can easily create a written narrative.
+### User Story 2: Voice Recording & Transcription
+**Story:** As a user, I want to speak my answers and have them automatically transcribed so that capturing my story feels natural and effortless.
 
 **Priority:** P0
 
@@ -2189,7 +2188,7 @@ async function trackJobPerformance(
 **Estimated Complexity:** Medium
 
 ### User Story 3: Narrative Generation
-**Story:** As a user, I want the AI to generate a narrative from my interview transcripts so that I can preserve the story in written form.
+**Story:** As a user, I want the AI to transform my spoken answers into polished narrative chapters so that my story reads beautifully.
 
 **Priority:** P0
 
@@ -2203,12 +2202,12 @@ async function trackJobPerformance(
 **Estimated Complexity:** Medium
 
 ### User Story 4: Voice Cloning and Audiobook Creation
-**Story:** As a user, I want to create an audiobook with my interviewee's voice so that the story feels personal and authentic.
+**Story:** As a user, I want to create an audiobook narrated in my own voice so that my story feels truly personal and authentic.
 
-**Priority:** P0
+**Priority:** P2 (Phase 3)
 
 **Acceptance Criteria:**
-- [ ] Voice cloning accurately replicates the interviewee's voice
+- [ ] Voice cloning accurately replicates the user's voice
 - [ ] Audiobook is generated without noticeable audio artifacts
 - [ ] Completed audiobook is shareable via multiple platforms
 
@@ -2253,8 +2252,8 @@ async function trackJobPerformance(
 
 [Continue with all tasks for Epic 1]
 
-### Epic 2: AI-Guided Interviews
-**Goal:** Provide AI-driven interview guidance to users
+### Epic 2: AI-Guided Voice Journaling
+**Goal:** Provide AI-driven question guidance for voice journaling
 
 **User Stories Included:** US-3, US-4
 
@@ -2326,7 +2325,7 @@ async function trackJobPerformance(
 **Description:** Use ElevenLabs technology for voice cloning
 
 **Acceptance Criteria:**
-- [ ] Voice cloning replicates interviewee's voice accurately
+- [ ] Voice cloning replicates user's voice accurately
 - [ ] Audiobook quality meets user expectations
 
 **Dependencies:** Completion of narrative generation
@@ -2363,7 +2362,7 @@ async function trackJobPerformance(
 
 ### Phase 1: MVP - Foundation & Core Workflow (Weeks 1-3)
 
-**Goal:** Deliver working end-to-end flow from interview questions to downloadable written narrative
+**Goal:** Deliver working end-to-end flow from guided questions to downloadable written narrative
 
 **Epics:**
 - User Authentication & Project Management
@@ -2395,13 +2394,13 @@ async function trackJobPerformance(
 **Goal:** Implement AI-powered question generation, transcription, and narrative creation
 
 **Epics:**
-- Interviewee Information Collection
+- Story Profile Setup
 - AI Question Generation
 - Audio Transcription Pipeline
 - Narrative Generation Pipeline
 
 **Key Deliverables:**
-- ✅ Interviewee profile form and storage
+- ✅ Story profile form and storage
 - ✅ GPT-4 question generation with templates
 - ✅ Whisper API integration for transcription
 - ✅ Audio chunking for large files
@@ -2410,7 +2409,7 @@ async function trackJobPerformance(
 - ✅ PDF generation for download
 
 **Exit Criteria:**
-- [ ] AI generates contextually relevant questions based on interviewee profile
+- [ ] AI generates contextually relevant questions based on user profile
 - [ ] 60-minute audio files transcribed in <5 minutes
 - [ ] Narrative generation produces coherent, emotionally resonant stories
 - [ ] Users can edit narratives and download as PDF
@@ -2508,14 +2507,13 @@ async function trackJobPerformance(
   - **Estimated effort:** 1-2 weeks
   - **API cost:** ~$0.04 per image (DALL-E 3) or $0.10 (Midjourney quality)
   - **User value:** Makes dashboard beautiful, personalizes each chapter
-- Multi-session interview support (continue where you left off)
-- Real-time interview mode (AI suggests questions during recording)
-- Collaborative editing (family members can contribute)
+- Gamification (streaks, milestones, surprise prompts, celebrations)
+- Family Plan — gift Mabel to loved ones, shared family archive
 - Photo/video integration
-- Speaker diarization (identify multiple speakers)
-- Mobile app (React Native)
-- Integration with genealogy platforms
-- White-label solution for professional storytellers/journalists
+- Multi-language support
+- Android app (Capacitor)
+- Integration with wellness and mindfulness platforms
+- Physical book printing service
 
 **Prioritization:** Based on user feedback and engagement metrics from Phases 1-5. AI-Generated Cover Images fast-tracked due to high visual impact and immediate dashboard enhancement.
 
@@ -2558,7 +2556,7 @@ async function trackJobPerformance(
 
 ### Integration Testing
 - API endpoints and service integrations
-- Verify user flows from interview to audiobook creation
+- Verify user flows from voice recording to narrative generation
 
 ### User Acceptance Testing
 - Conduct with beta users to gather feedback

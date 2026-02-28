@@ -1,6 +1,6 @@
 # Mabel - Design System
 
-**Purpose:** Create a warm, trustworthy, and timeless design that honors family stories
+**Purpose:** Create a warm, trustworthy, and timeless design that honors personal life stories
 **Executor:** Claude Code
 **Priority:** High - Foundation for all UI development
 
@@ -891,4 +891,4 @@ After implementation, verify:
 
 **Key Difference from LLYLI Design System:**
 
-This design system is optimized for **your actual mocks** - clean, modern, and focused on the emotional weight of family stories. It avoids the notebook aesthetic in favor of timeless minimalism that will age gracefully alongside the precious memories being preserved.
+This design system is optimized for **your actual mocks** - clean, modern, and focused on the emotional weight of personal life stories. It avoids the notebook aesthetic in favor of timeless minimalism that will age gracefully alongside the precious memories being preserved.

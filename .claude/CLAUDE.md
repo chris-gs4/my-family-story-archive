@@ -1,6 +1,6 @@
 # Mabel — Your Stories, Written with Care
 
-Mabel is an AI-powered app that helps people capture the life stories of their parents, friends, or relatives through guided voice journaling — then automatically turns those recordings into polished written narratives and audiobooks. The mascot is a pixel-art grandmother character named Mabel.
+Mabel is an AI-powered journaling app that helps people capture and preserve their life stories through guided voice recording — then automatically transforms spoken memories into polished written narratives. The mascot is a pixel-art grandmother character named Mabel who serves as a warm, interactive companion throughout the experience.
 
 ## Quick Reference
 
@@ -46,16 +46,17 @@ capacitor.config.ts  # Capacitor configuration
 ## Project Context
 
 ### Target Customer
-Anyone interested in preserving family stories — adult children who want to capture their parents' memories, people creating meaningful gifts, genealogy enthusiasts, or anyone who wants to turn spoken stories into a beautiful written book.
+Anyone who wants to capture their personal life story through guided voice journaling — people approaching milestones, parents wanting to leave something for their children, individuals reflecting on their experiences, or anyone who enjoys rediscovering old memories. Secondary: people gifting Mabel to loved ones via the Family Plan.
 
 ### Value Proposition
-Mabel removes all the friction from preserving family stories. Instead of needing to be a good interviewer, writer, or audio editor, the AI handles the guided questions, audio transcription, narrative creation, and voice cloning in one place. Just tap record, speak, and Mabel writes your story.
+Mabel removes all the friction from preserving your life story. Instead of staring at a blank page, you just talk to Mabel — she asks the right questions, records your voice, and transforms your spoken memories into polished written narratives. It's less like "writing a book" and more like a fun tool that helps you re-access your memories with a warm AI companion.
 
 ### Brand
 - **Name:** Mabel
 - **Tagline:** Your Stories, Written with Care
-- **Mascot:** Pixel-art grandmother character named Mabel
+- **Mascot:** Pixel-art grandmother character named Mabel — warm, encouraging, interactive
 - **Brand assets:** `wireframes/mabel assets/` (logo, square icon, tagline)
+- **Tone:** Fun over formal. Warm and caring, like chatting with someone who genuinely wants to hear your story.
 
 ### Platform
 web + iOS native (Capacitor)
@@ -99,13 +100,16 @@ TypeScript, JavaScript, Next.js, React, Tailwind CSS, shadcn/ui, Radix UI, React
 
 ## Current Focus
 
-The MVP focuses on audio-first guided journaling:
+The MVP focuses on voice-first guided journaling:
 
-- AI-guided interview questions that adapt based on responses
-- Audio recording (native AAC on iOS, WebM on web)
+- AI-guided questions that adapt based on previous responses
+- Voice recording (native AAC on iOS, WebM on web)
 - Audio transcription (Whisper API)
 - Narrative generation from transcripts
 - Module-based story building (chapter by chapter)
+- PDF export of completed stories
+
+Future phases include gamification (streaks, milestones), Family Plan with gifting, voice-cloned audiobooks, and photo integration.
 
 See `confabulator/implementation-plan.md` for the complete development roadmap.
 

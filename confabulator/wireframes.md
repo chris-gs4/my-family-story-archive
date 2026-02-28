@@ -16,7 +16,7 @@ Show the high-level navigation flow between screens:
 ```
 [Landing/Home] → [Sign In] → [Dashboard] → [Project Setup]
    ↓                                             ↓
-[Get Started]                              [Interviewee Info]
+[Get Started]                              [Story Profile]
                                                  ↓
                                           [Module Dashboard] ← (main hub)
                                                  ↓
@@ -43,8 +43,8 @@ Show the high-level navigation flow between screens:
 │  [Logo]     <Home> <Features> <Pricing>      [Sign In]     │
 ├─────────────────────────────────────────────────────────────┤
 │                                                             │
-│              Capture Your Family Stories Easily             │
-│         Transform interviews into narratives and audiobooks │
+│            Capture Your Life Story with Mabel              │
+│       Guided voice journaling that writes your story       │
 │                                                             │
 │              [Get Started Free →]  <Learn More>            │
 │                                                             │
@@ -166,9 +166,9 @@ Show the high-level navigation flow between screens:
 ┌─────────────────────────────────────────────────────────────┐
 │  [Logo]  <Dashboard> <Projects> <Settings>    [User ▼]     │
 ├─────────────────────────────────────────────────────────────┤
-│  ← Back to Projects   │   Project: [Mom's Life Story]      │
+│  ← Back to Projects   │   Project: [My Life Story]         │
 │                                                             │
-│  Interviewee: Mary Johnson (Mother, born 1955)             │
+│  Storyteller: Maya Rodriguez (born 1988)                   │
 │  Progress: 2 of 5 modules completed                        │
 │  [━━━━━━━━━━━━━░░░░░░░░░░░░░] 40%                         │
 │                                                             │
@@ -211,11 +211,11 @@ Show the high-level navigation flow between screens:
 │                                                             │
 │  ┌───────────────────────────────────────────────────────┐ │
 │  │                                                       │ │
-│  │  How did you meet your husband? What do you          │ │
-│  │  remember most about that first encounter?           │ │
+│  │  What was your favorite family tradition growing     │ │
+│  │  up? What made it special to you?                   │ │
 │  │                                                       │ │
-│  │  Note: You mentioned meeting at a dance in Module 1. │ │
-│  │  Tell me more about that!                            │ │
+│  │  Note: You mentioned holiday dinners in Module 1.    │ │
+│  │  Tell me more about those!                           │ │
 │  │                                                       │ │
 │  └───────────────────────────────────────────────────────┘ │
 │                                                             │
@@ -252,13 +252,13 @@ Show the high-level navigation flow between screens:
 │                                                             │
 │  ┌───────────────────────────────────────────────────────┐ │
 │  │                                                       │ │
-│  │  Chapter 3: Finding Love                             │ │
+│  │  Chapter 3: Growing Up                               │ │
 │  │                                                       │ │
-│  │  The summer of 1975 marked a turning point in Mary's │ │
-│  │  life. Fresh out of nursing school, she decided to   │ │
-│  │  attend the hospital fundraiser dance against her    │ │
-│  │  better judgment. Little did she know that evening   │ │
-│  │  would change everything...                          │ │
+│  │  The summers of my childhood were filled with long   │ │
+│  │  afternoons at the neighborhood pool and evenings    │ │
+│  │  catching fireflies in the backyard. Looking back,   │ │
+│  │  those simple days shaped who I am more than I ever  │ │
+│  │  realized at the time...                             │ │
 │  │                                                       │ │
 │  │  [... chapter content continues ...]                 │ │
 │  │                                                       │ │
@@ -309,8 +309,8 @@ Show the high-level navigation flow between screens:
 │  [☰]   Logo  [User] │
 ├─────────────────────┤
 │                     │
-│  Capture Stories    │
-│  Transform with AI  │
+│  Your Story,        │
+│  Written with Care  │
 │                     │
 │  [Get Started]      │
 │  <Learn More>       │

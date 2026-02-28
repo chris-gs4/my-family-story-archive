@@ -1,5 +1,7 @@
 # Mabel - Development Progress
 
+> **Mabel** — Your Stories, Written with Care. An AI-powered journaling app that helps people capture their life stories through guided voice recording.
+
 ## ✅ Completed (Phase 1)
 
 ### Foundation & Infrastructure
@@ -11,21 +13,26 @@
 - [x] **API Routes** - Project CRUD operations
 
 ### Pages Built
-- [x] **Landing Page** (/) - Hero, features showcase
+- [x] **Landing Page** (/) - Hero, features, vision, roadmap
 - [x] **Sign In** (/auth/signin) - Email/password authentication
 - [x] **Sign Up** (/auth/signup) - User registration
-- [x] **Dashboard** (/dashboard) - Demo with sample projects
+- [x] **Dashboard** (/dashboard) - Project listing
+- [x] **My Stories** (/projects/[id]/modules) - Module-based story dashboard
+- [x] **Questions** (/projects/[id]/modules/[moduleId]/questions) - Voice recording + memory cards
+- [x] **Chapter** (/projects/[id]/modules/[moduleId]/chapter) - Chapter review & approval
+- [x] **Profile** (/profile) - Settings, developer tools
 
 ### Database Models
 - [x] User & Auth (NextAuth.js integration)
-- [x] Project (with status state machine)
-- [x] Interviewee
-- [x] InterviewQuestion (with follow-ups)
-- [x] InterviewSession & Transcription
-- [x] Narrative & Audiobook (Post-MVP)
+- [x] Project (with module tracking)
+- [x] Interviewee (story profile)
+- [x] Module (with state machine)
+- [x] ModuleQuestion (with voice recording fields)
+- [x] ModuleChapter (versioned chapters)
+- [x] InterviewQuestion (legacy)
 - [x] Job (queue system)
 - [x] Payment (Stripe integration)
-- [x] AuditLog (compliance)
+- [x] JournalEntry (voice journal)
 
 ### API Endpoints Ready
 - [x] `POST /api/auth/register` - User registration
@@ -72,52 +79,74 @@
 - [x] **API Endpoint** - `/api/inngest` serving functions
 - [x] **Progress Tracking** - Real-time job status updates
 
-### User Workflow Pages ✅
-- [x] **Interviewee Setup** - `/projects/[id]/setup`
-  - Form with name, relationship, birth year, generation
-  - Topic selection (10 common topics)
-  - Additional notes field
-  - Beautiful UI with validation
-- [x] **Questions Page** - `/projects/[id]/questions`
-  - Generate questions button
-  - Real-time progress display
-  - Questions list with categories
-  - Regenerate option
+### Module-Based Story Building ✅
+- [x] **My Stories Dashboard** - `/projects/[id]/modules`
+  - Module cards with status badges
+  - Create new modules
+  - Progress tracking
+- [x] **Questions Page** - `/projects/[id]/modules/[moduleId]/questions`
+  - Voice recording with native iOS (AAC) and web (WebM) support
+  - Text input alternative
+  - Memory cards with processing states
+  - Real-time polling for processing status
+- [x] **Chapter Page** - `/projects/[id]/modules/[moduleId]/chapter`
+  - Chapter review and approval
+  - Regeneration with feedback
+  - Auto-polling during generation
 
-### New API Endpoints ✅
-- [x] `POST /api/projects/:id/interviewee` - Save interviewee information
-- [x] `GET /api/projects/:id/questions` - Fetch generated questions
-- [x] `POST /api/projects/:id/questions/generate` - Trigger AI question generation
+### Voice Recording Pipeline ✅
+- [x] **Audio Recording** - Native Capacitor + Web MediaRecorder
+- [x] **S3 Upload** - Presigned URL upload flow
+- [x] **Transcription** - Whisper API integration (with mock fallback)
+- [x] **Narrative Generation** - AI polishing of transcripts
+- [x] **Inline Processing** - Works without Inngest for dev/demo
+
+### API Endpoints ✅
+- [x] Module CRUD and question generation
+- [x] Voice recording (start-recording, upload-complete actions)
+- [x] Chapter generation and approval
+- [x] PDF book export
+- [x] Developer seed data endpoint
 - [x] `GET/POST/PUT /api/inngest` - Inngest function endpoint
+
+## ✅ Completed (Demo Prep)
+
+### Landing Page & Brand
+- [x] **Landing page** with personal journaling positioning
+- [x] **Business plan PDF** (7-page document)
+- [x] **Brand assets** in public directory
+- [x] **Documentation updated** to reflect personal journaling focus
+
+### iOS Native App
+- [x] **Capacitor integration** - iOS native shell
+- [x] **Native audio recording** - AAC format on iOS
+- [x] **Haptic feedback** - On record start/stop
+- [x] **Simulator testing** - iPhone 17 Pro verified
+
+### Seed Data
+- [x] **Pipeline test seed** - 4 modules in various states
+- [x] **Developer tools** - Seed button in profile page
 
 ## 🧪 Ready to Test
 
-### Complete Workflow Available:
+### Complete E2E Workflow:
 1. ✅ Sign in with demo account
-2. ✅ Select or create project
-3. ✅ Add interviewee information
-4. ✅ Generate AI interview questions (mock AI, ~10-15 seconds)
-5. ✅ View personalized questions organized by category
-6. ⏳ Upload audio (next feature)
-7. ⏳ Transcribe audio (next feature)
-8. ⏳ Generate narrative (next feature)
+2. ✅ Create or select project
+3. ✅ Create module with theme
+4. ✅ Generate AI questions
+5. ✅ Record voice answers (or type)
+6. ✅ Watch AI transcribe and polish
+7. ✅ Generate narrative chapter
+8. ✅ Review, regenerate, or approve chapter
+9. ✅ Export as PDF
 
-### How to Test:
-See **QUICKSTART.md** for detailed testing instructions
+## 🚧 Next Steps (Post-Demo)
 
-## 🚧 Next Steps
-
-### Option 1: Test Current System (Recommended Next)
-1. Start Inngest dev server: `npx inngest-cli@latest dev`
-2. Test question generation workflow end-to-end
-3. Monitor jobs in Inngest UI (http://localhost:8288)
-4. Verify data saved to database
-
-### Option 2: Continue Building Features
-1. Audio upload interface with mock files
-2. Transcription workflow
-3. Narrative generation UI
-4. Complete end-to-end flow
+### Phase 2 Features
+1. Gamification (streaks, milestones, celebrations)
+2. Family Plan & gifting
+3. Standard TTS audiobooks
+4. Surprise prompts from Mabel
 
 ## 📁 Project Structure
 
@@ -230,6 +259,6 @@ All environment variables are documented in `.env.example`.
 
 ---
 
-**Last Updated:** 2026-01-16
-**Current Phase:** Phase 1 - Foundation & Core Workflow
-**Status:** 🟢 On Track
+**Last Updated:** 2026-02-28
+**Current Phase:** MVP Complete — Demo Ready
+**Status:** 🟢 Ready for Demo Night

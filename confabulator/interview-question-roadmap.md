@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document outlines the comprehensive strategy for generating AI-powered interview questions that help users capture meaningful family stories. Questions are personalized based on the interviewee's profile and designed to elicit rich, narrative responses.
+This document outlines the comprehensive strategy for generating AI-powered journaling prompts that help users capture their life stories. Questions are personalized based on the user's profile and previous answers, designed to elicit rich, narrative responses and help users rediscover forgotten memories.
 
 ## Question Generation Philosophy
 

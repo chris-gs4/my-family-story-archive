@@ -1,57 +1,65 @@
 # Project Vision: Mabel
 
 ## Vision Statement
-We are building Mabel, an innovative AI platform that helps families preserve their stories through an incremental, module-based approach. Our unique system allows users to build their loved one's story one chapter at a time, with AI that learns and adapts with each module to ask increasingly relevant questions. Designed for adults aged 30-50 who cherish family history, our tool makes story preservation accessible, non-overwhelming, and deeply personal. We aim to create a world where every family story is told, preserved, and cherished for generations to come—without the barriers of traditional interview and writing processes.
+We are building Mabel, an AI-powered journaling app that helps people capture and preserve their life stories through guided voice recording. Our unique module-based system lets users build their story one chapter at a time, with an AI companion named Mabel — a warm, pixel-art grandmother character — who asks thoughtful follow-up questions that help users re-access memories they'd forgotten. Designed for anyone who wants to preserve their personal history, Mabel makes storytelling fun, accessible, and deeply personal. We aim to create a world where everyone's story is told, preserved, and cherished — without the barriers of traditional writing or interviewing.
 
 ## The Problem We're Solving
-Across the globe, countless family stories remain untold and eventually lost. Adult children, eager to learn about their family histories, often lack the skills to conduct interviews or craft compelling narratives. This gap means that stories of courage, love, and resilience vanish with time, leaving future generations without a window into their past. Traditional methods of documenting these stories are cumbersome, expensive, and inaccessible to many. The cost of inaction is a lost legacy, a void in the familial connection that could otherwise provide inspiration and guidance.
+Everyone has a life story worth preserving, but very few people ever write it down. The idea of "writing a book" feels overwhelming, time-consuming, and reserved for professional writers. Traditional journaling lacks structure and guidance, leaving people staring at blank pages. Meanwhile, precious memories — childhood adventures, pivotal life moments, lessons learned — fade with time. The cost of inaction is a lost personal legacy, memories that could have inspired future generations left uncaptured.
 
 ## Our Solution
-Mabel addresses this problem through a breakthrough **module-based architecture** that makes story preservation accessible and non-overwhelming. Instead of facing a massive upfront interview, users build their family's story incrementally—one chapter at a time.
+Mabel reframes story preservation from "writing a book" into something fun and natural: **guided voice journaling with a friendly AI companion**. Instead of facing a blank page, users simply talk to Mabel. She asks the right questions, records your voice, and transforms your spoken memories into polished written narratives.
 
 **Key Innovation: Context-Learning AI**
-Our platform doesn't just ask questions—it learns. Module 1 establishes the foundation based on the interviewee's profile. Module 2 analyzes those responses to generate smarter follow-up questions. By Module 3, the AI is weaving connections between themes, diving deeper into interesting topics, and filling narrative gaps. This creates richer, more connected stories than any static question list could achieve.
+Mabel doesn't just ask generic questions — she learns. Module 1 establishes the foundation based on your life profile. Module 2 analyzes those responses to generate smarter follow-up questions. By Module 3, Mabel is weaving connections between themes, diving deeper into interesting topics, and helping you rediscover memories you hadn't thought about in years.
 
 **The Module Advantage:**
-- **Prevents overwhelm:** Complete bite-sized chapters instead of massive interviews
-- **Flexible pacing:** Work over days, weeks, or months—your choice
+- **Prevents overwhelm:** Complete bite-sized chapters instead of facing a massive writing project
+- **Flexible pacing:** Work over days, weeks, or months — your choice
 - **Better narratives:** Each chapter builds on previous ones
-- **Natural structure:** Modules become chapters in the final book
+- **Natural structure:** Modules become chapters in your story
 - **Higher completion rates:** Smaller commitments mean people actually finish
 
-Unlike existing tools that require recording equipment, writing skills, or significant time commitments upfront, Mabel works with text responses typed at your own pace. Now is the perfect time for this innovation, as advances in AI language models enable truly context-aware conversations that understand and build upon previous interactions.
+**The Mabel Experience:**
+- **Voice-first:** Just tap record and speak — no writing required
+- **Gamified:** Streaks, celebrations, surprise prompts, and milestones keep you engaged
+- **Interactive companion:** Mabel reacts to your stories with warmth and encouragement
+- **Fun, not formal:** Less "writing your memoir" and more "rediscovering your memories"
+
+Now is the perfect time for this innovation, as advances in AI language models enable truly context-aware conversations that understand and build upon previous interactions.
 
 ## Target Users
-Our primary users are adults aged 30-50 with a desire to preserve their family histories, often motivated by life events such as family gatherings or significant birthdays. These users value personal connections and are tech-savvy enough to engage with digital platforms. They seek meaningful ways to connect with their heritage and pass on stories to future generations. Mabel improves their lives by offering an easy, efficient, and emotionally resonant way to capture and preserve these stories.
+Our primary users are anyone who wants to capture their own life story — whether motivated by personal reflection, milestone birthdays, a desire to leave something meaningful behind, or simply the joy of revisiting old memories. These users span all ages and backgrounds but share a common desire: to preserve their experiences in a lasting, beautiful way.
+
+**Secondary use case:** Gift Mabel to a loved one. Invite family members at a discounted Family Plan rate so they can capture their own stories too — building a shared family archive over time.
 
 ## Value Proposition
-Mabel offers users a unique blend of accessibility, intelligence, and flexibility. Our module-based approach eliminates overwhelm, our context-learning AI creates richer narratives than static question lists, and our text-first system removes the need for recording equipment or writing skills. We stand out with:
-- **No overwhelm:** Build stories incrementally, at your own pace
-- **Smarter AI:** Questions that learn and adapt based on previous answers
-- **Zero equipment needed:** Type responses whenever convenient
-- **Professional results:** AI-generated chapters that read like professionally written books
+Mabel offers users a unique blend of accessibility, intelligence, and fun. Our voice-first approach removes the barrier of writing, our module system eliminates overwhelm, and our context-learning AI creates richer narratives than any static journal could. We stand out with:
+- **No writing required:** Just speak naturally and Mabel handles the rest
+- **Smarter AI:** Questions that learn and adapt based on your previous answers
+- **Fun and engaging:** Gamification, celebrations, and Mabel's warmth keep you coming back
+- **Professional results:** AI-generated chapters that read like a professionally written memoir
 - **Complete control:** Regenerate chapters with feedback, approve when perfect
 
-Users choose us for the friction-free experience that actually gets completed—and for the priceless value of preserving their family's legacy in a beautifully written book.
+Users choose Mabel for the friction-free experience that actually gets completed — and for the priceless value of preserving their personal legacy in a beautifully written story.
 
 ## Long-Term Vision
-In the next 3-5 years, Mabel aspires to be the household name for capturing family stories. We aim to evolve from text-first to multi-modal (adding audio and video), expand globally with multi-language support, and integrate with genealogy platforms to become the complete family memory ecosystem.
+In the next 3-5 years, Mabel aspires to be the go-to platform for personal story preservation. We aim to evolve from individual journaling to a complete memory ecosystem — with family plans, audiobooks narrated in your own voice, photo integration, and multi-language support.
 
 **Progress Milestones:**
-- **Year 1 (Current):** MVP launch with module-based text narratives → 50-100 completed books
-- **Year 2:** Audio transcription, standard audiobooks, mobile app → 500+ completed books
-- **Year 3:** Voice cloning, collaborative editing, photo integration → 2,000+ completed books
-- **Year 3-5:** Industry standard for family story preservation → 10,000+ stories, partnerships with genealogy platforms, possible white-label solutions for professional biographers
+- **Phase 1 (Current):** MVP launch with voice-first module-based journaling, AI narrative generation, PDF export
+- **Phase 2:** Family Plan (gift Mabel, shared family archive), gamification features (streaks, milestones, surprise prompts), standard audiobook narration
+- **Phase 3:** Voice cloning (hear your story in your own voice), collaborative family editing, photo/artifact integration
+- **Phase 4:** Multi-language support, Android app, partnerships with wellness and legacy platforms, physical book printing
 
-Our impact will be seen in the way families connect across generations, with stories that inspire, educate, and strengthen familial bonds. Every family has stories worth preserving—we're building the platform that makes it possible.
+Our impact will be seen in how people reconnect with their own histories — rediscovering forgotten memories, finding new meaning in their experiences, and creating something lasting for the people they love.
 
 ## Guiding Principles
-1. **Authenticity Above All**: We prioritize preserving the genuine voices and stories of our users, ensuring each narrative is true to the storyteller's essence.
-2. **User-Centric Design**: Our platform is intuitive and accessible, designed with non-technical users in mind to make storytelling effortless and enjoyable.
-3. **Emotional Resonance**: We focus on creating products that evoke emotion, understanding that the value lies in the personal connection and impact of the stories told.
-4. **Innovation-Driven**: We continuously explore new technologies to enhance our storytelling capabilities, keeping our solutions cutting-edge and effective.
+1. **Authenticity Above All**: We prioritize preserving genuine voices and stories, ensuring each narrative is true to the storyteller's essence.
+2. **Fun Over Formal**: Story preservation should feel like rediscovering memories with a friend, not writing a term paper.
+3. **User-Centric Design**: Our platform is intuitive and accessible, designed to make storytelling effortless and enjoyable.
+4. **Emotional Resonance**: We focus on creating products that evoke emotion, understanding that the value lies in the personal connection and impact of the stories told.
 5. **Privacy and Respect**: We are committed to safeguarding the privacy of our users, treating their stories with the utmost respect and confidentiality.
 
 ---
 
-Mabel is more than a product; it is a movement to ensure that every family's legacy is preserved and celebrated. Together, let's capture the stories that matter most.
+Mabel is more than a product; it's a movement to ensure that everyone's story is told and cherished. Your stories matter — let Mabel help you tell them.
