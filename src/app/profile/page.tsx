@@ -14,6 +14,7 @@ export default function ProfilePage() {
   const { showToast } = useToast();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [seeding, setSeeding] = useState(false);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
 
@@ -42,6 +43,26 @@ export default function ProfilePage() {
 
   const handleChangePassword = () => {
     showToast('Password change coming soon!', 'info');
+  };
+
+  const handleSeedData = async () => {
+    setSeeding(true);
+    try {
+      const response = await fetch('/api/dev/seed', { method: 'POST' });
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || 'Failed to seed data');
+      }
+      const result = await response.json();
+      showToast(`Seeded "${result.data.title}"! Redirecting...`, 'success');
+      setTimeout(() => {
+        router.push(`/projects/${result.data.projectId}/modules`);
+      }, 1500);
+    } catch (err) {
+      showToast(err instanceof Error ? err.message : 'Seed failed', 'error');
+    } finally {
+      setSeeding(false);
+    }
   };
 
   if (sessionStatus === 'loading' || loading) {
@@ -165,6 +186,26 @@ export default function ProfilePage() {
                 </SecondaryButton>
               </div>
             </div>
+
+            {/* Developer Tools (dev only) */}
+            {process.env.NODE_ENV !== 'production' && (
+              <div className="bg-white border border-purple-200 rounded-lg shadow-sm p-6">
+                <h3 className="text-lg font-semibold text-purple-700 mb-4">Developer Tools</h3>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="font-medium text-text-primary">Seed Dummy Data</p>
+                      <p className="text-sm text-text-secondary">
+                        Create &ldquo;Grandma Rose&rsquo;s Story&rdquo; with 4 modules in various states
+                      </p>
+                    </div>
+                    <PrimaryButton onClick={handleSeedData} disabled={seeding}>
+                      {seeding ? 'Seeding...' : 'SEED DUMMY DATA'}
+                    </PrimaryButton>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Danger Zone */}
             <div className="bg-white border border-red-200 rounded-lg shadow-sm p-6">

@@ -210,6 +210,14 @@ model ModuleQuestion {
   response     String?   @db.Text
   respondedAt  DateTime?
 
+  // Voice recording fields
+  audioFileKey     String?            // S3 key for voice recording
+  rawTranscript    String?   @db.Text // Whisper transcription
+  narrativeText    String?   @db.Text // AI-polished narrative snippet
+  processingStatus String?            // RECORDING / UPLOADING / PROCESSING / COMPLETE / ERROR
+  errorMessage     String?            // Error details when ERROR
+  duration         Int?               // Audio duration in seconds
+
   // Context tracking (for follow-up questions)
   contextSource   String?   // "initial" or "module_1", "module_2", etc.
   contextKeywords String[]  @default([]) // Keywords from previous modules

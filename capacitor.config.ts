@@ -9,7 +9,7 @@ const config: CapacitorConfig = {
     // url: 'https://your-app.vercel.app',
     //
     // For local development, use your machine's local IP:
-    url: 'http://192.168.50.202:3000',
+    url: 'http://192.168.0.139:3000',
     //
     // When server.url is set, the app loads from the remote server
     // instead of the local webDir. This preserves SSR, API routes,

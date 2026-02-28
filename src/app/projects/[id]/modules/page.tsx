@@ -237,7 +237,7 @@ export default function ModulesPage({ params }: { params: { id: string } }) {
       <div className="container mx-auto px-4 max-w-7xl py-12">
         <div className="flex items-center justify-between mb-8">
           <PageHeading
-            title="Story Modules"
+            title="My Stories"
             subtitle="Preserving your family's legacy, one chapter at a time"
             theme="paper-primary"
           />

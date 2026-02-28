@@ -56,6 +56,18 @@ export default function ChapterPage({
     fetchChapter();
   }, [params.id, params.moduleId]);
 
+  // Poll for updates while chapter is generating
+  useEffect(() => {
+    const isGenerating = chapter && (!chapter.content || chapter.content.trim().length === 0 || !chapter.wordCount);
+    if (!isGenerating) return;
+
+    const interval = setInterval(() => {
+      fetchChapter();
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [chapter]);
+
   const fetchChapter = async () => {
     try {
       const response = await fetch(

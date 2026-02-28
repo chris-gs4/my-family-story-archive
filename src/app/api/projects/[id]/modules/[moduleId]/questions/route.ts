@@ -49,6 +49,10 @@ export async function GET(
 
     const totalQuestions = questions.length
     const answeredQuestions = questions.filter(q => q.response).length
+    const processingCount = questions.filter(q =>
+      q.processingStatus && ["RECORDING", "UPLOADING", "PROCESSING"].includes(q.processingStatus)
+    ).length
+    const errorCount = questions.filter(q => q.processingStatus === "ERROR").length
     const progress = totalQuestions > 0 ? Math.round((answeredQuestions / totalQuestions) * 100) : 0
 
     return NextResponse.json({
@@ -57,6 +61,8 @@ export async function GET(
         stats: {
           total: totalQuestions,
           answered: answeredQuestions,
+          processing: processingCount,
+          errors: errorCount,
           progress,
           canGenerateChapter: answeredQuestions >= Math.ceil(totalQuestions * 0.5), // 50% minimum
         },
