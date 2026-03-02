@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
+import QRCodeCTA from '@/components/QRCodeCTA';
 
 export default function LandingPage() {
   const router = useRouter();
@@ -17,18 +18,18 @@ export default function LandingPage() {
   };
 
   return (
-    <div className="min-h-screen" style={{ background: 'linear-gradient(to bottom, #A8E6DC 0%, #ccf6e9 10%, #F5F0E8 35%, #FAF8F3 60%, #FAF8F3 100%)' }}>
+    <div className="min-h-screen" style={{ background: 'linear-gradient(to bottom, #A8E6DC 0%, #F5F0E8 50%, #FAF8F3 100%)' }}>
 
       {/* Hero Section */}
       <section className="relative overflow-hidden">
-        <div className="max-w-5xl mx-auto px-6 pt-16 pb-12 text-center">
+        <div className="max-w-4xl mx-auto px-6 pt-16 pb-20 text-center">
           {/* Mascot */}
           <div className="mb-6">
             <Image
               src="/images/mabel-mascot.png"
               alt="Mabel mascot"
-              width={180}
-              height={180}
+              width={140}
+              height={140}
               className="mx-auto drop-shadow-lg"
               priority
             />
@@ -44,40 +45,55 @@ export default function LandingPage() {
 
           {/* Tagline */}
           <p
-            className="text-xl md:text-2xl mb-8"
+            className="text-xl md:text-2xl mb-6"
             style={{ fontFamily: 'Georgia, serif', color: '#4a6b5e' }}
           >
-            Your Stories, Written with Care
+            Journal Freely. Share Beautifully.
           </p>
 
-          {/* Value Prop */}
-          <p className="text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed" style={{ color: '#3d3d3d' }}>
-            Capture your life story through guided voice journaling.
-            Just talk &mdash; Mabel listens, transcribes, and transforms your
-            spoken memories into beautifully written chapters that become
-            a book you can hold forever.
-          </p>
-
-          {/* CTA */}
-          <button
-            onClick={handleGetStarted}
-            className="inline-flex items-center gap-2 px-8 py-4 rounded-full text-lg font-semibold text-white shadow-lg hover:shadow-xl active:scale-[0.98] transition-all duration-200"
-            style={{ backgroundColor: '#2F6F5E' }}
-          >
-            Start Your Story
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-            </svg>
-          </button>
-
-          <p className="mt-4 text-sm" style={{ color: '#7a8a82' }}>
-            Free to start. No credit card required.
+          {/* One-liner */}
+          <p className="text-lg md:text-xl max-w-2xl mx-auto leading-relaxed" style={{ color: '#3d3d3d' }}>
+            A journaling app that transforms your thoughts into polished narratives
           </p>
         </div>
       </section>
 
+      {/* What is Mabel */}
+      <section className="py-20 px-6">
+        <div className="max-w-3xl mx-auto">
+          <h2
+            className="text-3xl md:text-4xl font-bold mb-6"
+            style={{ fontFamily: 'Georgia, serif', color: '#111827' }}
+          >
+            What is Mabel?
+          </h2>
+
+          <div className="space-y-6 text-lg leading-relaxed" style={{ color: 'rgba(17, 24, 39, 0.8)' }}>
+            <p>
+              Everyone has stories worth sharing, but raw journal entries are messy and often unpublishable.
+              So they sit in Notes apps, gathering digital dust.
+            </p>
+
+            <p>
+              <strong style={{ color: '#2F6F5E' }}>Mabel is a journaling tool that transforms your thoughts into polished narrative.</strong>
+            </p>
+
+            <p>
+              Unlike traditional memoir services that ask you to commit to a year-long writing project,
+              Mabel lets you capture life as it happens. Journal whenever inspiration strikes—by voice or text—and
+              Mabel does the polishing work in the background.
+            </p>
+
+            <p>
+              Over time, your entries become chapters. Your chapters become a story. And when you're ready,
+              you can export a PDF book or order a fully narrated audiobook of your own life.
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* How It Works */}
-      <section className="py-16 px-6">
+      <section className="py-20 px-6">
         <div className="max-w-5xl mx-auto">
           <h2
             className="text-3xl md:text-4xl font-bold text-center mb-4"
@@ -85,340 +101,454 @@ export default function LandingPage() {
           >
             How It Works
           </h2>
-          <p className="text-center mb-12 max-w-xl mx-auto" style={{ color: 'rgba(17, 24, 39, 0.6)' }}>
-            Three simple steps to turn a lifetime of memories into a book
+          <p className="text-center mb-16 max-w-2xl mx-auto text-lg" style={{ color: 'rgba(17, 24, 39, 0.6)' }}>
+            Mabel is designed to fit into your life, not force you into a rigid schedule
           </p>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-3 gap-12 mb-16">
             {[
               {
                 step: '1',
-                icon: (
-                  <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
-                  </svg>
-                ),
-                title: 'Speak Your Memories',
-                desc: 'Mabel asks thoughtful questions about each chapter of your life — childhood, school, career, love, and more. You just tap record and talk.',
+                icon: '🎙️',
+                title: 'Capture Your Thoughts',
+                desc: 'Journal whenever inspiration strikes. Speak into the app or type your thoughts. No prompts, no pressure, no blank page anxiety.',
               },
               {
                 step: '2',
-                icon: (
-                  <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                  </svg>
-                ),
-                title: 'Mabel Writes Your Chapter',
-                desc: 'Your voice is transcribed and transformed into polished, first-person narrative. Review it, give feedback, and approve when it reads just right.',
+                icon: '✨',
+                title: 'AI Polishes Your Words',
+                desc: 'Mabel transcribes your voice and transforms your entries into polished, first-person narrative. Your voice, just more readable.',
               },
               {
                 step: '3',
-                icon: (
-                  <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                  </svg>
-                ),
-                title: 'Get Your Book',
-                desc: 'Chapters compile into a beautifully formatted PDF book with illustrations. Your life story, in your words, ready to share or keep forever.',
+                icon: '📖',
+                title: 'Build Your Story',
+                desc: 'As you journal, Mabel organizes entries into chapters. When you have enough chapters, export a PDF book or order a narrated audiobook.',
               },
             ].map((item) => (
               <div
                 key={item.step}
-                className="relative rounded-2xl p-8 text-center"
+                className="text-center rounded-2xl p-8 relative"
                 style={{
+                  border: '2px solid rgba(47, 111, 94, 0.2)',
                   backgroundColor: '#FFFFFF',
-                  boxShadow: '0 2px 12px rgba(17, 24, 39, 0.06)',
-                  border: '1px solid rgba(17, 24, 39, 0.06)',
                 }}
               >
+                {/* Step number - top left corner */}
                 <div
-                  className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-5"
-                  style={{ backgroundColor: 'rgba(47, 111, 94, 0.1)', color: '#2F6F5E' }}
-                >
-                  {item.icon}
-                </div>
-                <div
-                  className="absolute top-4 left-4 w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white"
+                  className="absolute top-4 left-4 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold text-white"
                   style={{ backgroundColor: '#2F6F5E' }}
                 >
                   {item.step}
                 </div>
-                <h3 className="text-lg font-semibold mb-3" style={{ fontFamily: 'Georgia, serif', color: '#111827' }}>
+
+                {/* Icon */}
+                <div
+                  className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl"
+                  style={{ backgroundColor: 'rgba(47, 111, 94, 0.1)' }}
+                >
+                  {item.icon}
+                </div>
+
+                {/* Title */}
+                <h3 className="text-xl font-semibold mb-3" style={{ fontFamily: 'Georgia, serif', color: '#111827' }}>
                   {item.title}
                 </h3>
-                <p className="text-sm leading-relaxed" style={{ color: 'rgba(17, 24, 39, 0.6)' }}>
+
+                {/* Description */}
+                <p className="text-base leading-relaxed" style={{ color: 'rgba(17, 24, 39, 0.6)' }}>
                   {item.desc}
                 </p>
               </div>
             ))}
           </div>
-        </div>
-      </section>
 
-      {/* What Makes Mabel Different */}
-      <section className="py-16 px-6" style={{ backgroundColor: 'rgba(47, 111, 94, 0.04)' }}>
-        <div className="max-w-5xl mx-auto">
-          <h2
-            className="text-3xl md:text-4xl font-bold text-center mb-4"
-            style={{ fontFamily: 'Georgia, serif', color: '#111827' }}
-          >
-            What Makes Mabel Different
-          </h2>
-          <p className="text-center mb-12 max-w-xl mx-auto" style={{ color: 'rgba(17, 24, 39, 0.6)' }}>
-            Built with care for the stories that matter most
-          </p>
-
-          <div className="grid md:grid-cols-2 gap-6">
-            {[
-              {
-                title: 'Just Talk, Never Type',
-                desc: 'Tap record and speak naturally. No writing skills needed, no staring at a blank page. Mabel turns your voice into beautiful prose.',
-                icon: '🎙️',
-              },
-              {
-                title: 'AI That Learns Your Story',
-                desc: 'Each chapter builds on the last. Mabel remembers what you\'ve shared to ask smarter, deeper follow-up questions that draw out the richest details.',
-                icon: '🧠',
-              },
-              {
-                title: 'One Chapter at a Time',
-                desc: 'No pressure to write your whole autobiography in a weekend. Build your book at your own pace — one manageable chapter at a time, over days or months.',
-                icon: '📖',
-              },
-              {
-                title: 'Your Story, Your Way',
-                desc: 'Review every chapter before it goes in the book. Regenerate with feedback, re-record answers, or approve as-is. You stay in complete control.',
-                icon: '✨',
-              },
-            ].map((item) => (
-              <div
-                key={item.title}
-                className="flex gap-4 rounded-2xl p-6"
-                style={{
-                  backgroundColor: '#FFFFFF',
-                  boxShadow: '0 1px 8px rgba(17, 24, 39, 0.05)',
-                  border: '1px solid rgba(17, 24, 39, 0.06)',
-                }}
-              >
-                <span className="text-3xl flex-shrink-0 mt-1">{item.icon}</span>
-                <div>
-                  <h3 className="text-base font-semibold mb-1.5" style={{ fontFamily: 'Georgia, serif', color: '#111827' }}>
-                    {item.title}
-                  </h3>
-                  <p className="text-sm leading-relaxed" style={{ color: 'rgba(17, 24, 39, 0.6)' }}>
-                    {item.desc}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Gift It / Family Plan */}
-      <section className="py-16 px-6">
-        <div className="max-w-5xl mx-auto">
+          {/* The Habit Loop */}
           <div
-            className="rounded-3xl overflow-hidden"
+            className="rounded-2xl p-8 md:p-10 max-w-2xl mx-auto"
             style={{
-              background: 'linear-gradient(135deg, rgba(47, 111, 94, 0.08) 0%, rgba(168, 230, 220, 0.15) 100%)',
-              border: '1px solid rgba(47, 111, 94, 0.15)',
+              backgroundColor: 'rgba(47, 111, 94, 0.06)',
+              border: '2px solid rgba(47, 111, 94, 0.15)',
             }}
           >
-            <div className="p-8 md:p-12 text-center">
-              <span className="text-4xl mb-4 block">👨‍👩‍👧‍👦</span>
-              <h2
-                className="text-2xl md:text-3xl font-bold mb-4"
-                style={{ fontFamily: 'Georgia, serif', color: '#111827' }}
-              >
-                Give the Gift of a Lifetime
-              </h2>
-              <p className="text-lg max-w-2xl mx-auto mb-6 leading-relaxed" style={{ color: 'rgba(17, 24, 39, 0.7)' }}>
-                Know someone whose stories deserve to be preserved? Gift Mabel to
-                your parents, grandparents, or anyone whose memories matter. They
-                just open the app and start talking &mdash; Mabel does the rest.
-              </p>
-              <div
-                className="inline-block rounded-2xl p-6 mb-6"
-                style={{
-                  backgroundColor: 'rgba(255, 255, 255, 0.7)',
-                  border: '1px solid rgba(47, 111, 94, 0.15)',
-                }}
-              >
-                <p className="text-sm font-semibold uppercase tracking-wider mb-2" style={{ color: '#2F6F5E' }}>
-                  Coming Soon
-                </p>
-                <h3 className="text-xl font-bold mb-2" style={{ fontFamily: 'Georgia, serif', color: '#111827' }}>
-                  Family Plan
-                </h3>
-                <p className="text-sm leading-relaxed max-w-md" style={{ color: 'rgba(17, 24, 39, 0.6)' }}>
-                  Invite loved ones at a discounted rate. Each person records their own
-                  story, and the whole family&apos;s chapters come together in one shared archive.
-                  Multiple voices, one legacy.
-                </p>
-              </div>
-            </div>
+            <h3 className="text-xl font-semibold mb-3 text-center" style={{ fontFamily: 'Georgia, serif', color: '#111827' }}>
+              Building the Journaling Habit
+            </h3>
+            <p className="text-base leading-relaxed text-center" style={{ color: 'rgba(17, 24, 39, 0.7)' }}>
+              Mabel includes gentle reminders and gamified features (streaks, milestones, chapter completion)
+              to help you develop a consistent journaling practice. The goal isn't to finish a book in a year—it's
+              to capture life as you live it.
+            </p>
           </div>
         </div>
       </section>
 
-      {/* Vision & Roadmap */}
-      <section className="py-16 px-6" style={{ backgroundColor: 'rgba(47, 111, 94, 0.04)' }}>
+      {/* Mabel vs StoryWorth */}
+      <section className="py-20 px-6">
         <div className="max-w-5xl mx-auto">
           <h2
             className="text-3xl md:text-4xl font-bold text-center mb-4"
             style={{ fontFamily: 'Georgia, serif', color: '#111827' }}
           >
-            The Vision
+            How Mabel Is Different
           </h2>
-          <p className="text-center mb-12 max-w-2xl mx-auto" style={{ color: 'rgba(17, 24, 39, 0.6)' }}>
-            Everyone has a story worth telling. Mabel makes it effortless to
-            capture yours &mdash; and eventually, your whole family&apos;s &mdash;
-            so those stories live on for generations.
+          <p className="text-center mb-12 max-w-2xl mx-auto text-lg" style={{ color: 'rgba(17, 24, 39, 0.6)' }}>
+            Mabel vs. traditional memoir services like StoryWorth
           </p>
 
-          {/* Roadmap Timeline */}
-          <div className="max-w-3xl mx-auto">
-            {[
-              {
-                phase: 'Now',
-                label: 'MVP',
-                title: 'Voice-to-Book Pipeline',
-                items: [
-                  'Guided voice journaling with AI-generated questions',
-                  'Automatic transcription and narrative generation',
-                  'Module-based chapter building at your own pace',
-                  'PDF book compilation with AI illustrations',
-                  'iOS native app via Capacitor',
-                ],
-                active: true,
-              },
-              {
-                phase: 'Next',
-                label: 'Phase 2',
-                title: 'Richer Storytelling',
-                items: [
-                  'Photo integration into chapters',
-                  'Voice-cloned audiobook narration',
-                  'Family Plan: gift Mabel to loved ones at a discount',
-                  'Family archive: multiple stories in one collection',
-                ],
-                active: false,
-              },
-              {
-                phase: 'Future',
-                label: 'Phase 3',
-                title: 'The Story Ecosystem',
-                items: [
-                  'Video story capture',
-                  'Multi-language support',
-                  'Printed hardcover book ordering',
-                  'Collaborative editing with family members',
-                  'Family tree connections across stories',
-                ],
-                active: false,
-              },
-            ].map((phase, idx) => (
-              <div key={phase.phase} className="flex gap-6 mb-8 last:mb-0">
-                {/* Timeline line */}
-                <div className="flex flex-col items-center flex-shrink-0">
-                  <div
-                    className="w-12 h-12 rounded-full flex items-center justify-center text-sm font-bold"
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse" style={{ minWidth: '600px' }}>
+              <thead>
+                <tr style={{ backgroundColor: 'rgba(47, 111, 94, 0.06)' }}>
+                  <th className="p-4 text-left font-semibold" style={{ color: '#111827', fontFamily: 'Georgia, serif' }}>
+                    Feature
+                  </th>
+                  <th className="p-4 text-center font-semibold" style={{ color: '#2F6F5E', fontFamily: 'Georgia, serif' }}>
+                    Mabel
+                  </th>
+                  <th className="p-4 text-center font-semibold" style={{ color: 'rgba(17, 24, 39, 0.5)', fontFamily: 'Georgia, serif' }}>
+                    StoryWorth
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {[
+                  { feature: 'Mental Model', mabel: 'Journaling habit', storyworth: 'Memoir project' },
+                  { feature: 'Time Commitment', mabel: 'Journal anytime', storyworth: '52 weeks, 1 prompt/week' },
+                  { feature: 'Input Method', mabel: 'Voice-first (or text)', storyworth: 'Email prompts → typing' },
+                  { feature: 'AI Polish', mabel: 'Narrative transformation', storyworth: 'Basic formatting' },
+                  { feature: 'Pace', mabel: 'Your schedule', storyworth: 'Weekly deadline' },
+                  { feature: 'Output', mabel: 'Export anytime (PDF/audiobook)', storyworth: 'Hardcover book after 1 year' },
+                  { feature: 'Best For', mabel: 'Active journalers & beginners', storyworth: 'Family gift projects' },
+                ].map((row, idx) => (
+                  <tr
+                    key={row.feature}
                     style={{
-                      backgroundColor: phase.active ? '#2F6F5E' : 'rgba(47, 111, 94, 0.15)',
-                      color: phase.active ? '#FFFFFF' : '#2F6F5E',
+                      backgroundColor: idx % 2 === 0 ? '#FFFFFF' : 'rgba(245, 240, 232, 0.3)',
+                      borderBottom: '1px solid rgba(17, 24, 39, 0.1)',
                     }}
                   >
-                    {phase.label.split(' ')[0] === 'MVP' ? 'MVP' : `P${idx + 1}`}
-                  </div>
-                  {idx < 2 && (
-                    <div
-                      className="w-0.5 flex-1 mt-2"
-                      style={{ backgroundColor: 'rgba(47, 111, 94, 0.2)' }}
-                    />
-                  )}
-                </div>
+                    <td className="p-4 font-medium" style={{ color: '#111827' }}>
+                      {row.feature}
+                    </td>
+                    <td className="p-4 text-center" style={{ color: '#2F6F5E', fontWeight: '500' }}>
+                      {row.mabel}
+                    </td>
+                    <td className="p-4 text-center" style={{ color: 'rgba(17, 24, 39, 0.5)' }}>
+                      {row.storyworth}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
 
-                {/* Content */}
-                <div
-                  className="flex-1 rounded-2xl p-6 mb-2"
-                  style={{
-                    backgroundColor: phase.active ? 'rgba(47, 111, 94, 0.06)' : '#FFFFFF',
-                    border: phase.active ? '2px solid rgba(47, 111, 94, 0.2)' : '1px solid rgba(17, 24, 39, 0.06)',
-                    boxShadow: '0 1px 6px rgba(17, 24, 39, 0.04)',
-                  }}
-                >
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: '#2F6F5E' }}>
-                      {phase.phase}
-                    </span>
-                    {phase.active && (
-                      <span className="text-xs px-2 py-0.5 rounded-full font-medium" style={{ backgroundColor: '#2F6F5E', color: '#FFFFFF' }}>
-                        Building
-                      </span>
-                    )}
-                  </div>
-                  <h3 className="text-lg font-semibold mb-3" style={{ fontFamily: 'Georgia, serif', color: '#111827' }}>
-                    {phase.title}
-                  </h3>
-                  <ul className="space-y-1.5">
-                    {phase.items.map((item) => (
-                      <li key={item} className="flex items-start gap-2 text-sm" style={{ color: 'rgba(17, 24, 39, 0.6)' }}>
-                        <svg className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: '#2F6F5E' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                        </svg>
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            ))}
+          <div className="mt-12 max-w-3xl mx-auto text-center">
+            <p className="text-lg leading-relaxed" style={{ color: 'rgba(17, 24, 39, 0.7)' }}>
+              <strong style={{ color: '#2F6F5E' }}>In short:</strong> StoryWorth says "write your memoir."
+              Mabel says "journal your life, and let AI polish it into something shareable."
+              Journaling is a daily habit. Memoir writing is a daunting project. We chose the former.
+            </p>
           </div>
         </div>
       </section>
 
-      {/* The Problem / Emotional Close */}
-      <section className="py-16 px-6">
-        <div className="max-w-3xl mx-auto text-center">
+      {/* Pricing */}
+      <section className="py-20 px-6">
+        <div className="max-w-5xl mx-auto">
           <h2
-            className="text-3xl md:text-4xl font-bold mb-6"
+            className="text-3xl md:text-4xl font-bold text-center mb-4"
             style={{ fontFamily: 'Georgia, serif', color: '#111827' }}
           >
-            Your Story Deserves to Be Told
+            Pricing
           </h2>
-          <p className="text-lg leading-relaxed mb-6" style={{ color: 'rgba(17, 24, 39, 0.7)' }}>
-            We all carry stories worth preserving &mdash; childhood memories,
-            lessons learned, moments that shaped who we are. But life moves fast,
-            and those memories fade if we don&apos;t capture them.
+          <p className="text-center mb-12 max-w-2xl mx-auto text-lg" style={{ color: 'rgba(17, 24, 39, 0.6)' }}>
+            Start for free. Upgrade when you're ready.
           </p>
-          <p className="text-lg leading-relaxed mb-10" style={{ color: 'rgba(17, 24, 39, 0.7)' }}>
-            Mabel makes it effortless. No writing skills needed &mdash; the AI
-            asks the right questions. No time pressure &mdash; build your book
-            one chapter at a time. Just open the app, start talking, and watch
-            your life story come together.
+
+          <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+            {/* Free Tier */}
+            <div
+              className="rounded-2xl p-8 flex flex-col"
+              style={{
+                backgroundColor: '#FFFFFF',
+                border: '1px solid rgba(17, 24, 39, 0.1)',
+                boxShadow: '0 2px 8px rgba(17, 24, 39, 0.04)',
+              }}
+            >
+              <h3 className="text-2xl font-bold mb-2" style={{ fontFamily: 'Georgia, serif', color: '#111827' }}>
+                Free
+              </h3>
+              <p className="text-4xl font-bold mb-4" style={{ color: '#2F6F5E' }}>
+                $0
+              </p>
+              <p className="text-sm mb-6" style={{ color: 'rgba(17, 24, 39, 0.6)' }}>
+                Try Mabel risk-free
+              </p>
+              <ul className="space-y-3 mb-8 flex-1">
+                {[
+                  'First chapter free',
+                  'Voice & text journaling',
+                  'AI narrative polish',
+                  'PDF export',
+                ].map((item) => (
+                  <li key={item} className="flex items-start gap-2 text-sm" style={{ color: 'rgba(17, 24, 39, 0.7)' }}>
+                    <svg className="w-5 h-5 flex-shrink-0 mt-0.5" style={{ color: '#2F6F5E' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+              <button
+                onClick={handleGetStarted}
+                className="w-full py-3 px-6 rounded-full font-semibold transition-all"
+                style={{
+                  backgroundColor: 'rgba(47, 111, 94, 0.1)',
+                  color: '#2F6F5E',
+                  border: '2px solid rgba(47, 111, 94, 0.2)',
+                }}
+              >
+                Start Free
+              </button>
+            </div>
+
+            {/* Starter Tier (Monthly) */}
+            <div
+              className="rounded-2xl p-8 flex flex-col"
+              style={{
+                backgroundColor: '#FFFFFF',
+                border: '1px solid rgba(17, 24, 39, 0.1)',
+                boxShadow: '0 2px 8px rgba(17, 24, 39, 0.04)',
+              }}
+            >
+              <h3 className="text-2xl font-bold mb-2" style={{ fontFamily: 'Georgia, serif', color: '#111827' }}>
+                Starter
+              </h3>
+              <p className="text-4xl font-bold mb-1" style={{ color: '#2F6F5E' }}>
+                $4.99
+              </p>
+              <p className="text-sm mb-6" style={{ color: 'rgba(17, 24, 39, 0.6)' }}>
+                per month
+              </p>
+              <ul className="space-y-3 mb-8 flex-1">
+                {[
+                  'Up to 10 chapters/month',
+                  'Voice & text journaling',
+                  'AI narrative polish',
+                  'PDF export anytime',
+                  'Gamification features',
+                  'Chapter organization',
+                  'Private & secure',
+                ].map((item) => (
+                  <li key={item} className="flex items-start gap-2 text-sm" style={{ color: 'rgba(17, 24, 39, 0.7)' }}>
+                    <svg className="w-5 h-5 flex-shrink-0 mt-0.5" style={{ color: '#2F6F5E' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+              <button
+                onClick={handleGetStarted}
+                className="w-full py-3 px-6 rounded-full font-semibold transition-all hover:shadow-lg"
+                style={{
+                  backgroundColor: 'rgba(47, 111, 94, 0.1)',
+                  color: '#2F6F5E',
+                  border: '2px solid rgba(47, 111, 94, 0.2)',
+                }}
+              >
+                Get Started
+              </button>
+            </div>
+
+            {/* Annual Tier (Best Value) */}
+            <div
+              className="rounded-2xl p-8 flex flex-col relative"
+              style={{
+                backgroundColor: '#FFFFFF',
+                border: '3px solid #2F6F5E',
+                boxShadow: '0 4px 16px rgba(47, 111, 94, 0.15)',
+              }}
+            >
+              <div
+                className="absolute -top-3 left-1/2 transform -translate-x-1/2 px-4 py-1 rounded-full text-xs font-bold text-white"
+                style={{ backgroundColor: '#2F6F5E' }}
+              >
+                BEST VALUE
+              </div>
+              <h3 className="text-2xl font-bold mb-2" style={{ fontFamily: 'Georgia, serif', color: '#111827' }}>
+                Annual
+              </h3>
+              <div className="mb-1">
+                <p className="text-4xl font-bold inline" style={{ color: '#2F6F5E' }}>
+                  $49.99
+                </p>
+                <p className="text-base inline ml-2" style={{ color: 'rgba(17, 24, 39, 0.5)' }}>
+                  /year
+                </p>
+              </div>
+              <p className="text-sm mb-6" style={{ color: 'rgba(17, 24, 39, 0.6)' }}>
+                ~$4.17/month · Save 17%
+              </p>
+              <ul className="space-y-3 mb-8 flex-1">
+                {[
+                  'Unlimited chapters',
+                  'Voice & text journaling',
+                  'AI narrative polish',
+                  'PDF export anytime',
+                  'Gamification features',
+                  'Chapter organization',
+                  'Private & secure',
+                  'Best value',
+                ].map((item) => (
+                  <li key={item} className="flex items-start gap-2 text-sm" style={{ color: 'rgba(17, 24, 39, 0.7)' }}>
+                    <svg className="w-5 h-5 flex-shrink-0 mt-0.5" style={{ color: '#2F6F5E' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+              <button
+                onClick={handleGetStarted}
+                className="w-full py-3 px-6 rounded-full font-semibold text-white transition-all hover:shadow-lg"
+                style={{ backgroundColor: '#2F6F5E' }}
+              >
+                Go Annual
+              </button>
+            </div>
+          </div>
+
+          {/* Add-Ons Section (Below Pricing Grid) */}
+          <div className="mt-12 max-w-2xl mx-auto">
+            <h3 className="text-xl font-bold text-center mb-4" style={{ fontFamily: 'Georgia, serif', color: '#111827' }}>
+              Add-Ons
+            </h3>
+            <p className="text-center text-sm mb-6" style={{ color: 'rgba(17, 24, 39, 0.6)' }}>
+              Available after 10+ chapters
+            </p>
+            <div className="grid md:grid-cols-2 gap-4">
+              {[
+                { name: 'Narrated Audiobook', price: '$29.99', desc: 'Your story, in your voice (AI cloned)' },
+                { name: 'Printed Hardcover', price: '$49.99+', desc: 'Physical book, professionally bound' },
+              ].map((item) => (
+                <div
+                  key={item.name}
+                  className="rounded-xl p-4"
+                  style={{
+                    backgroundColor: 'rgba(47, 111, 94, 0.04)',
+                    border: '1px solid rgba(47, 111, 94, 0.15)',
+                  }}
+                >
+                  <div className="flex justify-between items-start mb-1">
+                    <span className="font-semibold text-sm" style={{ color: '#111827' }}>{item.name}</span>
+                    <span className="font-bold text-sm" style={{ color: '#2F6F5E' }}>{item.price}</span>
+                  </div>
+                  <p className="text-xs" style={{ color: 'rgba(17, 24, 39, 0.6)' }}>{item.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <p className="text-center mt-8 text-sm" style={{ color: 'rgba(17, 24, 39, 0.5)' }}>
+            All plans include secure storage, privacy controls, and the ability to delete your data anytime.
           </p>
-          <button
-            onClick={handleGetStarted}
-            className="inline-flex items-center gap-2 px-8 py-4 rounded-full text-lg font-semibold text-white shadow-lg hover:shadow-xl active:scale-[0.98] transition-all duration-200"
-            style={{ backgroundColor: '#2F6F5E' }}
-          >
-            Start Writing Your Story
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-            </svg>
-          </button>
         </div>
       </section>
 
-      {/* Tech Stack / Built With (for demo night) */}
-      <section className="py-12 px-6" style={{ backgroundColor: 'rgba(47, 111, 94, 0.04)' }}>
+      {/* CTA Section */}
+      <section className="py-20 px-6">
+        <div className="max-w-3xl mx-auto text-center">
+          <h2
+            className="text-3xl md:text-4xl font-bold mb-8"
+            style={{ fontFamily: 'Georgia, serif', color: '#111827' }}
+          >
+            Connect with Me
+          </h2>
+
+          {/* Profile Photo */}
+          <div className="mb-6">
+            <Image
+              src="/images/christiano-squeff.jpg"
+              alt="Christiano Squeff"
+              width={120}
+              height={120}
+              className="mx-auto rounded-full shadow-lg"
+            />
+          </div>
+
+          <p className="text-lg leading-relaxed mb-3" style={{ color: 'rgba(17, 24, 39, 0.7)' }}>
+            Built by <strong style={{ color: '#2F6F5E' }}>Christiano Squeff</strong>
+          </p>
+
+          <div className="flex flex-col items-center gap-3 mb-10">
+            <a
+              href="mailto:cgsqueff@gmail.com"
+              className="inline-flex items-center gap-2 text-base hover:underline"
+              style={{ color: '#2F6F5E' }}
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+              cgsqueff@gmail.com
+            </a>
+            <a
+              href="https://www.linkedin.com/in/christiano-squeff/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 text-base hover:underline"
+              style={{ color: '#2F6F5E' }}
+            >
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+              </svg>
+              linkedin.com/in/christiano-squeff
+            </a>
+          </div>
+
+          <div className="flex flex-col md:flex-row items-center justify-center gap-8">
+            <div className="flex flex-col items-center gap-4">
+              <button
+                onClick={handleGetStarted}
+                className="inline-flex items-center gap-2 px-8 py-4 rounded-full text-lg font-semibold text-white shadow-lg hover:shadow-xl active:scale-[0.98] transition-all duration-200"
+                style={{ backgroundColor: '#2F6F5E' }}
+              >
+                Try Mabel Free
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+              </button>
+              <p className="text-sm" style={{ color: '#7a8a82' }}>
+                First chapter free. No credit card required.
+              </p>
+            </div>
+
+            {/* OR divider */}
+            <div className="hidden md:flex items-center gap-3">
+              <div className="h-px w-8" style={{ backgroundColor: 'rgba(47, 111, 94, 0.2)' }} />
+              <span className="text-sm font-medium" style={{ color: '#7a8a82' }}>OR</span>
+              <div className="h-px w-8" style={{ backgroundColor: 'rgba(47, 111, 94, 0.2)' }} />
+            </div>
+
+            {/* QR Code - Email */}
+            <QRCodeCTA
+              url="mailto:cgsqueff@gmail.com"
+              label="Get in Touch"
+              size={120}
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* Tech Stack / Built With */}
+      <section className="py-12 px-6">
         <div className="max-w-5xl mx-auto text-center">
           <p className="text-xs font-medium uppercase tracking-wider mb-4" style={{ color: 'rgba(17, 24, 39, 0.4)' }}>
             Built with
           </p>
           <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm" style={{ color: 'rgba(17, 24, 39, 0.4)' }}>
-            {['Next.js', 'React', 'TypeScript', 'Tailwind CSS', 'Prisma', 'PostgreSQL', 'OpenAI GPT-4o', 'Whisper', 'DALL-E 3', 'Capacitor iOS', 'Vercel'].map((tech) => (
+            {['Next.js', 'React', 'TypeScript', 'Tailwind CSS', 'Prisma', 'PostgreSQL', 'OpenAI GPT-4o', 'Whisper', 'Capacitor iOS', 'Vercel'].map((tech) => (
               <span key={tech}>{tech}</span>
             ))}
           </div>
@@ -435,7 +565,7 @@ export default function LandingPage() {
           className="mx-auto mb-3 rounded-xl"
         />
         <p className="text-sm" style={{ color: 'rgba(17, 24, 39, 0.4)' }}>
-          Mabel &mdash; Your Stories, Written with Care
+          Mabel &mdash; Journal Freely. Share Beautifully.
         </p>
       </footer>
     </div>
