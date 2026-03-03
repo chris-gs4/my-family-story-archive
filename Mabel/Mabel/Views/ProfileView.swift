@@ -107,6 +107,23 @@ struct ProfileView: View {
                                     .strokeBorder(Color.mabelTeal, lineWidth: 1.5)
                             )
                     }
+                    .padding(.bottom, 12)
+
+                    // Log Out Button
+                    Button(action: {
+                        appState.logout()
+                        dismiss()
+                    }) {
+                        Text("LOG OUT")
+                            .font(.comfortaa(14, weight: .medium))
+                            .foregroundColor(.red)
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 48)
+                            .background(
+                                Capsule()
+                                    .strokeBorder(Color.red.opacity(0.5), lineWidth: 1.5)
+                            )
+                    }
 
                     #if DEBUG
                     // Developer Tools

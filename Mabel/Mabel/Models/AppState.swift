@@ -233,6 +233,12 @@ class AppState {
         try? FileManager.default.removeItem(at: Self.profileURL)
         try? FileManager.default.removeItem(at: Self.chaptersURL)
     }
+
+    /// Log out user (clears session but keeps data)
+    func logout() {
+        userProfile = nil
+        chapters = []
+    }
 }
 
 // MARK: - Debug Seed Data

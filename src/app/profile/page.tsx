@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
+import { useSession, signOut } from 'next-auth/react';
 import { PrimaryButton } from '@/components/ui/primary-button';
 import { SecondaryButton } from '@/components/ui/secondary-button';
 import { PageHeading } from '@/components/ui/page-heading';
@@ -43,6 +43,10 @@ export default function ProfilePage() {
 
   const handleChangePassword = () => {
     showToast('Password change coming soon!', 'info');
+  };
+
+  const handleLogout = async () => {
+    await signOut({ callbackUrl: '/auth/signin' });
   };
 
   const handleSeedData = async () => {
@@ -169,6 +173,20 @@ export default function ProfilePage() {
                   <SecondaryButton onClick={handleChangePassword}>
                     Change Password
                   </SecondaryButton>
+                </div>
+                <div className="pt-4 border-t border-gray-200">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="font-medium text-text-primary">Sign Out</p>
+                      <p className="text-sm text-text-secondary">Sign out of your account</p>
+                    </div>
+                    <button
+                      onClick={handleLogout}
+                      className="px-4 py-2 border-2 border-gray-300 text-text-primary hover:bg-gray-50 font-medium rounded-lg transition-colors"
+                    >
+                      Log Out
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
