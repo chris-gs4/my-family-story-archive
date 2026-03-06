@@ -97,7 +97,7 @@ final class MabelTests: XCTestCase {
     }
 
     func testDeleteMemoryClearsNarrativeWhenCountDropsBelow5() {
-        var memories = (0..<5).map { _ in makeMemory(state: .processed) }
+        let memories = (0..<5).map { _ in makeMemory(state: .processed) }
         let toDelete = memories[0]
         let chapter = makeChapter(memories: memories, narrative: "Existing narrative", approved: true)
         let appState = makeAppState(chapters: [chapter])

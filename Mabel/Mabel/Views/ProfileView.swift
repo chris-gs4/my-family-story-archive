@@ -6,6 +6,7 @@ struct ProfileView: View {
 
     @State private var displayName = ""
     @State private var selectedGender: String? = nil
+    @State private var showResetAlert = false
 
     private let genderOptions = ["Male", "Female", "Other"]
 
@@ -146,8 +147,7 @@ struct ProfileView: View {
                         }
 
                         Button(action: {
-                            appState.resetAll()
-                            dismiss()
+                            showResetAlert = true
                         }) {
                             Text("RESET ALL DATA")
                                 .font(.comfortaa(14, weight: .bold))
@@ -164,6 +164,15 @@ struct ProfileView: View {
                 }
                 .padding(.horizontal, 24)
             }
+        }
+        .alert("Reset All Data?", isPresented: $showResetAlert) {
+            Button("Reset", role: .destructive) {
+                appState.resetAll()
+                dismiss()
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("This will permanently delete all your stories, chapters, and profile data. This cannot be undone.")
         }
         .onAppear {
             displayName = appState.userProfile?.displayName ?? ""

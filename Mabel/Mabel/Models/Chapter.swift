@@ -1,6 +1,9 @@
 import Foundation
 
 struct Chapter: Identifiable, Codable {
+    static let totalChapters = 10
+    static let memoriesPerChapter = 5
+
     let id: Int // 1-10
     let title: String
     let topic: String
@@ -13,7 +16,7 @@ struct Chapter: Identifiable, Codable {
     }
 
     var isCompleted: Bool {
-        completedMemoryCount >= 5 && generatedNarrative != nil && isApproved
+        completedMemoryCount >= Self.memoriesPerChapter && generatedNarrative != nil && isApproved
     }
 
     /// Chapter has a narrative ready for review (but not yet approved)

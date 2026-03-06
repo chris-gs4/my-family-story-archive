@@ -4,44 +4,51 @@ Mabel is an AI-powered journaling app that helps people capture and preserve the
 
 ## Quick Reference
 
+### Platform
+**Native iOS app (SwiftUI)** — built and run via Xcode. No web version.
+
 ### Bash Commands
 ```bash
-# Development
-npm run dev          # Start development server
-npm run build        # Build for production
-npm run lint         # Run linter
-npm run test         # Run tests
+# Open the Xcode project
+open Mabel/Mabel.xcodeproj
 
-# Database (Prisma)
-npx prisma generate      # Generate Prisma client
-npx prisma migrate dev   # Create and apply migrations
-npx prisma db push       # Push schema without migrations (dev)
-npx prisma studio        # Open database GUI
-
-# Capacitor (iOS)
-npm run cap:sync         # Sync web assets to iOS project
-npx cap open ios         # Open Xcode project
+# Build & run via Xcode
+# Cmd+B to build, Cmd+R to run, Cmd+U to run tests
 ```
 
 ### Project Structure
 ```
-confabulator/        # Project documentation (IMPORTANT - read these first)
-├── PRD.md           # Product requirements and features
-├── project-vision.md # Vision and problem statement
+Mabel/                   # ← THE APP (SwiftUI iOS project)
+├── Mabel.xcodeproj/     # Xcode project
+├── Mabel/
+│   ├── MabelApp.swift   # App entry point
+│   ├── Views/           # All screens (Welcome, Setup, Library, Recording, etc.)
+│   ├── Components/      # Reusable UI (CTAButton, ChapterCard, ProgressBar, etc.)
+│   ├── Models/          # Data models (AppState, Chapter, Memory, UserProfile)
+│   ├── Services/        # OpenAIService, AudioRecorderService, StoryProcessingService, PDFExportService
+│   ├── Theme/           # MabelColors, MabelFonts, MabelStyle
+│   └── Fonts/           # Comfortaa-Variable.ttf
+├── MabelTests/          # Unit tests (21 tests)
+confabulator/            # Product documentation
+├── PRD.md               # Product requirements and features
+├── project-vision.md    # Vision and problem statement
 ├── implementation-plan.md # Technical architecture and roadmap
-├── wireframes.md    # UI/UX wireframes and screen flows
+├── wireframes.md        # UI/UX wireframes and screen flows
 ├── business-model-canvas.md # Business model
-└── PR-FAQ.md        # Press release and FAQ
+└── PR-FAQ.md            # Press release and FAQ
 wireframes/
-└── mabel assets/    # Brand assets (logo, mascot, app icon)
-src/                 # Source code
-├── app/             # Next.js app router (if applicable)
-├── components/      # UI components
-├── lib/             # Utility functions and services
-└── types/           # TypeScript types
-ios/                 # Capacitor iOS native shell (Xcode project)
-capacitor.config.ts  # Capacitor configuration
+└── mabel assets/        # Brand assets (logo, mascot, app icon)
+archive/                 # Archived reference materials (NOT part of the app)
+├── landing-page/        # Next.js landing page (for future website reference)
+├── demo-night/          # Demo night pitch materials and docs
+├── legacy-web/          # Old web infrastructure (Prisma, Capacitor, tests, scripts)
+├── old-editor-configs/  # Cursor/Windsurf configs
+└── old-docs/            # Legacy markdown docs
 ```
+
+## IMPORTANT: What to Ignore
+
+The `archive/` directory contains legacy web code, demo night materials, and old configs. **Do not reference or modify anything in `archive/`** — it exists only as future reference material.
 
 ## Project Context
 
@@ -58,12 +65,9 @@ Mabel removes all the friction from preserving your life story. Instead of stari
 - **Brand assets:** `wireframes/mabel assets/` (logo, square icon, tagline)
 - **Tone:** Fun over formal. Warm and caring, like chatting with someone who genuinely wants to hear your story.
 
-### Platform
-web + iOS native (Capacitor)
-
 ## Tech Stack
 
-TypeScript, JavaScript, Next.js, React, Tailwind CSS, shadcn/ui, Radix UI, React Hook Form, Zod, Prisma ORM, NextAuth.js, Stripe, AWS S3, Vercel, PostgreSQL (Neon), Inngest (background jobs), Capacitor (iOS native)
+Swift, SwiftUI, AVFoundation (audio recording), OpenAI API (Whisper + GPT-4o), local JSON persistence, PDFKit (export)
 
 ## Key Documentation
 
@@ -80,21 +84,20 @@ TypeScript, JavaScript, Next.js, React, Tailwind CSS, shadcn/ui, Radix UI, React
 ## Development Guidelines
 
 ### Code Style
-- Use TypeScript for all code; prefer interfaces over types
-- Use functional and declarative programming patterns
+- Swift with SwiftUI
+- Use @Observable for state management (iOS 17+)
 - Use descriptive variable names with auxiliary verbs (isLoading, hasAccess, canSubmit)
-- Use lowercase-with-dashes for directories (components/user-profile)
-- Favor named exports for components and utilities
+- Design system: Comfortaa font, MabelColors/MabelFonts/MabelStyle
 
 ### Before Implementing Features
 1. Read the relevant user story in `confabulator/implementation-plan.md`
 2. Check acceptance criteria in `confabulator/PRD.md`
 3. Reference wireframes in `confabulator/wireframes.md` for UI guidance
-4. Follow the data model and API routes in the implementation plan
+4. Follow the data model in the implementation plan
 
 ### Error Handling
 - Implement comprehensive error handling at all levels
-- Use try-catch blocks for async operations
+- Use do/catch for async operations
 - Provide user-friendly error messages
 - Log errors appropriately for debugging
 
@@ -103,10 +106,10 @@ TypeScript, JavaScript, Next.js, React, Tailwind CSS, shadcn/ui, Radix UI, React
 The MVP focuses on voice-first guided journaling:
 
 - AI-guided questions that adapt based on previous responses
-- Voice recording (native AAC on iOS, WebM on web)
+- Voice recording (M4A via AVAudioRecorder)
 - Audio transcription (Whisper API)
-- Narrative generation from transcripts
-- Module-based story building (chapter by chapter)
+- Narrative generation from transcripts (GPT-4o)
+- 10-chapter story structure, 5 memories per chapter
 - PDF export of completed stories
 
 Future phases include gamification (streaks, milestones), Family Plan with gifting, voice-cloned audiobooks, and photo integration.

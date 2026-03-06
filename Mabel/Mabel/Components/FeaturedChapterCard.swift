@@ -13,12 +13,12 @@ struct FeaturedChapterCard: View {
                 .font(.comfortaa(18, weight: .bold))
                 .foregroundColor(.mabelText)
 
-            Text("\(chapter.completedMemoryCount) of 5 memories recorded")
+            Text("\(chapter.completedMemoryCount) of \(Chapter.memoriesPerChapter) memories recorded")
                 .font(.comfortaa(13, weight: .regular))
                 .foregroundColor(.mabelSubtle)
 
             ProgressBar(
-                progress: Double(chapter.completedMemoryCount) / 5.0,
+                progress: Double(chapter.completedMemoryCount) / Double(Chapter.memoriesPerChapter),
                 height: 6
             )
             .padding(.bottom, 4)

@@ -59,13 +59,13 @@ struct RecordingSetupView: View {
                             .padding(.top, 16)
                             .padding(.bottom, 8)
 
-                        Text("\(chapter.completedMemoryCount) of 5 memories recorded")
+                        Text("\(chapter.completedMemoryCount) of \(Chapter.memoriesPerChapter) memories recorded")
                             .font(.comfortaa(14, weight: .regular))
                             .foregroundColor(.mabelSubtle)
                             .padding(.bottom, 12)
 
                         ProgressBar(
-                            progress: Double(chapter.completedMemoryCount) / 5.0,
+                            progress: Double(chapter.completedMemoryCount) / Double(Chapter.memoriesPerChapter),
                             height: 6
                         )
                         .padding(.bottom, 24)
@@ -95,7 +95,7 @@ struct RecordingSetupView: View {
                             .padding(.bottom, 24)
                         }
 
-                        if chapter.completedMemoryCount >= 5 {
+                        if chapter.completedMemoryCount >= Chapter.memoriesPerChapter {
                             // MARK: - Chapter Complete State
                             chapterCompleteView
                         } else {
@@ -133,7 +133,7 @@ struct RecordingSetupView: View {
                 memoryToDelete = nil
             }
         } message: { _ in
-            if chapter.completedMemoryCount >= 5 && chapter.generatedNarrative != nil {
+            if chapter.completedMemoryCount >= Chapter.memoriesPerChapter && chapter.generatedNarrative != nil {
                 Text("This will remove the memory and invalidate your chapter narrative. You'll need to record a replacement and regenerate.")
             } else {
                 Text("This will permanently remove this memory.")

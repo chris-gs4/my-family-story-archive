@@ -40,13 +40,13 @@ class StoryProcessingService {
                 memory.state = .processed
             }
 
-            // Step 3: Check if all 5 memories are processed — if so, generate combined chapter narrative
+            // Step 3: Check if all memories are processed — if so, generate combined chapter narrative
             let updatedChapter = appState.chapters[chapterIndex]
             let processedMemories = updatedChapter.memories.filter { $0.state == .processed }
 
-            if processedMemories.count >= 5 {
+            if processedMemories.count >= Chapter.memoriesPerChapter {
                 let memoryNarratives = processedMemories.compactMap { $0.narrativeText }
-                if memoryNarratives.count >= 5 {
+                if memoryNarratives.count >= Chapter.memoriesPerChapter {
                     let chapterNarrative = try await openAI.generateChapterNarrative(
                         memories: memoryNarratives,
                         chapterTitle: chapter.title,
@@ -98,9 +98,9 @@ class StoryProcessingService {
             let updatedChapter = appState.chapters[chapterIndex]
             let processedMemories = updatedChapter.memories.filter { $0.state == .processed }
 
-            if processedMemories.count >= 5 {
+            if processedMemories.count >= Chapter.memoriesPerChapter {
                 let memoryNarratives = processedMemories.compactMap { $0.narrativeText }
-                if memoryNarratives.count >= 5 {
+                if memoryNarratives.count >= Chapter.memoriesPerChapter {
                     let chapterNarrative = try await openAI.generateChapterNarrative(
                         memories: memoryNarratives,
                         chapterTitle: chapter.title,

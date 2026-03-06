@@ -55,6 +55,30 @@ export default function LandingPage() {
           <p className="text-lg md:text-xl max-w-2xl mx-auto leading-relaxed" style={{ color: '#3d3d3d' }}>
             A journaling app that transforms your thoughts into polished narratives
           </p>
+
+          {/* App Screenshots */}
+          <div className="flex justify-center gap-4 mt-12 px-4">
+            {[
+              { src: '/images/screen-welcome.png', alt: 'Mabel welcome screen' },
+              { src: '/images/screen-chapters.png', alt: 'Mabel chapters screen' },
+              { src: '/images/screen-recording.png', alt: 'Mabel recording screen' },
+              { src: '/images/screen-my-story.png', alt: 'Mabel my stories screen' },
+            ].map((screen) => (
+              <div
+                key={screen.src}
+                className="overflow-hidden shadow-lg"
+                style={{ maxWidth: '22%', borderRadius: '36px' }}
+              >
+                <Image
+                  src={screen.src}
+                  alt={screen.alt}
+                  width={200}
+                  height={433}
+                  className="w-full h-auto block"
+                />
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -69,11 +93,6 @@ export default function LandingPage() {
           </h2>
 
           <div className="space-y-6 text-lg leading-relaxed text-center" style={{ color: 'rgba(17, 24, 39, 0.8)' }}>
-            <p>
-              Everyone has stories worth sharing, but raw journal entries are messy and often unpublishable.
-              So they sit in Notes apps, gathering digital dust.
-            </p>
-
             <p>
               <strong style={{ color: '#2F6F5E' }}>Mabel is a journaling tool that transforms your thoughts into polished narrative.</strong>
             </p>

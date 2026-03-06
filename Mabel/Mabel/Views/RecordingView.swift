@@ -79,7 +79,7 @@ struct RecordingView: View {
                         .foregroundColor(.mabelText)
                         .padding(.bottom, 4)
 
-                    Text("\(chapter.completedMemoryCount) of 5 memories recorded")
+                    Text("\(chapter.completedMemoryCount) of \(Chapter.memoriesPerChapter) memories recorded")
                         .font(.comfortaa(12, weight: .regular))
                         .foregroundColor(.mabelSubtle)
                         .padding(.bottom, 4)

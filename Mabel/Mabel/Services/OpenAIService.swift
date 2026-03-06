@@ -14,6 +14,14 @@ class OpenAIService {
         return ProcessInfo.processInfo.environment["OPENAI_API_KEY"] ?? ""
     }
 
+    private func performRequest(_ request: URLRequest) async throws -> (Data, URLResponse) {
+        do {
+            return try await performRequest(request)
+        } catch let error as URLError where error.code == .timedOut {
+            throw OpenAIError.timeout
+        }
+    }
+
     // MARK: - Transcription (Whisper)
 
     func transcribeAudio(fileURL: URL) async throws -> String {
@@ -23,6 +31,7 @@ class OpenAIService {
 
         let url = URL(string: "https://api.openai.com/v1/audio/transcriptions")!
         var request = URLRequest(url: url)
+        request.timeoutInterval = 30
         request.httpMethod = "POST"
         request.setValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
 
@@ -49,7 +58,7 @@ class OpenAIService {
 
         request.httpBody = body
 
-        let (data, response) = try await URLSession.shared.data(for: request)
+        let (data, response) = try await performRequest(request)
 
         guard let httpResponse = response as? HTTPURLResponse else {
             throw OpenAIError.invalidResponse
@@ -88,6 +97,7 @@ class OpenAIService {
 
         let url = URL(string: "https://api.openai.com/v1/chat/completions")!
         var request = URLRequest(url: url)
+        request.timeoutInterval = 30
         request.httpMethod = "POST"
         request.setValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -104,7 +114,7 @@ class OpenAIService {
 
         request.httpBody = try JSONSerialization.data(withJSONObject: requestBody)
 
-        let (data, response) = try await URLSession.shared.data(for: request)
+        let (data, response) = try await performRequest(request)
 
         guard let httpResponse = response as? HTTPURLResponse else {
             throw OpenAIError.invalidResponse
@@ -157,6 +167,7 @@ class OpenAIService {
 
         let url = URL(string: "https://api.openai.com/v1/chat/completions")!
         var request = URLRequest(url: url)
+        request.timeoutInterval = 30
         request.httpMethod = "POST"
         request.setValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -173,7 +184,7 @@ class OpenAIService {
 
         request.httpBody = try JSONSerialization.data(withJSONObject: requestBody)
 
-        let (data, response) = try await URLSession.shared.data(for: request)
+        let (data, response) = try await performRequest(request)
 
         guard let httpResponse = response as? HTTPURLResponse else {
             throw OpenAIError.invalidResponse
@@ -244,6 +255,7 @@ class OpenAIService {
 
         let url = URL(string: "https://api.openai.com/v1/chat/completions")!
         var request = URLRequest(url: url)
+        request.timeoutInterval = 30
         request.httpMethod = "POST"
         request.setValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -260,7 +272,7 @@ class OpenAIService {
 
         request.httpBody = try JSONSerialization.data(withJSONObject: requestBody)
 
-        let (data, response) = try await URLSession.shared.data(for: request)
+        let (data, response) = try await performRequest(request)
 
         guard let httpResponse = response as? HTTPURLResponse else {
             throw OpenAIError.invalidResponse
@@ -323,6 +335,7 @@ class OpenAIService {
 
         let url = URL(string: "https://api.openai.com/v1/chat/completions")!
         var request = URLRequest(url: url)
+        request.timeoutInterval = 30
         request.httpMethod = "POST"
         request.setValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -339,7 +352,7 @@ class OpenAIService {
 
         request.httpBody = try JSONSerialization.data(withJSONObject: requestBody)
 
-        let (data, response) = try await URLSession.shared.data(for: request)
+        let (data, response) = try await performRequest(request)
 
         guard let httpResponse = response as? HTTPURLResponse else {
             throw OpenAIError.invalidResponse
@@ -376,6 +389,7 @@ enum OpenAIError: LocalizedError {
     case invalidResponse
     case apiError(statusCode: Int, message: String)
     case noContent
+    case timeout
 
     var errorDescription: String? {
         switch self {
@@ -387,6 +401,8 @@ enum OpenAIError: LocalizedError {
             return "OpenAI API error (\(statusCode)): \(message)"
         case .noContent:
             return "No content in OpenAI response."
+        case .timeout:
+            return "Request timed out. Check your connection and try again."
         }
     }
 }

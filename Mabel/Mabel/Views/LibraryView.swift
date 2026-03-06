@@ -8,7 +8,11 @@ struct LibraryView: View {
     @State private var isGeneratingPDF = false
 
     private var allCompleted: Bool {
-        appState.completedChapterCount == 10
+        appState.completedChapterCount == Chapter.totalChapters
+    }
+
+    private var hasApprovedChapters: Bool {
+        appState.chapters.contains { $0.isApproved && $0.generatedNarrative != nil }
     }
 
     var body: some View {
@@ -58,13 +62,13 @@ struct LibraryView: View {
                 .foregroundColor(.mabelText)
                 .padding(.bottom, 8)
 
-            Text("\(appState.completedChapterCount) of 10 chapters completed")
+            Text("\(appState.completedChapterCount) of \(Chapter.totalChapters) chapters completed")
                 .font(.comfortaa(14, weight: .regular))
                 .foregroundColor(.mabelSubtle)
                 .padding(.bottom, 12)
 
             ProgressBar(
-                progress: Double(appState.completedChapterCount) / 10.0,
+                progress: Double(appState.completedChapterCount) / Double(Chapter.totalChapters),
                 height: 8
             )
             .padding(.bottom, 24)
@@ -139,15 +143,15 @@ struct LibraryView: View {
                 .font(.comfortaa(28, weight: .bold))
                 .foregroundColor(.mabelText)
 
-            Text("You've completed all 10 chapters of your book.")
+            Text("You've completed all \(Chapter.totalChapters) chapters of your book.")
                 .font(.comfortaa(16, weight: .regular))
                 .foregroundColor(.mabelSubtle)
                 .multilineTextAlignment(.center)
 
             // PDF Download
             CTAButton(
-                title: isGeneratingPDF ? "GENERATING..." : "PDF DOWNLOAD",
-                isDisabled: isGeneratingPDF
+                title: isGeneratingPDF ? "GENERATING..." : (hasApprovedChapters ? "PDF DOWNLOAD" : "NO CHAPTERS READY"),
+                isDisabled: isGeneratingPDF || !hasApprovedChapters
             ) {
                 generateAndSharePDF()
             }

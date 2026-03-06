@@ -61,7 +61,7 @@ class AppState {
         // Find first empty slot or append
         if let emptyIndex = chapters[chapterIndex].memories.firstIndex(where: { $0.state == .notStarted }) {
             chapters[chapterIndex].memories[emptyIndex] = memory
-        } else if chapters[chapterIndex].memories.count < 5 {
+        } else if chapters[chapterIndex].memories.count < Chapter.memoriesPerChapter {
             chapters[chapterIndex].memories.append(memory)
         }
         saveChapters()
@@ -96,7 +96,7 @@ class AppState {
         chapters[chapterIndex].memories.remove(at: memoryIndex)
 
         // If completed count drops below 5, clear stale narrative and approval
-        if chapters[chapterIndex].completedMemoryCount < 5 {
+        if chapters[chapterIndex].completedMemoryCount < Chapter.memoriesPerChapter {
             chapters[chapterIndex].generatedNarrative = nil
             chapters[chapterIndex].isApproved = false
         }
