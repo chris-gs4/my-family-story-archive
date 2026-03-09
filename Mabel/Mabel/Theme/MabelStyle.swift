@@ -5,39 +5,49 @@ struct CTAButtonStyle: ButtonStyle {
 
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .font(.comfortaa(18, weight: .bold))
-            .foregroundColor(isDisabled ? .mabelSubtle : .mabelBackground)
+            .font(.comfortaa(17, weight: .bold))
+            .foregroundColor(isDisabled ? .mabelSubtle : .white)
             .frame(maxWidth: .infinity)
             .frame(height: 56)
             .background(
                 Capsule()
                     .fill(isDisabled ? Color.mabelSurface : Color.mabelTeal)
             )
+            .overlay(
+                Capsule()
+                    .strokeBorder(isDisabled ? Color.clear : Color.mabelTeal.opacity(0.8), lineWidth: 2)
+            )
             .clipShape(Capsule())
+            .shadow(color: isDisabled ? .clear : .black.opacity(0.12), radius: 8, x: 0, y: 4)
             .opacity(isDisabled ? 0.4 : 1.0)
-            .scaleEffect(configuration.isPressed ? 0.97 : 1.0)
+            .scaleEffect(configuration.isPressed && !isDisabled ? 0.98 : 1.0)
             .animation(.spring(response: 0.3), value: configuration.isPressed)
     }
 }
 
 struct PillButtonStyle: ButtonStyle {
     var isSelected: Bool
+    var isDisabled: Bool = false
 
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .font(.comfortaa(15, weight: isSelected ? .bold : .regular))
-            .foregroundColor(isSelected ? .white : .mabelText)
-            .padding(.horizontal, 20)
+            .font(.comfortaa(15, weight: isSelected ? .semiBold : .regular))
+            .foregroundColor(isDisabled ? .mabelSubtle.opacity(0.5) : (isSelected ? .white : .mabelText))
+            .frame(maxWidth: .infinity)
             .frame(height: 44)
             .background(
-                Capsule()
-                    .fill(isSelected ? Color.mabelTeal : Color.mabelSurface)
+                RoundedRectangle(cornerRadius: 14)
+                    .fill(isDisabled ? Color.mabelSurface.opacity(0.4) : (isSelected ? Color.mabelTeal : Color.mabelSurface.opacity(0.9)))
             )
             .overlay(
-                Capsule()
-                    .strokeBorder(isSelected ? Color.clear : Color.mabelSubtle.opacity(0.3), lineWidth: 1)
+                RoundedRectangle(cornerRadius: 14)
+                    .strokeBorder(
+                        isSelected ? Color.clear : (isDisabled ? Color.mabelSubtle.opacity(0.15) : Color.mabelSubtle.opacity(0.3)),
+                        lineWidth: isSelected ? 0 : 2
+                    )
             )
-            .scaleEffect(configuration.isPressed ? 0.97 : 1.0)
+            .shadow(color: isSelected ? .black.opacity(0.08) : .clear, radius: 4, x: 0, y: 2)
+            .scaleEffect(configuration.isPressed && !isDisabled ? 0.95 : 1.0)
             .animation(.spring(response: 0.3, dampingFraction: 0.6), value: configuration.isPressed)
     }
 }

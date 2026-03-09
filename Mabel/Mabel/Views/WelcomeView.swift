@@ -8,51 +8,46 @@ struct WelcomeView: View {
             MabelGradientBackground()
 
             VStack(spacing: 0) {
-                Spacer()
-                    .frame(height: 60)
-
-                // Centered Mascot - BIGGER
+                // Top half — mascot / animation area
                 Image("MabelMascot")
                     .renderingMode(.original)
                     .resizable()
                     .scaledToFit()
-                    .frame(width: 200, height: 200)
-                    .padding(.bottom, 36)
+                    .frame(width: 280, height: 280)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
 
-                // Welcome Text
-                Text("Welcome to Mabel")
-                    .font(.comfortaa(32, weight: .bold))
-                    .foregroundColor(.mabelText)
-                    .multilineTextAlignment(.center)
-                    .padding(.bottom, 12)
+                // Bottom half — text + CTA
+                VStack(spacing: 0) {
+                    Text("Welcome to Mabel")
+                        .font(.comfortaa(32, weight: .bold))
+                        .foregroundColor(.mabelText)
+                        .multilineTextAlignment(.center)
+                        .padding(.bottom, 20)
 
-                // Tagline
-                Text("Journal Freely. Share Beautifully.")
-                    .font(.comfortaa(17, weight: .medium))
-                    .foregroundColor(.mabelTeal)
-                    .multilineTextAlignment(.center)
-                    .kerning(0.4)
-                    .padding(.bottom, 32)
+                    Text("Your warmest writing partner.")
+                        .font(.comfortaa(17, weight: .medium))
+                        .foregroundColor(.mabelTeal)
+                        .multilineTextAlignment(.center)
+                        .kerning(0.4)
+                        .padding(.bottom, 20)
 
-                // Description - BETTER CONTRAST
-                VStack(spacing: 20) {
-                    Text("Transform your thoughts into\npolished narratives")
+                    Text("I help you capture your stories and\nturn them into something beautiful.")
                         .font(.comfortaa(15, weight: .medium))
                         .foregroundColor(.mabelText.opacity(0.85))
                         .multilineTextAlignment(.center)
                         .lineSpacing(4)
+                        .padding(.bottom, 20)
 
-                    Text("Speak or type—we'll do the rest")
+                    Text("No typing, just talking!")
                         .font(.comfortaa(14, weight: .regular))
-                        .foregroundColor(.mabelText.opacity(0.75))
+                        .foregroundColor(.mabelText.opacity(0.85))
+
+                    Spacer()
+
+                    CTAButton(title: "GET STARTED", action: onGetStarted)
+                        .padding(.bottom, 50)
                 }
-                .multilineTextAlignment(.center)
-
-                Spacer()
-
-                // CTA
-                CTAButton(title: "GET STARTED", action: onGetStarted)
-                    .padding(.bottom, 50)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
             .padding(.horizontal, 36)
         }

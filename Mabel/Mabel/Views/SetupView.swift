@@ -46,11 +46,40 @@ struct SetupView: View {
     @Environment(AppState.self) private var appState
     @State private var displayName = ""
     @State private var selectedGoal: String? = nil
+    @State private var selectedTopics: Set<String> = []
+    @FocusState private var isNameFocused: Bool
 
     private let writingGoals = ["1x week", "2x week", "3x week", "I'll write when I want"]
 
+    private let topics = [
+        "Childhood", "Immigration", "Career", "Family",
+        "War / Service", "Education", "Faith", "Love & Relationships",
+        "Life Challenges", "Whatever comes to mind"
+    ]
+
+    private let maxTopics = 5
+
     private var isFormValid: Bool {
-        !displayName.trimmingCharacters(in: .whitespaces).isEmpty
+        !displayName.trimmingCharacters(in: .whitespaces).isEmpty && !selectedTopics.isEmpty
+    }
+
+    private var helperText: String {
+        let name = displayName.trimmingCharacters(in: .whitespaces)
+        if name.isEmpty {
+            return "Please enter your name"
+        } else if selectedTopics.isEmpty {
+            return "Please select at least one topic"
+        } else {
+            return "\(selectedTopics.count)/\(maxTopics) topics selected"
+        }
+    }
+
+    private func toggleTopic(_ topic: String) {
+        if selectedTopics.contains(topic) {
+            selectedTopics.remove(topic)
+        } else if selectedTopics.count < maxTopics {
+            selectedTopics.insert(topic)
+        }
     }
 
     var body: some View {
@@ -59,7 +88,7 @@ struct SetupView: View {
 
             ScrollView {
                 VStack(alignment: .leading, spacing: 0) {
-                    // Wordmark centered
+                    // Wordmark centered — 24pt below status bar
                     HStack {
                         Spacer()
                         Image("MabelWordmark")
@@ -69,38 +98,45 @@ struct SetupView: View {
                             .frame(height: 24)
                         Spacer()
                     }
-                    .padding(.top, 16)
-                    .padding(.bottom, 40)
+                    .padding(.top, 24)
+                    .padding(.bottom, 32)
 
                     // Name field
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("Tell us your name:")
-                            .font(.comfortaa(16, weight: .bold))
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text("Tell me your name:")
+                            .font(.comfortaa(17, weight: .semiBold))
                             .foregroundColor(.mabelText)
 
                         TextField("Your name", text: $displayName)
-                            .font(.comfortaa(16, weight: .regular))
+                            .font(.comfortaa(17, weight: .regular))
                             .foregroundColor(.mabelText)
+                            .autocorrectionDisabled()
+                            .textInputAutocapitalization(.words)
+                            .focused($isNameFocused)
                             .padding(.horizontal, 16)
                             .padding(.vertical, 14)
                             .background(
-                                RoundedRectangle(cornerRadius: 12)
-                                    .fill(Color.mabelSurface.opacity(0.9))
+                                RoundedRectangle(cornerRadius: 14)
+                                    .fill(Color.mabelSurface.opacity(isNameFocused ? 1.0 : 0.6))
                             )
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 14)
+                                    .strokeBorder(isNameFocused ? Color.mabelTeal : Color.mabelSubtle.opacity(0.3), lineWidth: 2)
+                            )
+                            .animation(.easeInOut(duration: 0.2), value: isNameFocused)
                     }
                     .padding(.bottom, 32)
 
                     // Writing goal
                     VStack(alignment: .leading, spacing: 12) {
                         Text("Set a writing goal:")
-                            .font(.comfortaa(16, weight: .bold))
+                            .font(.comfortaa(17, weight: .semiBold))
                             .foregroundColor(.mabelText)
 
-                        // 2x2 grid
                         LazyVGrid(columns: [
-                            GridItem(.flexible(), spacing: 8),
-                            GridItem(.flexible(), spacing: 8)
-                        ], spacing: 8) {
+                            GridItem(.flexible(), spacing: 12),
+                            GridItem(.flexible(), spacing: 12)
+                        ], spacing: 12) {
                             ForEach(writingGoals, id: \.self) { goal in
                                 PillButton(
                                     title: goal,
@@ -108,6 +144,36 @@ struct SetupView: View {
                                 ) {
                                     selectedGoal = goal
                                 }
+                            }
+                        }
+                    }
+                    .padding(.bottom, 32)
+
+                    // Topics of interest
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Topics of interest:")
+                            .font(.comfortaa(17, weight: .semiBold))
+                            .foregroundColor(.mabelText)
+
+                        Text("(pick up to \(maxTopics))")
+                            .font(.comfortaa(13, weight: .medium))
+                            .foregroundColor(.mabelText.opacity(0.75))
+                    }
+                    .padding(.bottom, 12)
+
+                    LazyVGrid(columns: [
+                        GridItem(.flexible(), spacing: 12),
+                        GridItem(.flexible(), spacing: 12)
+                    ], spacing: 12) {
+                        ForEach(topics, id: \.self) { topic in
+                            let isSelected = selectedTopics.contains(topic)
+                            let atLimit = selectedTopics.count >= maxTopics && !isSelected
+                            PillButton(
+                                title: topic,
+                                isSelected: isSelected,
+                                isDisabled: atLimit
+                            ) {
+                                toggleTopic(topic)
                             }
                         }
                     }
@@ -120,10 +186,19 @@ struct SetupView: View {
                         action: {
                             appState.completeOnboarding(
                                 displayName: displayName.trimmingCharacters(in: .whitespaces),
-                                writingGoal: selectedGoal ?? "1x week"
+                                writingGoal: selectedGoal ?? "I'll write when I want",
+                                topicsOfInterest: Array(selectedTopics)
                             )
                         }
                     )
+
+                    // Helper text
+                    Text(helperText)
+                        .font(.comfortaa(13, weight: .medium))
+                        .foregroundColor(.mabelSubtle)
+                        .frame(maxWidth: .infinity)
+                        .multilineTextAlignment(.center)
+                        .padding(.top, 12)
 
                     Spacer()
                         .frame(height: 40)

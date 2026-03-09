@@ -45,8 +45,8 @@ class AppState {
 
     // MARK: - Onboarding
 
-    func completeOnboarding(displayName: String, writingGoal: String) {
-        var profile = UserProfile(displayName: displayName, writingGoal: writingGoal)
+    func completeOnboarding(displayName: String, writingGoal: String, topicsOfInterest: [String] = []) {
+        var profile = UserProfile(displayName: displayName, writingGoal: writingGoal, topicsOfInterest: topicsOfInterest)
         profile.hasCompletedOnboarding = true
         self.userProfile = profile
         self.chapters = Chapter.allChapters
