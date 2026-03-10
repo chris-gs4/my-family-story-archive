@@ -66,7 +66,7 @@ ZStack {
 - The gradient MUST fill the ENTIRE screen, including behind the status bar and home indicator.
 - There must NEVER be black areas visible at the top or bottom of any screen.
 - Content sits ON TOP of the gradient and respects safe areas.
-- Cards and inputs use `mabelSurface` (#F5EDE3) with slight transparency to let the gradient subtly show through.
+- Cards use `mabelSurface` (#F5EDE3) with slight transparency to let the gradient subtly show through. Interactive elements (inputs, pill buttons) use solid white backgrounds.
 - The gradient replaces the old solid `mabelBackground` (#FFF8F0) everywhere. The `mabelBackground` color token is now ONLY used for fallback/loading states.
 
 ---
@@ -85,13 +85,15 @@ ZStack {
 | `mabelGold`          | `#E9C46A` | Warm highlights, mascot glow, decorative        |
 | `mabelSurface`       | `#F5EDE3` | Cards, input fields, elevated surfaces          |
 | `mabelSubtle`        | `#7A7168` | Helper text, placeholders, secondary labels     |
+| `mabelTealDark`      | `#146159` | Darker teal variant (~teal-700)                  |
 
 ### Color Rules
 - Background is ALWAYS the gradient on EVERY screen
 - NEVER use pure black (#000000) or pure white (#FFFFFF) anywhere
 - Text is ALWAYS `mabelText` (#2D2019), never black
 - Subtle/secondary text uses `mabelSubtle` (#7A7168)
-- Card and input backgrounds use `mabelSurface` (#F5EDE3) — consider 90-95% opacity so gradient peeks through
+- Card backgrounds use `mabelSurface` (#F5EDE3) at 90-95% opacity so gradient peeks through
+- Interactive elements (text inputs, pill buttons) use solid **white** backgrounds for contrast and clarity
 
 ---
 
@@ -183,28 +185,34 @@ ZStack {
 ### CTA Button (Primary)
 - Full width (minus horizontal padding)
 - Height: 56pt
-- Corner radius: 28pt (fully rounded pill)
+- Shape: Capsule (fully rounded pill)
 - Background: `mabelTeal`
-- Text: Comfortaa Bold, 18pt, cream `#FFF8F0`
-- Disabled state: 40% opacity
-- Press state: slight scale down (0.97) + darker teal
+- Text: Comfortaa Bold, 17pt, white
+- Border: 3pt `mabelTeal.opacity(0.8)`
+- Shadow: `black.opacity(0.15)`, radius 10, y: 4
+- **Disabled:** `mabelSurface` fill, `mabelSubtle` text, no border, no shadow, 40% opacity
+- **Pressed:** scale 0.98, spring animation (response: 0.3)
 
 ### Pill Button (Selectable)
-- Height: 44pt
-- Horizontal padding: 20pt
-- Corner radius: 22pt (fully rounded)
-- Unselected: `mabelSurface` background, `mabelText` text, 1pt `mabelSubtle` border at 30% opacity
-- Selected: `mabelTeal` background, white text, no border
-- Font: Comfortaa Regular, 15pt
+- Font: Comfortaa 15pt — Regular (unselected) / SemiBold (selected)
+- Padding: horizontal 12pt, vertical 10pt
+- Full width within grid cell, min height 48pt
+- Corner radius: 14pt
+- Border: 3pt on all states
+- **Unselected:** white background, `mabelText` text, `gray.opacity(0.35)` border, shadow `black.opacity(0.1)` r:4 y:2
+- **Selected:** `mabelTeal` background, white text, `mabelTeal` border, glow shadow `mabelTeal.opacity(0.4)` r:12 y:4
+- **Disabled:** `gray.opacity(0.15)` background, `mabelSubtle.opacity(0.5)` text, `gray.opacity(0.35)` border, 50% opacity
+- **Pressed:** scale 0.95, spring animation (response: 0.3, dampingFraction: 0.6)
 
 ### Text Input
-- Height: 48pt
-- Corner radius: 12pt
-- Background: `mabelSurface` (at 90% opacity to let gradient show through)
-- Text: Comfortaa Regular, 16pt, `mabelText`
-- Placeholder: Comfortaa Regular, 16pt, `mabelSubtle`
-- No visible border in default state
-- Focus state: 2pt `mabelTeal` border
+- Font: Comfortaa Regular, 17pt, `mabelText`
+- Padding: horizontal 16pt, vertical 14pt
+- Corner radius: 14pt
+- Background: solid **white**
+- Border: 3pt on all states
+- **Unfocused:** 3pt `mabelTeal.opacity(0.3)` border, depth shadow `black.opacity(0.1)` r:6 y:3
+- **Focused:** 3pt `mabelTeal` border, teal glow shadow `mabelTeal.opacity(0.3)` r:10, depth shadow `black.opacity(0.1)` r:6 y:3
+- Focus transition: `.easeInOut(duration: 0.2)`
 
 ### Free-Text Editor (for Add Character / Add Details)
 - Large multi-line text area
@@ -264,7 +272,7 @@ ZStack {
 
 ## Animations
 
-- CTA button press: `scaleEffect(0.97)` with `.spring(response: 0.3)`
+- CTA button press: `scaleEffect(0.98)` with `.spring(response: 0.3)`
 - Pill button select: `scaleEffect` bounce with `.spring(response: 0.3, dampingFraction: 0.6)`
 - Mic button pulse: repeating `scaleEffect(1.0 → 1.08)` + `opacity(1.0 → 0.7)` with `easeInOut(duration: 1.5)`
 - Recording waveform: animated bar heights with random values, updating every 0.1s
@@ -403,7 +411,7 @@ Welcome → Setup → RecordPrompt → Recording → SavedStories
 | Pills overflowing off screen | Use FlowLayout with wrapping |
 | Inconsistent spacing between screens | Follow spacing tokens exactly |
 | Placeholder text hard to read | Use mabelSubtle (#7A7168) |
-| Opaque cards hiding gradient entirely | Use 90-95% opacity on mabelSurface |
+| Opaque cards hiding gradient entirely | Cards: 90-95% opacity on mabelSurface. Inputs/pills: solid white. |
 | Suggestions not matching user's selected topics | Generate from Screen 2 topic selections |
 | Using mascot app icon instead of full character | Welcome screen uses full mascot PNG |
 
@@ -420,7 +428,7 @@ Before marking ANY screen as done, verify ALL of the following:
 - [ ] Content scrolls if it exceeds screen height
 - [ ] CTA button is full-width, 56pt height, 28pt corner radius
 - [ ] Colors match the palette exactly (check hex values)
-- [ ] Card/input backgrounds are `mabelSurface` with 90-95% opacity
+- [ ] Card backgrounds are `mabelSurface` with 90-95% opacity; inputs and pills use solid white
 - [ ] Animations are smooth and use spring curves
 - [ ] Tested on iPhone 15 Pro AND iPhone SE simulators
 - [ ] No layout warnings in Xcode console

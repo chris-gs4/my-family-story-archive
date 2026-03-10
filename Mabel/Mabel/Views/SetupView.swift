@@ -117,12 +117,14 @@ struct SetupView: View {
                             .padding(.vertical, 14)
                             .background(
                                 RoundedRectangle(cornerRadius: 14)
-                                    .fill(Color.mabelSurface.opacity(isNameFocused ? 1.0 : 0.6))
+                                    .fill(Color.white)
                             )
                             .overlay(
                                 RoundedRectangle(cornerRadius: 14)
-                                    .strokeBorder(isNameFocused ? Color.mabelTeal : Color.mabelSubtle.opacity(0.3), lineWidth: 2)
+                                    .strokeBorder(isNameFocused ? Color.mabelTeal : Color.mabelTeal.opacity(0.3), lineWidth: 3)
                             )
+                            .shadow(color: isNameFocused ? Color.mabelTeal.opacity(0.3) : .clear, radius: 10, x: 0, y: 0)
+                            .shadow(color: .black.opacity(0.1), radius: 6, x: 0, y: 3)
                             .animation(.easeInOut(duration: 0.2), value: isNameFocused)
                     }
                     .padding(.bottom, 32)

@@ -15,10 +15,10 @@ struct CTAButtonStyle: ButtonStyle {
             )
             .overlay(
                 Capsule()
-                    .strokeBorder(isDisabled ? Color.clear : Color.mabelTeal.opacity(0.8), lineWidth: 2)
+                    .strokeBorder(isDisabled ? Color.clear : Color.mabelTeal.opacity(0.8), lineWidth: 3)
             )
             .clipShape(Capsule())
-            .shadow(color: isDisabled ? .clear : .black.opacity(0.12), radius: 8, x: 0, y: 4)
+            .shadow(color: isDisabled ? .clear : .black.opacity(0.15), radius: 10, x: 0, y: 4)
             .opacity(isDisabled ? 0.4 : 1.0)
             .scaleEffect(configuration.isPressed && !isDisabled ? 0.98 : 1.0)
             .animation(.spring(response: 0.3), value: configuration.isPressed)
@@ -33,20 +33,29 @@ struct PillButtonStyle: ButtonStyle {
         configuration.label
             .font(.comfortaa(15, weight: isSelected ? .semiBold : .regular))
             .foregroundColor(isDisabled ? .mabelSubtle.opacity(0.5) : (isSelected ? .white : .mabelText))
+            .padding(.horizontal, 12)
+            .padding(.vertical, 10)
             .frame(maxWidth: .infinity)
-            .frame(height: 44)
+            .frame(minHeight: 48)
             .background(
                 RoundedRectangle(cornerRadius: 14)
-                    .fill(isDisabled ? Color.mabelSurface.opacity(0.4) : (isSelected ? Color.mabelTeal : Color.mabelSurface.opacity(0.9)))
+                    .fill(
+                        isDisabled
+                            ? AnyShapeStyle(Color.gray.opacity(0.15))
+                            : (isSelected
+                                ? AnyShapeStyle(Color.mabelTeal)
+                                : AnyShapeStyle(Color.white))
+                    )
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 14)
                     .strokeBorder(
-                        isSelected ? Color.clear : (isDisabled ? Color.mabelSubtle.opacity(0.15) : Color.mabelSubtle.opacity(0.3)),
-                        lineWidth: isSelected ? 0 : 2
+                        isSelected ? Color.mabelTeal : (isDisabled ? Color.gray.opacity(0.35) : Color.gray.opacity(0.35)),
+                        lineWidth: 3
                     )
             )
-            .shadow(color: isSelected ? .black.opacity(0.08) : .clear, radius: 4, x: 0, y: 2)
+            .shadow(color: isSelected ? .mabelTeal.opacity(0.4) : .black.opacity(0.1), radius: isSelected ? 12 : 4, x: 0, y: isSelected ? 4 : 2)
+            .opacity(isDisabled ? 0.5 : 1.0)
             .scaleEffect(configuration.isPressed && !isDisabled ? 0.95 : 1.0)
             .animation(.spring(response: 0.3, dampingFraction: 0.6), value: configuration.isPressed)
     }

@@ -8,6 +8,7 @@ extension Color {
     static let mabelGold = Color(red: 0.914, green: 0.769, blue: 0.416)           // #E9C46A
     static let mabelSurface = Color(red: 0.961, green: 0.929, blue: 0.890)        // #F5EDE3
     static let mabelSubtle = Color(red: 0.478, green: 0.443, blue: 0.408)         // #7A7168
+    static let mabelTealDark = Color(red: 0.08, green: 0.38, blue: 0.35)          // ~teal-700
 
     // Gradient tokens
     static let mabelGradientTop = Color(red: 0.682, green: 0.941, blue: 0.925)    // #AEF0EC
