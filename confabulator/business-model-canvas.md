@@ -4,9 +4,9 @@
 |                  |                  |   Proposition    |   Relationships  |
 |                  |                  |                  |                  |
 | - Whisper API    | - AI-guided      | - Voice-first    | - Mabel mascot   |
-| - ElevenLabs     |   question gen   |   story capture  |   as companion   |
-| - Marketing      | - Transcription  | - Fun, guided    | - Gamified       |
-|   agencies       | - Narrative      |   journaling     |   engagement     |
+| - ElevenLabs     |   question gen   |   memoir capture |   as companion   |
+| - Marketing      | - Transcription  | - Guided memoir  | - Gamified       |
+|   agencies       | - Narrative      |   interviews     |   engagement     |
 | - Wellness       |   generation     | - Personal       | - User feedback  |
 |   platforms      | - Gamification   |   memoir in      |   loops          |
 |                  |                  |   minutes        |                  |
@@ -14,12 +14,11 @@
 |   Key Resources  |                 |                  |   Customer       |
 |                  |                 |                  |   Segments       |
 |                  |                 |                  |                  |
-| - AI technology  |                 |                  | - Anyone wanting |
-| - Skilled AI     |                 |                  |   to capture     |
-|   developers     |                 |                  |   their story    |
-| - User-friendly  |                 |                  | - Gift givers    |
-|   platform       |                 |                  | - Family Plan    |
-|                  |                 |                  |   members        |
+| - AI technology  |                 |                  | - Storytellers   |
+| - Skilled AI     |                 |                  | - Gift givers    |
+|   developers     |                 |                  | - Family Plan    |
+| - User-friendly  |                 |                  |   members        |
+|   platform       |                 |                  |                  |
 +==================+=================+==================+==================+
 |   Cost Structure                   |   Revenue Streams                   |
 |                                    |                                     |

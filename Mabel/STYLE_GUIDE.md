@@ -9,65 +9,38 @@
 ## Brand Identity
 
 - **App Name:** Mabel
-- **Tagline:** Your Stories, Written with Care
+- **Tagline:** Speak Your Memoir Into Existence.
+- **One-liner:** Your memoir companion. Just talk — Mabel writes.
 - **Feel:** Warm, cozy, nostalgic, inviting. Like opening a treasured keepsake box. NOT techy, NOT corporate, NOT clinical.
-- **Mascot:** Pixel-art grandmother named Mabel — sitting in a cozy armchair, writing with a quill pen in a teal-trimmed journal. She is warm, wise, and smiling. She represents the user's inner storyteller.
-- **Marketing angle:** "Give your family the gift of their own story." Users may buy this for parents or grandparents as a gift.
+- **Mascot:** Pixel-art grandmother named Mabel — sitting in a cozy armchair, writing with a quill pen in a teal-trimmed journal. She is warm, wise, and smiling. She represents the user's inner storyteller and memoir companion.
+- **Marketing angle:** "Think about your grandparents. The stories they carry that you've never heard. Mabel makes it almost effortless to capture them." Users may buy this for parents or grandparents as a gift. No writing required — talking is the UX.
 
 ---
 
 ## Background — CRITICAL
 
-**Every screen uses the brand gradient background, NOT a solid color.**
+**Every screen uses the warm peach/cream background.**
 
-The gradient image is stored at: `wireframes/brand-assets/gradient-app-background.png`
-It must also be added to the Xcode Asset Catalog as `GradientBackground`.
+### Background Specification
+- **Color:** Solid warm peach/cream `#F3E0D2`
+- **Feel:** Warm, cozy, like parchment or a vintage photo album
 
-### Gradient Specification
-- **Direction:** Top to bottom (vertical linear gradient)
-- **Top color:** Soft teal `#AEF0EC`
-- **Middle color:** Light mint `#D9F4EF` (at ~50%)
-- **Bottom color:** Warm cream `#FDF7E9`
-
-### Implementation Options (pick one):
-
-**Option A — Image-based (recommended for exact match):**
+### Implementation:
 ```swift
 ZStack {
-    Image("GradientBackground")
-        .resizable()
-        .scaledToFill()
+    Color.mabelWarmBg
         .ignoresSafeArea(.all, edges: .all)
-    
-    // Content goes here
-}
-```
 
-**Option B — Code-based (lighter weight):**
-```swift
-ZStack {
-    LinearGradient(
-        colors: [
-            Color(hex: "#AEF0EC"),
-            Color(hex: "#D9F4EF"),
-            Color(hex: "#EBF5EA"),
-            Color(hex: "#FDF7E9")
-        ],
-        startPoint: .top,
-        endPoint: .bottom
-    )
-    .ignoresSafeArea(.all, edges: .all)
-    
     // Content goes here
 }
 ```
 
 ### Background Rules
-- The gradient MUST fill the ENTIRE screen, including behind the status bar and home indicator.
+- The background MUST fill the ENTIRE screen, including behind the status bar and home indicator.
 - There must NEVER be black areas visible at the top or bottom of any screen.
-- Content sits ON TOP of the gradient and respects safe areas.
-- Cards use `mabelSurface` (#F5EDE3) with slight transparency to let the gradient subtly show through. Interactive elements (inputs, pill buttons) use solid white backgrounds.
-- The gradient replaces the old solid `mabelBackground` (#FFF8F0) everywhere. The `mabelBackground` color token is now ONLY used for fallback/loading states.
+- Content sits ON TOP of the background and respects safe areas.
+- Cards use **white** (`#FFFFFF`) backgrounds — they should be bright and clean against the warm background.
+- The warm peach background provides the cozy, nostalgic feel. Cards pop against it with their white surfaces.
 
 ---
 
@@ -75,25 +48,28 @@ ZStack {
 
 | Token               | Hex       | Usage                                          |
 |----------------------|-----------|-------------------------------------------------|
-| `mabelGradientTop`  | `#AEF0EC` | Gradient top (soft teal)                        |
-| `mabelGradientMid`  | `#D9F4EF` | Gradient midpoint (light mint)                  |
-| `mabelGradientBot`  | `#FDF7E9` | Gradient bottom (warm cream)                    |
-| `mabelBackground`   | `#FFF8F0` | Fallback/loading only — screens use gradient    |
-| `mabelText`          | `#2D2019` | Primary text, headings                          |
-| `mabelTeal`          | `#1F7A6F` | CTA buttons, primary accent, active states      |
+| `mabelWarmBg`       | `#F3E0D2` | Screen background (warm peach/cream)            |
+| `mabelText`          | `#2D2019` | Primary text, headings, bold content            |
+| `mabelGreeting`      | `#9E8578` | Greeting headlines, warm hero text              |
+| `mabelTeal`          | `#1F7A6F` | CTA buttons, primary accent, active states, labels |
 | `mabelBurgundy`      | `#A3243B` | Secondary accent, recording active state        |
 | `mabelGold`          | `#E9C46A` | Warm highlights, mascot glow, decorative        |
-| `mabelSurface`       | `#F5EDE3` | Cards, input fields, elevated surfaces          |
+| `mabelCopper`        | `#B07850` | Completed chapter indicators, warm accent       |
+| `mabelMintBadge`     | `#D4F0EC` | Light mint badge backgrounds (percentage pills) |
+| `mabelSurface`       | `#FFFFFF` | Cards, elevated surfaces (white)                |
 | `mabelSubtle`        | `#7A7168` | Helper text, placeholders, secondary labels     |
 | `mabelTealDark`      | `#146159` | Darker teal variant (~teal-700)                  |
+| `mabelChapterGray`   | `#D4D0CC` | Incomplete chapter circle backgrounds           |
 
 ### Color Rules
-- Background is ALWAYS the gradient on EVERY screen
-- NEVER use pure black (#000000) or pure white (#FFFFFF) anywhere
-- Text is ALWAYS `mabelText` (#2D2019), never black
+- Background is ALWAYS `mabelWarmBg` (#F3E0D2) on EVERY screen
+- NEVER use pure black (#000000) for text
+- Primary text is ALWAYS `mabelText` (#2D2019)
+- Greeting/hero text uses `mabelGreeting` (#9E8578) for warm, inviting headlines
 - Subtle/secondary text uses `mabelSubtle` (#7A7168)
-- Card backgrounds use `mabelSurface` (#F5EDE3) at 90-95% opacity so gradient peeks through
-- Interactive elements (text inputs, pill buttons) use solid **white** backgrounds for contrast and clarity
+- Card backgrounds are **white** (#FFFFFF) — they should feel bright and clean against the warm background
+- Interactive elements (text inputs, pill buttons) also use white backgrounds
+- Teal labels (e.g., "Today's Prompt:") use `mabelTeal`
 
 ---
 
@@ -165,11 +141,9 @@ This is the #1 source of visual bugs. Follow these rules exactly:
 ```swift
 ZStack {
     // BACKGROUND — fills entire screen
-    Image("GradientBackground")
-        .resizable()
-        .scaledToFill()
+    Color.mabelWarmBg
         .ignoresSafeArea(.all, edges: .all)
-    
+
     // CONTENT — respects safe areas
     VStack {
         // ...
@@ -218,26 +192,54 @@ ZStack {
 - Large multi-line text area
 - Min height: 200pt
 - Corner radius: 16pt
-- Background: `mabelSurface` at 90% opacity
+- Background: white
 - Text: Comfortaa Regular, 16pt, `mabelText`
 - Placeholder text: Comfortaa Regular, 16pt, `mabelSubtle`
 - Generous padding: 16pt inside
 
+### Content Card (General)
+- Background: white (`mabelSurface` #FFFFFF)
+- Corner radius: **20pt**
+- Padding: 20pt all sides
+- Shadow: soft warm shadow — `black.opacity(0.06)`, radius 12, y: 4
+- Cards should feel bright and clean against the warm peach background
+
+### Prompt Card
+- Extends Content Card styling
+- **Label:** "Today's Prompt:" — Comfortaa Bold, 16pt, `mabelTeal`
+- **Title:** Comfortaa Bold, 22pt, `mabelText` (e.g., "A comforting childhood taste")
+- **Description:** Comfortaa Regular, 16pt, `mabelSubtle` (e.g., "What food brings back warm feelings for you?")
+- **Decorative emoji:** Top-right corner, relevant to the prompt topic
+- **CTA:** Full-width "Start Recording" button inside the card (standard CTA style)
+
+### Progress Card
+- Extends Content Card styling
+- **Section header:** "YOUR STORY" — Comfortaa Bold, 14pt, `mabelText`, **all-caps**, letter-spacing 1pt
+- **Subtitle:** Comfortaa Regular, 14pt, `mabelSubtle` (e.g., "Your unique life journey")
+- **Progress text:** "Chapters Complete: 3 of 10" — Comfortaa SemiBold, 16pt, `mabelText`
+- **Percentage badge:** Pill shape, `mabelTeal` text on `mabelMintBadge` background, Comfortaa SemiBold, 14pt, horizontal padding 12pt, vertical 4pt, corner radius 12pt
+- **Chapter circles:** See Chapter Circle Indicator component below
+
+### Chapter Circle Indicator
+- Size: 36pt diameter
+- Font: Comfortaa Bold, 14pt
+- Horizontal spacing: 8pt between circles
+- **Completed:** `mabelCopper` (#B07850) fill, white number text
+- **Active/current:** `mabelTeal` (#1F7A6F) fill, white number text, slightly larger (40pt) or with subtle ring
+- **Incomplete:** `mabelChapterGray` (#D4D0CC) fill, `mabelSubtle` number text
+
 ### Story Card
-- Background: `mabelSurface` at 95% opacity
-- Corner radius: 16pt
-- Padding: 16pt all sides
+- Extends Content Card styling
 - Title: Comfortaa Bold, 20pt (AI-generated creative title, e.g., "Mom's Kitchen")
 - Date: Comfortaa Light, 12pt, `mabelSubtle` (e.g., "16 February 2026")
 - Preview text: Comfortaa Regular, 14pt, max 3 lines, truncated
 - "Read More" link: Comfortaa Medium, 14pt, `mabelTeal`
 - "Add Details" button: Comfortaa Medium, 14pt, `mabelTeal`
 - Helper text above Add Details: "Add characters, locations, and more details to help us draft a better story." — Comfortaa Regular, 12pt, `mabelSubtle`
-- Shadow: 0pt x 2pt blur 8pt, black at 5% opacity
 
 ### Suggestion Card
-- Background: `mabelSurface`
-- Corner radius: 12pt
+- Background: white
+- Corner radius: 16pt
 - Padding: 16pt
 - Text: Comfortaa Regular, 15pt, `mabelText`
 - Chevron icon on the right: `mabelSubtle`
@@ -261,6 +263,14 @@ ZStack {
 - Centered horizontally and vertically (in upper portion of screen)
 - Soft radial gradient glow behind her: `mabelGold` at 15% opacity, radius 1.5x mascot size, fading to transparent
 - The mascot is the HERO of this screen — she should feel large and prominent
+
+### Library/Home Screen (Greeting Header)
+- Mascot at ~140pt, positioned **left-aligned**
+- Greeting text to the right of the mascot:
+  - **"Good morning, [Name]!"** — Comfortaa Bold, 28pt, `mabelGreeting` (#9E8578)
+  - **"Let's capture a memory"** — Comfortaa Regular, 18pt, `mabelGreeting`
+- Above greeting: "Mabel" label with grandmother emoji in a light gold circle badge
+- This creates a warm, personalized entry point to the app
 
 ### In-App (Smaller contexts)
 - 80pt for empty states
@@ -398,22 +408,24 @@ Welcome → Setup → RecordPrompt → Recording → SavedStories
 
 ## Common Mistakes — DO NOT MAKE THESE
 
-| ❌ Mistake | ✅ Correct |
+| Mistake | Correct |
 |------------|-----------|
-| Solid color background on any screen | Brand gradient background on ALL screens |
-| Black areas visible at top/bottom of screen | Gradient with `.ignoresSafeArea()` |
+| Teal gradient or any non-warm background | `mabelWarmBg` (#F3E0D2) on ALL screens |
+| Black areas visible at top/bottom of screen | Background with `.ignoresSafeArea()` |
 | Using Text("Mabel") for the wordmark | Using Image("MabelWordmark") |
 | System font appearing anywhere | Comfortaa on ALL text |
-| Pure black or pure white used | Use mabelText and mabelBackground |
+| Pure black text (#000000) | Use `mabelText` (#2D2019) |
 | Mascot too small on welcome screen | Minimum 220pt, no rounded frame |
 | CTA button not full width | Full width minus 24pt horizontal padding |
 | Content cut off on smaller screens | Wrap in ScrollView |
 | Pills overflowing off screen | Use FlowLayout with wrapping |
 | Inconsistent spacing between screens | Follow spacing tokens exactly |
-| Placeholder text hard to read | Use mabelSubtle (#7A7168) |
-| Opaque cards hiding gradient entirely | Cards: 90-95% opacity on mabelSurface. Inputs/pills: solid white. |
+| Placeholder text hard to read | Use `mabelSubtle` (#7A7168) |
+| Cream/beige card backgrounds | Cards use **white** (#FFFFFF) for contrast against warm background |
+| Card corner radius of 16pt | Cards now use **20pt** corner radius |
 | Suggestions not matching user's selected topics | Generate from Screen 2 topic selections |
 | Using mascot app icon instead of full character | Welcome screen uses full mascot PNG |
+| Using `mabelText` for greeting headlines | Use `mabelGreeting` (#9E8578) for warm hero text |
 
 ---
 
@@ -421,15 +433,15 @@ Welcome → Setup → RecordPrompt → Recording → SavedStories
 
 Before marking ANY screen as done, verify ALL of the following:
 
-- [ ] Background is the brand gradient filling entire screen — no black areas, no solid colors
+- [ ] Background is `mabelWarmBg` (#F3E0D2) filling entire screen — no black areas
 - [ ] MabelWordmark IMAGE is used at top (not text)
 - [ ] All text uses Comfortaa font (no system font fallback visible)
 - [ ] Horizontal padding is 24pt on both sides
 - [ ] Content scrolls if it exceeds screen height
-- [ ] CTA button is full-width, 56pt height, 28pt corner radius
+- [ ] CTA button is full-width, 56pt height, capsule shape
 - [ ] Colors match the palette exactly (check hex values)
-- [ ] Card backgrounds are `mabelSurface` with 90-95% opacity; inputs and pills use solid white
+- [ ] Card backgrounds are **white** with 20pt corner radius
+- [ ] Greeting text uses `mabelGreeting`, not `mabelText`
 - [ ] Animations are smooth and use spring curves
 - [ ] Tested on iPhone 15 Pro AND iPhone SE simulators
 - [ ] No layout warnings in Xcode console
-- [ ] Screen matches the corresponding wireframe in wireframes/app-mocks/

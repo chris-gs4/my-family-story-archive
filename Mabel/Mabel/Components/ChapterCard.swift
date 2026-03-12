@@ -37,7 +37,7 @@ struct ChapterCard: View {
                 Spacer()
 
                 Image(systemName: statusIcon)
-                    .font(.system(size: 16))
+                    .font(.system(size: 18))
                     .foregroundColor(statusColor)
             }
 
@@ -47,18 +47,21 @@ struct ChapterCard: View {
                 .lineLimit(2)
                 .multilineTextAlignment(.leading)
 
+            // Status badge
             if chapter.isApproved {
-                Text("Approved")
-                    .font(.comfortaa(11, weight: .medium))
-                    .foregroundColor(.mabelTeal)
+                StatusBadge(text: "Approved", icon: "checkmark.circle.fill", color: .mabelTeal)
             } else if chapter.isReadyForReview {
-                Text("Ready for review")
-                    .font(.comfortaa(11, weight: .medium))
-                    .foregroundColor(.orange)
+                StatusBadge(text: "Ready for review", icon: "circle.fill", color: .orange)
             } else if chapter.completedMemoryCount > 0 {
-                Text("\(chapter.completedMemoryCount)/5")
-                    .font(.comfortaa(11, weight: .regular))
-                    .foregroundColor(.mabelSubtle)
+                StatusBadge(text: "\(chapter.completedMemoryCount)/5", icon: "circle.lefthalf.filled", color: .mabelGold)
+            }
+
+            // Mini progress bar for in-progress chapters
+            if chapter.completedMemoryCount > 0 && !chapter.isApproved {
+                ProgressBar(
+                    progress: Double(chapter.completedMemoryCount) / Double(Chapter.memoriesPerChapter),
+                    height: 3
+                )
             }
         }
         .padding(14)
@@ -67,6 +70,62 @@ struct ChapterCard: View {
             RoundedRectangle(cornerRadius: 14)
                 .fill(Color.mabelSurface.opacity(0.95))
         )
+        .overlay(
+            RoundedRectangle(cornerRadius: 14)
+                .strokeBorder(Color.mabelTeal.opacity(0.15), lineWidth: 1.5)
+        )
+        .shadow(color: .black.opacity(0.08), radius: 6, x: 0, y: 3)
+    }
+}
+
+// MARK: - Status Badge
+
+private struct StatusBadge: View {
+    let text: String
+    let icon: String
+    let color: Color
+
+    var body: some View {
+        HStack(spacing: 4) {
+            Image(systemName: icon)
+                .font(.system(size: 9))
+            Text(text)
+                .font(.comfortaa(11, weight: .medium))
+        }
+        .foregroundColor(color)
+        .padding(.horizontal, 8)
+        .padding(.vertical, 4)
+        .background(
+            Capsule()
+                .fill(color.opacity(0.15))
+        )
+        .overlay(
+            Capsule()
+                .strokeBorder(color.opacity(0.3), lineWidth: 1)
+        )
+    }
+}
+
+// MARK: - Chapter Card Button Style
+
+struct ChapterCardButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .overlay(
+                RoundedRectangle(cornerRadius: 14)
+                    .strokeBorder(
+                        Color.mabelTeal.opacity(configuration.isPressed ? 0.4 : 0),
+                        lineWidth: configuration.isPressed ? 3 : 0
+                    )
+            )
+            .scaleEffect(configuration.isPressed ? 0.97 : 1.0)
+            .shadow(
+                color: configuration.isPressed ? .black.opacity(0.12) : .clear,
+                radius: configuration.isPressed ? 8 : 0,
+                x: 0,
+                y: configuration.isPressed ? 4 : 0
+            )
+            .animation(.spring(response: 0.3, dampingFraction: 0.7), value: configuration.isPressed)
     }
 }
 

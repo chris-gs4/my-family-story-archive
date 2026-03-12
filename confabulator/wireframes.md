@@ -2,7 +2,7 @@
 
 ## Overview & User Story Mapping
 
-**Design Approach:** Mabel leverages a clean and intuitive design, focusing on guiding users through storytelling with minimal friction. The platform targets desktop web, mobile web, and iOS native (via Capacitor) access, ensuring accessibility for all users.
+**Design Approach:** Mabel leverages a clean and intuitive design, focusing on guiding users through their memoir with minimal friction. Native iOS app (SwiftUI).
 
 **User Story → Screen Mapping:**
 - US-1: AI-Guided Interview Questions → [Interview Setup Screen]
@@ -43,8 +43,8 @@ Show the high-level navigation flow between screens:
 │  [Logo]     <Home> <Features> <Pricing>      [Sign In]     │
 ├─────────────────────────────────────────────────────────────┤
 │                                                             │
-│            Capture Your Life Story with Mabel              │
-│       Guided voice journaling that writes your story       │
+│         Speak Your Memoir Into Existence.                  │
+│    Your memoir companion. Just talk — Mabel writes.        │
 │                                                             │
 │              [Get Started Free →]  <Learn More>            │
 │                                                             │
@@ -309,8 +309,8 @@ Show the high-level navigation flow between screens:
 │  [☰]   Logo  [User] │
 ├─────────────────────┤
 │                     │
-│  Your Story,        │
-│  Written with Care  │
+│  Speak Your Memoir  │
+│  Into Existence.    │
 │                     │
 │  [Get Started]      │
 │  <Learn More>       │

@@ -2,41 +2,43 @@
 
 ## Document Information
 - Product Name: Mabel
-- Tagline: Your Stories, Written with Care
+- Tagline: Speak Your Memoir Into Existence.
 - Version: 4.0
 - Last Updated: 2026-02-28
 - Status: Active
 
 ## Product Overview
 
-Mabel is an AI-powered journaling app that helps people capture and preserve their life stories through guided voice recording and narrative generation. Named after its pixel-art grandmother mascot, Mabel acts as a warm, interactive companion — asking thoughtful questions, recording spoken answers, and transforming them into polished written narratives.
+Mabel is an AI memoir companion that helps people capture and preserve their life stories through guided voice interviews and narrative generation. Named after its pixel-art grandmother mascot, Mabel acts as a skilled biographer in your pocket — interviewing you chapter by chapter, drawing out your stories, recording spoken answers, and transforming them into polished written narratives.
 
-Using a unique **voice-first, module-based approach**, users build their personal story incrementally — speaking their answers one module at a time, with each module becoming a chapter in their story. The platform handles transcription, narrative writing, and compilation automatically.
+Using a unique **voice-first, module-based interview approach**, users build their personal memoir incrementally — speaking their answers one chapter at a time, with each module becoming a chapter in their story. The platform handles transcription, narrative writing, and compilation automatically.
 
-The platform addresses a universal problem: everyone has a life story worth preserving, but few people ever write it down. Traditional journaling lacks structure, and the idea of "writing a book" feels overwhelming. Mabel reframes the experience from formal memoir-writing into **fun, guided voice journaling with a friendly AI companion**. Users simply:
+The platform addresses a universal problem: everyone has a life story worth preserving, but few people ever write it down. The idea of "writing a book" feels overwhelming, and most people don't know where to start. Mabel reframes the experience from daunting memoir-writing into **effortless guided voice interviews with an AI memoir companion**. Users simply:
 - **Speak naturally** instead of writing — just tap record and talk
 - **Build stories gradually** over weeks or months at their own pace
-- **Let Mabel guide them** with AI questions that learn from previous answers
+- **Let Mabel interview them** with AI questions that learn from previous answers
 - **Rediscover memories** they'd forgotten through smart follow-up questions
 - **Create chapter-by-chapter** written narratives that compile into a complete story
 - **Preserve stories as text and audio**, with voice-cloned audiobooks planned for future phases
 
-The target market includes anyone who wants to capture their personal life story — people approaching milestone ages, parents wanting to leave something for their children, individuals processing life experiences through reflection, or anyone who simply enjoys rediscovering old memories. A secondary market includes people gifting Mabel to loved ones via the Family Plan.
+The target market includes both storytellers and gift givers. **Storytellers:** anyone who wants to capture their personal life story — people approaching milestone ages, parents wanting to leave something for their children, or anyone who enjoys rediscovering old memories. **Gift givers:** people who want to preserve a loved one's stories before they're lost — think about your grandparents, the stories they carry that you've never heard, the ones that will disappear when they do. Mabel makes it almost effortless to capture them. No writing required — talking is the UX, so anyone can use it, including your grandparents.
 
-Mabel matters because it makes story preservation accessible and fun. The module architecture prevents overwhelm, the voice-first approach removes the barrier of writing, the gamification keeps users engaged, and the context-learning AI creates richer, more connected narratives than any blank journal could.
+Mabel matters because it makes memoir creation accessible and effortless. The module architecture prevents overwhelm, the voice-first approach removes the barrier of writing, and the context-learning AI interviews you like a skilled biographer — creating richer, more connected narratives than you'd ever produce on your own.
 
 ## Brand Identity
 
 - **Name:** Mabel
-- **Tagline:** Your Stories, Written with Care
+- **Tagline:** Speak Your Memoir Into Existence.
 - **Mascot:** Pixel-art grandmother character named Mabel — warm, encouraging, interactive
 - **Brand assets location:** `wireframes/mabel assets/` (logo, square app icon, tagline)
-- **Tone:** Warm, caring, approachable — like sitting down with a grandmother who genuinely wants to hear your story. Fun over formal.
+- **One-liner:** Your memoir companion. Just talk — Mabel writes.
+- **Emotional hook:** Everyone's stories deserve to be heard.
+- **Tone:** Warm, caring, approachable — like sitting with a biographer who genuinely wants to hear your story. Fun over formal.
 
 ## Objectives & Success Metrics
 
 ### Primary Objectives
-1. Enable seamless capture and preservation of personal life stories through AI-guided voice journaling.
+1. Enable seamless capture and preservation of personal life stories through AI-guided voice memoir interviews.
 2. Ensure high user engagement through gamification and a delightful experience.
 3. Validate product-market fit with early adopters through measurable engagement metrics.
 
@@ -72,9 +74,9 @@ Mabel matters because it makes story preservation accessible and fun. The module
 
 ## Core Features
 
-### Feature 1: Voice-First Guided Journaling
-- **Description:** Users answer AI-generated questions by speaking into their device. Mabel records the audio, transcribes it, and transforms spoken answers into polished narrative prose. On iOS, native AAC recording provides high-quality audio; on web, WebM recording is used.
-- **User Story:** As a user, I want to speak my answers instead of typing so that capturing my story feels natural and effortless.
+### Feature 1: Voice-First Guided Memoir Interview
+- **Description:** Mabel interviews users by asking AI-generated questions. Users answer by speaking into their device. Mabel records the audio, transcribes it, and transforms spoken answers into polished narrative prose. On iOS, native AAC recording provides high-quality audio; on web, WebM recording is used.
+- **User Story:** As a user, I want to speak my answers instead of typing so that creating my memoir feels natural and effortless.
 - **Acceptance Criteria:**
   - Users can record audio answers by tapping a single button.
   - Recordings are automatically transcribed via Whisper API.
@@ -93,9 +95,9 @@ Mabel matters because it makes story preservation accessible and fun. The module
   - Modules can be completed in any order and over any timeframe.
 - **Priority:** P0
 
-### Feature 3: Context-Learning AI Questions
-- **Description:** Mabel generates personalized questions for each module. **Module 1** uses the user's life profile to generate foundational questions. **Subsequent modules** analyze previous answers to generate follow-up questions that dive deeper, explore connections, and fill narrative gaps.
-- **User Story:** As a user, I want Mabel to ask increasingly relevant questions based on what I've already shared so that the conversation feels natural and helps me remember more.
+### Feature 3: Context-Learning AI Interview Questions
+- **Description:** Mabel generates personalized interview questions for each module, the way a skilled biographer would. **Module 1** uses the user's life profile to generate foundational questions. **Subsequent modules** analyze previous answers to generate follow-up questions that dive deeper, explore connections, and fill narrative gaps.
+- **User Story:** As a user, I want Mabel to ask increasingly relevant questions based on what I've already shared so that the interview feels natural and helps me remember more.
 - **Acceptance Criteria:**
   - Module 1 generates 15-20 questions based on user profile (life stage, topics of interest).
   - Modules 2+ analyze all previous responses to extract themes and keywords.
@@ -205,7 +207,7 @@ Mabel matters because it makes story preservation accessible and fun. The module
 
 ## User Flows
 
-### Primary User Journey: Capturing Your Life Story with Mabel (Voice-First Module Workflow)
+### Primary User Journey: Capturing Your Life Story with Mabel (Voice-First Memoir Interview Workflow)
 
 #### Initial Setup
 1. **Entry Point:** User opens Mabel (web or iOS app) and creates a new project ("My Life Story").
@@ -243,7 +245,7 @@ DRAFT -> QUESTIONS_GENERATED -> IN_PROGRESS -> GENERATING_CHAPTER -> CHAPTER_GEN
 
 ## Technical Considerations
 
-- **Platform Requirements:** Must be accessible via web browsers on desktop and mobile devices (responsive web design), and as a native iOS app via Capacitor.
+- **Platform Requirements:** Native iOS app (SwiftUI). Future: web version.
 - **Integration Needs:**
   - Whisper API for audio transcription
   - OpenAI API for AI-guided questions and narrative generation

@@ -79,7 +79,7 @@ struct LibraryView: View {
                 NavigationLink(value: chapterIndex) {
                     FeaturedChapterCard(chapter: current)
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(FeaturedCardButtonStyle())
                 .padding(.bottom, 24)
             }
 
@@ -98,7 +98,7 @@ struct LibraryView: View {
                     NavigationLink(value: chapter.id - 1) {
                         ChapterCard(chapter: chapter)
                     }
-                    .buttonStyle(.plain)
+                    .buttonStyle(ChapterCardButtonStyle())
                 }
             }
             .padding(.bottom, 60)
@@ -181,12 +181,34 @@ struct ProfileButton: View {
                 Circle()
                     .fill(Color.mabelSurface)
                     .frame(width: 36, height: 36)
+                    .overlay(
+                        Circle()
+                            .strokeBorder(Color.mabelTeal.opacity(0.2), lineWidth: 1.5)
+                    )
+                    .shadow(color: .black.opacity(0.08), radius: 4, x: 0, y: 2)
 
                 Text(initial)
                     .font(.comfortaa(16, weight: .bold))
                     .foregroundColor(.mabelText)
             }
         }
+        .buttonStyle(ProfileButtonStyle())
+    }
+}
+
+// MARK: - Profile Button Style
+
+struct ProfileButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .scaleEffect(configuration.isPressed ? 0.9 : 1.0)
+            .shadow(
+                color: configuration.isPressed ? .black.opacity(0.12) : .clear,
+                radius: configuration.isPressed ? 6 : 0,
+                x: 0,
+                y: configuration.isPressed ? 3 : 0
+            )
+            .animation(.spring(response: 0.3, dampingFraction: 0.7), value: configuration.isPressed)
     }
 }
 

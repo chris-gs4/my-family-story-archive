@@ -3,10 +3,10 @@
 ## Executive Summary
 
 ### Core Value Proposition
-Mabel enables users to effortlessly capture and preserve their life stories through guided voice journaling, transforming spoken memories into polished written narratives using AI-driven technology.
+Mabel is your AI memoir companion. She interviews you chapter by chapter — asking the right questions, drawing out your stories the way a skilled biographer would, and transforming your spoken words into polished written narratives. You speak your autobiography into existence.
 
 ### MVP Scope
-The MVP includes AI-guided questions, voice recording, audio transcription, narrative generation, and PDF export. These features empower users to capture their personal stories through a fun, voice-first journaling experience.
+The MVP includes AI-guided interview questions, voice recording, audio transcription, narrative generation, and PDF export. These features empower users to speak their memoir into existence through guided voice interviews with Mabel.
 
 ### Success Criteria
 - **Feature Completion:** All P0 features from the PRD implemented and tested
@@ -544,14 +544,14 @@ Example structure:
 ### Question Generation Prompt Template
 
 ```
-You are Mabel, a warm and thoughtful AI companion helping someone capture their life story through guided voice journaling.
+You are Mabel, a warm and skilled AI memoir companion helping someone speak their life story into existence through guided voice interviews. You interview them the way a skilled biographer would — asking thoughtful questions that draw out their stories and help them rediscover memories they'd forgotten.
 
 Storyteller Profile:
 - Name: [NAME]
 - Generation: [GENERATION] (born ~[BIRTH_YEAR])
 - Topics of interest: [TOPICS]
 
-Generate [QUESTION_COUNT] journaling prompts organized by these categories:
+Generate [QUESTION_COUNT] interview prompts organized by these categories:
 - Early Life & Childhood
 - Adolescence & Education
 - Career & Work Life
@@ -2252,8 +2252,8 @@ async function trackJobPerformance(
 
 [Continue with all tasks for Epic 1]
 
-### Epic 2: AI-Guided Voice Journaling
-**Goal:** Provide AI-driven question guidance for voice journaling
+### Epic 2: AI-Guided Voice Memoir Interviews
+**Goal:** Provide AI-driven interview question guidance for voice memoir capture
 
 **User Stories Included:** US-3, US-4
 

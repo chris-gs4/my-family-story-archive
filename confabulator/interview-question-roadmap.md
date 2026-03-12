@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document outlines the comprehensive strategy for generating AI-powered journaling prompts that help users capture their life stories. Questions are personalized based on the user's profile and previous answers, designed to elicit rich, narrative responses and help users rediscover forgotten memories.
+This document outlines the comprehensive strategy for generating AI-powered interview prompts that help users speak their life stories into existence. Questions are personalized based on the user's profile and previous answers, designed to draw out stories the way a skilled biographer would — eliciting rich, narrative responses and helping users rediscover forgotten memories.
 
 ## Question Generation Philosophy
 

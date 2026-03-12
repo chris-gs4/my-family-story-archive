@@ -1,58 +1,58 @@
-# Mabel Makes It Easy to Capture Your Life Story Through Guided Voice Journaling
+# Mabel: Speak Your Memoir Into Existence
 
-## Your Story, Written with Care
+## Your Memoir Companion. Just Talk — Mabel Writes.
 
-Mabel introduces a groundbreaking AI-powered journaling app that helps anyone capture and preserve their life story effortlessly through guided voice recording. With Mabel, there's no writing required — just tap record, speak your memories, and the AI transforms your words into polished written narratives.
+Mabel introduces a groundbreaking AI memoir companion that helps anyone capture and preserve their life story effortlessly through guided voice interviews. With Mabel, there's no writing required — just talk, and the AI transforms your spoken words into polished written narratives.
 
-Using a unique **module-based approach**, users build their personal story incrementally — one chapter at a time. Each module focuses on a specific theme or life stage, and Mabel's AI learns from previous answers to ask increasingly relevant follow-up questions that help users rediscover memories they'd forgotten. The result: beautifully written chapters that compile into a complete personal memoir.
+Like a skilled biographer in your pocket, Mabel interviews you chapter by chapter using a **module-based approach**. Each module focuses on a specific theme or life stage, and Mabel's AI learns from previous answers to ask increasingly relevant follow-up questions — drawing out stories you'd forgotten and helping you rediscover memories. The result: beautifully written chapters that compile into a complete personal memoir.
 
-Mabel isn't about "writing a book." It's a fun, interactive tool that helps you re-access your memories with the guidance of a warm AI companion — a pixel-art grandmother character named Mabel who makes the whole experience feel like chatting with someone who genuinely cares about your story.
+Think about your grandparents. The stories they carry that you've never heard. The ones that will disappear when they do. Mabel makes it almost effortless to capture them. No writing required — talking is the UX, so anyone can use it, including your grandparents. Mabel is a warm AI companion — a pixel-art grandmother character who makes the whole experience feel like chatting with someone who genuinely cares about your story.
 
 ### The Problem
 
-Everyone has a life story worth preserving, but very few people ever capture it. The idea of writing a memoir feels overwhelming and reserved for professional authors. Traditional journals lack structure and guidance — most sit half-empty in a drawer. Meanwhile, precious memories fade with time: childhood adventures, pivotal moments, lessons learned, stories that could inspire the next generation. Without an easy way to capture them, these memories are simply lost.
+Everyone has a life story worth preserving, but very few people ever capture it. The idea of writing a memoir feels overwhelming and reserved for professional authors. Most people don't know where to start, and the blank page is paralyzing. Meanwhile, precious memories fade with time: childhood adventures, pivotal moments, lessons learned, stories that could inspire the next generation. Without an easy way to capture them, these memories are simply lost.
 
 ### The Solution
 
-Mabel offers a voice-first, AI-guided approach to personal story preservation:
+Mabel is your AI memoir companion — a skilled interviewer that draws out your stories the way a professional biographer would:
 
-1. **Start with Module 1:** Tell Mabel about a life chapter (e.g., "Childhood") and she generates thoughtful questions to guide your recording
+1. **Start with Chapter 1:** Tell Mabel about a life chapter (e.g., "Childhood") and she generates thoughtful interview questions
 2. **Just talk:** Tap record and speak naturally — Mabel transcribes and polishes your words into beautiful prose
 3. **Watch the magic:** Mabel generates a complete narrative chapter from your answers
-4. **Build from there:** Create Module 2, where Mabel generates new questions based on what you've already shared — diving deeper, exploring connections, helping you remember more
-5. **Continue the journey:** Complete 3-8 modules to build your complete life story
+4. **Build from there:** Create Chapter 2, where Mabel generates new questions based on what you've already shared — diving deeper, exploring connections, drawing out stories you'd forgotten
+5. **Continue the journey:** Complete 3-8 chapters to build your complete memoir
 6. **Download and share:** Export individual chapters or compile everything into a professional PDF
 
-The process makes storytelling accessible, fun, and deeply personal. Mabel's AI learns from each module, asking better questions and creating richer connections between chapters. No writing skills needed, no overwhelm — just your voice and your memories.
+You speak your autobiography into existence. Mabel's AI learns from each chapter, asking better questions and creating richer connections — like a biographer who gets to know you better with every session. No writing skills needed, no overwhelm — just your voice and your memories.
 
 ### What Users Are Saying
 
-"I never thought of myself as someone who'd write a memoir. But Mabel made it so easy — I just talked during my morning walks. Her questions helped me remember things I hadn't thought about in decades. My kids were in tears when they read it. Best thing I've ever created." — Maya Rodriguez, Mabel User
+"I never thought of myself as someone who'd write a memoir. But Mabel made it so easy — I just talked during my morning walks. Her questions drew out stories I hadn't thought about in decades. My kids were in tears when they read it. Best thing I've ever created." — Maya Rodriguez, Mabel User
 
 ### Getting Started
 
-To begin capturing your life story:
-1. Visit the Mabel website or download the iOS app
-2. Create an account and start a new project
-3. Create Module 1 — Mabel generates personalized questions instantly
+To begin speaking your memoir into existence:
+1. Download the Mabel iOS app
+2. Set up your profile and start your first chapter
+3. Mabel generates personalized interview questions instantly
 4. Tap record and speak your answers at your own pace
 5. Generate your first chapter and watch Mabel create a polished narrative
-6. Continue with more modules to build out your complete story
+6. Continue with more chapters to build out your complete memoir
 
-Start today and preserve your story — because every life is worth remembering.
+Start today — everyone's stories deserve to be heard.
 
 ## Frequently Asked Questions
 
 ### General Questions
 
 **Q: What is Mabel?**
-A: Mabel is an AI-powered journaling app that helps you capture your life story through guided voice recording. You speak your memories, and Mabel transforms them into beautifully written narrative chapters — one module at a time. Think of it as a warm, encouraging AI companion who helps you rediscover and preserve your personal history.
+A: Mabel is your AI memoir companion. She interviews you chapter by chapter — asking the right questions, drawing out your stories the way a skilled biographer would, and transforming your spoken words into beautifully written narrative chapters. Think of it as having a warm, encouraging biographer in your pocket who helps you speak your autobiography into existence.
 
 **Q: Who is Mabel for?**
-A: Mabel is for anyone who wants to capture their life story. Whether you're approaching a milestone birthday, want to leave something meaningful for your children, are processing life experiences through reflection, or simply enjoy revisiting old memories — Mabel makes it easy and fun. You can also gift Mabel to a loved one through our Family Plan.
+A: Mabel is for storytellers and gift givers alike. **Storytellers:** anyone who wants to capture their life story — whether you're approaching a milestone birthday, want to leave something meaningful for your children, or simply enjoy rediscovering old memories. **Gift givers:** people who want to preserve a loved one's stories before they're lost. Think about your grandparents — the stories they carry that you've never heard. No writing required — talking is the UX, so anyone can use it.
 
 **Q: What makes Mabel different from existing solutions?**
-A: Three key innovations: (1) **Voice-first recording** — just tap and talk, no writing required, (2) **Module-based workflow** that prevents overwhelm by breaking the process into manageable chapters, and (3) **Context-learning AI** that gets smarter with each module, helping you rediscover memories you'd forgotten. Plus, Mabel's warm, gamified experience makes it feel fun rather than formal.
+A: Three key innovations: (1) **Voice-first memoir** — just tap and talk, no writing required, (2) **Guided interview structure** that prevents overwhelm by interviewing you chapter by chapter like a skilled biographer, and (3) **Context-learning AI** that gets smarter with each chapter, drawing out stories you'd forgotten. Plus, Mabel's warm companion experience makes it feel effortless rather than daunting.
 
 **Q: How much does it cost?**
 A: Mabel offers a free trial to get started. Full pricing details are available on our website, with options for individual projects and Family Plans at a discounted rate.
@@ -67,19 +67,19 @@ A: Absolutely not! That's the beauty of the module approach. Record a few answer
 
 **Q: What are the key features?**
 A: Key features include:
-- **Voice-first recording** — speak naturally, Mabel handles the rest
-- **Module-based story building** — create your story chapter by chapter
-- **Context-learning AI questions** — questions get smarter based on previous answers
+- **Voice-first memoir** — speak naturally, Mabel handles the rest
+- **Guided chapter-by-chapter interviews** — Mabel asks the right questions like a skilled biographer
+- **Context-learning AI** — interview questions get smarter based on previous answers, drawing out stories you'd forgotten
 - **Polished narrative generation** — AI transforms your spoken words into beautiful prose
 - **Chapter regeneration** — request revisions with specific feedback
-- **PDF story export** — download individual chapters or your complete story
+- **PDF memoir export** — download individual chapters or your complete memoir
 - **Auto-save** — never lose your work
 
 **Q: Can I type my answers instead of recording?**
 A: Yes! While Mabel is designed voice-first, you can always switch to text input for any question. This is great for quiet environments or when you prefer writing.
 
 **Q: How does Mabel know what questions to ask?**
-A: For Module 1, Mabel generates questions based on your profile (life stage, topics of interest). For subsequent modules, Mabel analyzes all your previous responses to identify themes, names, places, and events — then generates follow-up questions that dive deeper and help you remember more.
+A: Like a skilled biographer, Mabel gets to know you. For Chapter 1, she generates interview questions based on your profile (life stage, topics of interest). For subsequent chapters, Mabel analyzes all your previous responses to identify themes, names, places, and events — then generates follow-up questions that dive deeper and draw out stories you'd forgotten.
 
 **Q: What if I don't like the generated chapter?**
 A: You can regenerate any chapter with specific feedback like "make it more emotional," "add more details about my childhood," or "use first-person perspective." Mabel creates a new version while preserving the original.
@@ -88,7 +88,7 @@ A: You can regenerate any chapter with specific feedback like "make it more emot
 A: Yes! Our Family Plan lets you gift Mabel to loved ones at a discounted rate. They can record their own stories independently, and you can optionally build a shared family archive together.
 
 **Q: What platforms does Mabel support?**
-A: Mabel is available as a web application accessible from any device with internet connectivity — desktop, tablet, or mobile browser — and as a native iOS app for iPhone and iPad.
+A: Mabel is available as a native iOS app for iPhone and iPad.
 
 ### Business Questions
 
@@ -114,4 +114,4 @@ A: Mabel is designed to guide you through each step. The module system shows exa
 
 ---
 
-Mabel helps you capture the stories that make you, you. Start your journey today — because every life is worth remembering.
+Everyone's stories deserve to be heard. Speak your memoir into existence — because every life is worth remembering.

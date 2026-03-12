@@ -1,6 +1,6 @@
-# Mabel — Your Stories, Written with Care
+# Mabel — Speak Your Memoir Into Existence.
 
-Mabel is an AI-powered journaling app that helps people capture and preserve their life stories through guided voice recording — then automatically transforms spoken memories into polished written narratives. The mascot is a pixel-art grandmother character named Mabel who serves as a warm, interactive companion throughout the experience.
+Mabel is an AI memoir companion that helps people capture and preserve their life stories through guided voice interviews — then automatically transforms spoken memories into polished written narratives. Like a skilled biographer in your pocket, Mabel interviews you chapter by chapter, drawing out stories the way a professional would. The mascot is a pixel-art grandmother character named Mabel who serves as a warm, interactive companion throughout the experience.
 
 ## Quick Reference
 
@@ -53,17 +53,19 @@ The `archive/` directory contains legacy web code, demo night materials, and old
 ## Project Context
 
 ### Target Customer
-Anyone who wants to capture their personal life story through guided voice journaling — people approaching milestones, parents wanting to leave something for their children, individuals reflecting on their experiences, or anyone who enjoys rediscovering old memories. Secondary: people gifting Mabel to loved ones via the Family Plan.
+**Storytellers:** Anyone who wants to capture their personal life story — people approaching milestones, parents wanting to leave something for their children, individuals reflecting on their experiences, or anyone who enjoys rediscovering old memories. **Gift givers:** People who want to preserve a loved one's stories before they're lost — buying Mabel for parents, grandparents, or family members via the Family Plan. No writing required — talking is the UX, so anyone can use it.
 
 ### Value Proposition
-Mabel removes all the friction from preserving your life story. Instead of staring at a blank page, you just talk to Mabel — she asks the right questions, records your voice, and transforms your spoken memories into polished written narratives. It's less like "writing a book" and more like a fun tool that helps you re-access your memories with a warm AI companion.
+Your memoir companion. Just talk — Mabel writes. Mabel interviews you chapter by chapter, asking the right questions and drawing out stories the way a skilled biographer would. She records your voice and transforms your spoken memories into polished written narratives. No writing required — you speak your autobiography into existence.
 
 ### Brand
 - **Name:** Mabel
-- **Tagline:** Your Stories, Written with Care
+- **Tagline:** Speak Your Memoir Into Existence.
 - **Mascot:** Pixel-art grandmother character named Mabel — warm, encouraging, interactive
 - **Brand assets:** `wireframes/mabel assets/` (logo, square icon, tagline)
-- **Tone:** Fun over formal. Warm and caring, like chatting with someone who genuinely wants to hear your story.
+- **One-liner:** Your memoir companion. Just talk — Mabel writes.
+- **Emotional hook:** Everyone's stories deserve to be heard.
+- **Tone:** Fun over formal. Warm and caring, like sitting with a biographer who genuinely wants to hear your story.
 
 ## Tech Stack
 
@@ -103,7 +105,7 @@ Swift, SwiftUI, AVFoundation (audio recording), OpenAI API (Whisper + GPT-4o), l
 
 ## Current Focus
 
-The MVP focuses on voice-first guided journaling:
+The MVP focuses on voice-first guided memoir interviews:
 
 - AI-guided questions that adapt based on previous responses
 - Voice recording (M4A via AVAudioRecorder)
