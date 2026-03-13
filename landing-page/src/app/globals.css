@@ -1,0 +1,50 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-mabel-warm-bg: #F3E0D2;
+  --color-mabel-text: #2D2019;
+  --color-mabel-greeting: #9E8578;
+  --color-mabel-subtle: #7A7168;
+  --color-mabel-teal: #1F7A6F;
+  --color-mabel-teal-dark: #146159;
+  --color-mabel-burgundy: #A3243B;
+  --color-mabel-gold: #E9C46A;
+  --color-mabel-copper: #B07850;
+  --color-mabel-surface: #FFFFFF;
+  --color-mabel-mint-badge: #D4F0EC;
+
+  --font-comfortaa: var(--font-comfortaa-google);
+}
+
+body {
+  background: var(--color-mabel-warm-bg);
+  color: var(--color-mabel-text);
+  font-family: var(--font-comfortaa), sans-serif;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Scroll offset for fixed header */
+[id] {
+  scroll-margin-top: 5rem;
+}
+
+/* Touch interaction */
+a, button {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

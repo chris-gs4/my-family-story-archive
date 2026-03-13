@@ -16,7 +16,7 @@ class OpenAIService {
 
     private func performRequest(_ request: URLRequest) async throws -> (Data, URLResponse) {
         do {
-            return try await performRequest(request)
+            return try await URLSession.shared.data(for: request)
         } catch let error as URLError where error.code == .timedOut {
             throw OpenAIError.timeout
         }
