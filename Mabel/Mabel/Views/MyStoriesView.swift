@@ -164,9 +164,10 @@ struct MyStoriesView: View {
         .padding(20)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(
-            RoundedRectangle(cornerRadius: 16)
-                .strokeBorder(Color.mabelText.opacity(0.15), lineWidth: 1)
+            RoundedRectangle(cornerRadius: 20)
+                .fill(Color.mabelSurface)
         )
+        .shadow(color: .black.opacity(0.06), radius: 12, x: 0, y: 4)
     }
 }
 

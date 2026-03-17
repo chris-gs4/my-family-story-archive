@@ -7,49 +7,66 @@ struct WelcomeView: View {
         ZStack {
             MabelGradientBackground()
 
-            VStack(spacing: 0) {
-                // Top half — mascot / animation area
-                Image("MabelMascot")
-                    .renderingMode(.original)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 280, height: 280)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+            GeometryReader { geo in
+                ScrollView(showsIndicators: false) {
+                    VStack(spacing: 0) {
+                        // Wordmark
+                        Image("MabelWordmark")
+                            .renderingMode(.original)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(height: 24)
+                            .padding(.top, 16)
+                            .padding(.bottom, 24)
 
-                // Bottom half — text + CTA
-                VStack(spacing: 0) {
-                    Text("Welcome to Mabel")
-                        .font(.comfortaa(32, weight: .bold))
-                        .foregroundColor(.mabelText)
-                        .multilineTextAlignment(.center)
-                        .padding(.bottom, 20)
+                        // Mascot with radial gold glow
+                        ZStack {
+                            RadialGradient(
+                                colors: [Color.mabelGold.opacity(0.15), Color.clear],
+                                center: .center,
+                                startRadius: 0,
+                                endRadius: 165
+                            )
+                            .frame(width: 330, height: 330)
 
-                    Text("Your warmest writing partner.")
-                        .font(.comfortaa(17, weight: .medium))
-                        .foregroundColor(.mabelTeal)
-                        .multilineTextAlignment(.center)
-                        .kerning(0.4)
-                        .padding(.bottom, 20)
+                            Image("MabelMascot")
+                                .renderingMode(.original)
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 220, height: 220)
+                        }
+                        .padding(.bottom, 32)
 
-                    Text("I help you capture your stories and\nturn them into something beautiful.")
-                        .font(.comfortaa(15, weight: .medium))
-                        .foregroundColor(.mabelText.opacity(0.85))
-                        .multilineTextAlignment(.center)
-                        .lineSpacing(4)
-                        .padding(.bottom, 20)
+                        // Text + CTA
+                        Text("Tell your story")
+                            .font(.comfortaa(32, weight: .bold))
+                            .foregroundColor(.mabelText)
+                            .multilineTextAlignment(.center)
+                            .padding(.bottom, 16)
 
-                    Text("No typing, just talking!")
-                        .font(.comfortaa(14, weight: .regular))
-                        .foregroundColor(.mabelText.opacity(0.85))
+                        Text("Record your memories. Mabel will turn them\ninto something beautiful.")
+                            .font(.comfortaa(16, weight: .regular))
+                            .foregroundColor(.mabelSubtle)
+                            .multilineTextAlignment(.center)
+                            .lineSpacing(4)
+                            .padding(.bottom, 32)
 
-                    Spacer()
+                        CTAButton(title: "Get Started", action: onGetStarted)
+                            .padding(.bottom, 12)
 
-                    CTAButton(title: "GET STARTED", action: onGetStarted)
-                        .padding(.bottom, 50)
+                        Button(action: {
+                            // Sign in action — placeholder for future
+                        }) {
+                            Text("Already have an account? Sign in")
+                                .font(.comfortaa(14, weight: .regular))
+                                .foregroundColor(.mabelSubtle)
+                        }
+                        .padding(.bottom, 40)
+                    }
+                    .padding(.horizontal, 24)
+                    .frame(minHeight: geo.size.height)
                 }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
-            .padding(.horizontal, 36)
         }
         .navigationBarHidden(true)
     }

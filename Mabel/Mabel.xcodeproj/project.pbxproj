@@ -42,6 +42,10 @@
 		AA0001010000000000000017 /* ChapterReviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0002010000000000000017 /* ChapterReviewView.swift */; };
 		AA0001010000000000000018 /* PDFExportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0002010000000000000018 /* PDFExportService.swift */; };
 		AA0001010000000000000019 /* MemoryCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0002010000000000000019 /* MemoryCard.swift */; };
+		AA0001010000000000000020 /* ChapterCircleIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0002010000000000000020 /* ChapterCircleIndicator.swift */; };
+		AA0001010000000000000021 /* ProgressCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0002010000000000000021 /* ProgressCard.swift */; };
+		AA0001010000000000000022 /* MascotGreetingHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0002010000000000000022 /* MascotGreetingHeader.swift */; };
+		AA0001010000000000000023 /* PromptCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0002010000000000000023 /* PromptCard.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -93,6 +97,10 @@
 		AA0002010000000000000017 /* ChapterReviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChapterReviewView.swift; sourceTree = "<group>"; };
 		AA0002010000000000000018 /* PDFExportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFExportService.swift; sourceTree = "<group>"; };
 		AA0002010000000000000019 /* MemoryCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryCard.swift; sourceTree = "<group>"; };
+		AA0002010000000000000020 /* ChapterCircleIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChapterCircleIndicator.swift; sourceTree = "<group>"; };
+		AA0002010000000000000021 /* ProgressCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressCard.swift; sourceTree = "<group>"; };
+		AA0002010000000000000022 /* MascotGreetingHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MascotGreetingHeader.swift; sourceTree = "<group>"; };
+		AA0002010000000000000023 /* PromptCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptCard.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -125,12 +133,16 @@
 			isa = PBXGroup;
 			children = (
 				AA0002010000000000000010 /* ChapterCard.swift */,
+				AA0002010000000000000020 /* ChapterCircleIndicator.swift */,
 				382FF0578D1F342556D6B446 /* CTAButton.swift */,
 				AA0002010000000000000011 /* FeaturedChapterCard.swift */,
+				AA0002010000000000000022 /* MascotGreetingHeader.swift */,
 				61DD224D61070C052EF867D1 /* MabelWordmark.swift */,
 				AA0002010000000000000019 /* MemoryCard.swift */,
 				1BBF357783A66732C0B0523B /* PillButton.swift */,
 				AA0002010000000000000012 /* ProgressBar.swift */,
+				AA0002010000000000000021 /* ProgressCard.swift */,
+				AA0002010000000000000023 /* PromptCard.swift */,
 				AF3988DBFC8A4BBEA4E148D1 /* SuggestionCard.swift */,
 				69BAB34C868B293BAC9F2A0E /* WaveformView.swift */,
 			);
@@ -317,6 +329,7 @@
 				AA0001010000000000000013 /* AudioRecorderService.swift in Sources */,
 				AA0001010000000000000003 /* Chapter.swift in Sources */,
 				AA0001010000000000000010 /* ChapterCard.swift in Sources */,
+				AA0001010000000000000020 /* ChapterCircleIndicator.swift in Sources */,
 				AA0001010000000000000005 /* ChapterPrompts.swift in Sources */,
 				83A1C2D0B3D7A1C74448AD04 /* ContentView.swift in Sources */,
 				10D371C201E9BBD4C0D0AA23 /* CTAButton.swift in Sources */,
@@ -328,6 +341,7 @@
 				8E23EC0A01ADC4B0EBE88E0D /* MabelStyle.swift in Sources */,
 				E4332695D7A9053C07C9C820 /* MabelWordmark.swift in Sources */,
 				AA0001010000000000000002 /* Memory.swift in Sources */,
+				AA0001010000000000000022 /* MascotGreetingHeader.swift in Sources */,
 				AA0001010000000000000019 /* MemoryCard.swift in Sources */,
 				AA0001010000000000000008 /* MyStoriesView.swift in Sources */,
 				AA0001010000000000000014 /* OpenAIService.swift in Sources */,
@@ -335,6 +349,8 @@
 				76AEFD3B3EE12EF90CAEA3EC /* PillButton.swift in Sources */,
 				AA0001010000000000000009 /* ProfileView.swift in Sources */,
 				AA0001010000000000000012 /* ProgressBar.swift in Sources */,
+				AA0001010000000000000021 /* ProgressCard.swift in Sources */,
+				AA0001010000000000000023 /* PromptCard.swift in Sources */,
 				AA0001010000000000000017 /* ChapterReviewView.swift in Sources */,
 				AA0001010000000000000007 /* RecordingSetupView.swift in Sources */,
 				8DDD55576AB174C8778908E2 /* RecordingView.swift in Sources */,

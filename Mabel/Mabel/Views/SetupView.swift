@@ -45,36 +45,63 @@ struct FlowLayout: Layout {
 struct SetupView: View {
     @Environment(AppState.self) private var appState
     @State private var displayName = ""
+    @State private var selectedRelationship: String? = nil
+    @State private var otherRelationship = ""
     @State private var selectedGoal: String? = nil
     @State private var selectedTopics: Set<String> = []
+    @State private var skipTopics = false
     @FocusState private var isNameFocused: Bool
+    @FocusState private var isOtherFocused: Bool
 
-    private let writingGoals = ["1x week", "2x week", "3x week", "I'll write when I want"]
+    private let relationships = ["Myself", "A Parent", "A Grandparent", "A Friend", "Other"]
+
+    private let writingGoals = ["1x week", "2x week", "3x week", "No goal for now"]
 
     private let topics = [
         "Childhood", "Immigration", "Career", "Family",
-        "War / Service", "Education", "Faith", "Love & Relationships",
-        "Life Challenges", "Whatever comes to mind"
+        "War / Service", "Education", "Faith", "Love / Relationships",
+        "Health / Overcoming Adversity"
     ]
 
     private let maxTopics = 5
 
     private var isFormValid: Bool {
-        !displayName.trimmingCharacters(in: .whitespaces).isEmpty && !selectedTopics.isEmpty
+        let hasName = !displayName.trimmingCharacters(in: .whitespaces).isEmpty
+        let hasTopicsOrSkipped = !selectedTopics.isEmpty || skipTopics
+        let hasRelationship = selectedRelationship != nil &&
+            (selectedRelationship != "Other" || !otherRelationship.trimmingCharacters(in: .whitespaces).isEmpty)
+        return hasName && hasTopicsOrSkipped && hasRelationship
     }
 
     private var helperText: String {
+        if selectedRelationship == nil {
+            return "Who is this story for?"
+        }
+        if selectedRelationship == "Other" && otherRelationship.trimmingCharacters(in: .whitespaces).isEmpty {
+            return "Please describe who this story is for"
+        }
         let name = displayName.trimmingCharacters(in: .whitespaces)
         if name.isEmpty {
-            return "Please enter your name"
-        } else if selectedTopics.isEmpty {
-            return "Please select at least one topic"
-        } else {
+            return "Please enter a name"
+        } else if selectedTopics.isEmpty && !skipTopics {
+            return "Select topics or tap \"I'll figure it out\""
+        } else if !selectedTopics.isEmpty {
             return "\(selectedTopics.count)/\(maxTopics) topics selected"
+        } else {
+            return "Ready to start!"
         }
     }
 
+    private var resolvedRelationship: String? {
+        if selectedRelationship == "Other" {
+            let trimmed = otherRelationship.trimmingCharacters(in: .whitespaces)
+            return trimmed.isEmpty ? nil : trimmed
+        }
+        return selectedRelationship
+    }
+
     private func toggleTopic(_ topic: String) {
+        skipTopics = false
         if selectedTopics.contains(topic) {
             selectedTopics.remove(topic)
         } else if selectedTopics.count < maxTopics {
@@ -88,7 +115,7 @@ struct SetupView: View {
 
             ScrollView {
                 VStack(alignment: .leading, spacing: 0) {
-                    // Wordmark centered — 24pt below status bar
+                    // Wordmark centered
                     HStack {
                         Spacer()
                         Image("MabelWordmark")
@@ -99,15 +126,71 @@ struct SetupView: View {
                         Spacer()
                     }
                     .padding(.top, 24)
-                    .padding(.bottom, 32)
+                    .padding(.bottom, 40)
 
-                    // Name field
+                    // Heading
+                    Text("Whose Story Are\nWe Telling?")
+                        .font(.comfortaa(28, weight: .bold))
+                        .foregroundColor(.mabelText)
+                        .padding(.bottom, 32)
+
+                    // 1. Relationship (no label — the heading serves as context)
                     VStack(alignment: .leading, spacing: 12) {
-                        Text("Tell me your name:")
+                        Text("I'm capturing the story of...")
                             .font(.comfortaa(17, weight: .semiBold))
                             .foregroundColor(.mabelText)
 
-                        TextField("Your name", text: $displayName)
+                        LazyVGrid(columns: [
+                            GridItem(.flexible(), spacing: 12),
+                            GridItem(.flexible(), spacing: 12)
+                        ], spacing: 12) {
+                            ForEach(relationships, id: \.self) { relationship in
+                                PillButton(
+                                    title: relationship,
+                                    isSelected: selectedRelationship == relationship
+                                ) {
+                                    selectedRelationship = relationship
+                                }
+                            }
+                        }
+
+                        // Other — text input
+                        if selectedRelationship == "Other" {
+                            TextField("e.g. My uncle, a mentor, a neighbour...", text: $otherRelationship)
+                                .font(.comfortaa(15, weight: .regular))
+                                .foregroundColor(.mabelText)
+                                .autocorrectionDisabled()
+                                .textInputAutocapitalization(.sentences)
+                                .focused($isOtherFocused)
+                                .padding(.horizontal, 16)
+                                .padding(.vertical, 12)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 14)
+                                        .fill(Color.white)
+                                )
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 14)
+                                        .strokeBorder(isOtherFocused ? Color.mabelTeal : Color.mabelTeal.opacity(0.3), lineWidth: 3)
+                                )
+                                .shadow(color: isOtherFocused ? Color.mabelTeal.opacity(0.3) : .clear, radius: 10, x: 0, y: 0)
+                                .shadow(color: .black.opacity(0.1), radius: 6, x: 0, y: 3)
+                                .animation(.easeInOut(duration: 0.2), value: isOtherFocused)
+                                .padding(.top, 4)
+                        }
+                    }
+                    .padding(.bottom, 32)
+
+                    // 2. Name field
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text("What's their name?")
+                            .font(.comfortaa(17, weight: .semiBold))
+                            .foregroundColor(.mabelText)
+
+                        Text("Enter your name, or the name of the person whose story you're capturing.")
+                            .font(.comfortaa(13, weight: .regular))
+                            .foregroundColor(.mabelSubtle)
+
+                        TextField("Enter a name", text: $displayName)
                             .font(.comfortaa(17, weight: .regular))
                             .foregroundColor(.mabelText)
                             .autocorrectionDisabled()
@@ -129,7 +212,7 @@ struct SetupView: View {
                     }
                     .padding(.bottom, 32)
 
-                    // Writing goal
+                    // 3. Writing goal
                     VStack(alignment: .leading, spacing: 12) {
                         Text("Set a writing goal:")
                             .font(.comfortaa(17, weight: .semiBold))
@@ -151,7 +234,7 @@ struct SetupView: View {
                     }
                     .padding(.bottom, 32)
 
-                    // Topics of interest
+                    // 4. Topics of interest
                     VStack(alignment: .leading, spacing: 2) {
                         Text("Topics of interest:")
                             .font(.comfortaa(17, weight: .semiBold))
@@ -160,6 +243,18 @@ struct SetupView: View {
                         Text("(pick up to \(maxTopics))")
                             .font(.comfortaa(13, weight: .medium))
                             .foregroundColor(.mabelText.opacity(0.75))
+                    }
+                    .padding(.bottom, 8)
+
+                    // Skip link
+                    Button(action: {
+                        skipTopics = true
+                        selectedTopics.removeAll()
+                    }) {
+                        Text("I'll figure it out as I go")
+                            .font(.comfortaa(14, weight: .regular))
+                            .foregroundColor(skipTopics ? .mabelTeal : .mabelSubtle)
+                            .underline()
                     }
                     .padding(.bottom, 12)
 
@@ -173,7 +268,7 @@ struct SetupView: View {
                             PillButton(
                                 title: topic,
                                 isSelected: isSelected,
-                                isDisabled: atLimit
+                                isDisabled: atLimit || skipTopics
                             ) {
                                 toggleTopic(topic)
                             }
@@ -183,13 +278,14 @@ struct SetupView: View {
 
                     // CTA
                     CTAButton(
-                        title: "START RECORDING",
+                        title: "Let's Start",
                         isDisabled: !isFormValid,
                         action: {
                             appState.completeOnboarding(
                                 displayName: displayName.trimmingCharacters(in: .whitespaces),
-                                writingGoal: selectedGoal ?? "I'll write when I want",
-                                topicsOfInterest: Array(selectedTopics)
+                                writingGoal: selectedGoal ?? "No goal for now",
+                                topicsOfInterest: Array(selectedTopics),
+                                relationship: resolvedRelationship
                             )
                         }
                     )

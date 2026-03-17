@@ -18,8 +18,8 @@ struct SuggestionCard: View {
             }
             .padding(16)
             .background(
-                RoundedRectangle(cornerRadius: 12)
-                    .fill(Color.mabelSurface.opacity(0.95))
+                RoundedRectangle(cornerRadius: 16)
+                    .fill(Color.mabelSurface)
             )
         }
         .buttonStyle(.plain)
@@ -43,8 +43,8 @@ struct SuggestionCardLabel: View {
         }
         .padding(16)
         .background(
-            RoundedRectangle(cornerRadius: 12)
-                .fill(Color.mabelSurface.opacity(0.95))
+            RoundedRectangle(cornerRadius: 16)
+                .fill(Color.mabelSurface)
         )
     }
 }

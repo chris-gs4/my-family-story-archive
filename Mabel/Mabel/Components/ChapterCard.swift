@@ -64,17 +64,17 @@ struct ChapterCard: View {
                 )
             }
         }
-        .padding(14)
+        .padding(20)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(
-            RoundedRectangle(cornerRadius: 14)
-                .fill(Color.mabelSurface.opacity(0.95))
+            RoundedRectangle(cornerRadius: 20)
+                .fill(Color.mabelSurface)
         )
         .overlay(
-            RoundedRectangle(cornerRadius: 14)
+            RoundedRectangle(cornerRadius: 20)
                 .strokeBorder(Color.mabelTeal.opacity(0.15), lineWidth: 1.5)
         )
-        .shadow(color: .black.opacity(0.08), radius: 6, x: 0, y: 3)
+        .shadow(color: .black.opacity(0.06), radius: 12, x: 0, y: 4)
     }
 }
 
@@ -112,7 +112,7 @@ struct ChapterCardButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .overlay(
-                RoundedRectangle(cornerRadius: 14)
+                RoundedRectangle(cornerRadius: 20)
                     .strokeBorder(
                         Color.mabelTeal.opacity(configuration.isPressed ? 0.4 : 0),
                         lineWidth: configuration.isPressed ? 3 : 0

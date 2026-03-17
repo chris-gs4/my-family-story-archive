@@ -56,30 +56,27 @@ struct LibraryView: View {
 
     private var activeBookView: some View {
         VStack(alignment: .leading, spacing: 0) {
-            // Book heading
-            Text("\(appState.userProfile?.displayName ?? "Your")'s Book")
-                .font(.comfortaa(28, weight: .bold))
-                .foregroundColor(.mabelText)
-                .padding(.bottom, 8)
+            // Greeting header
+            MascotGreetingHeader(userName: appState.userProfile?.displayName ?? "Friend")
+                .padding(.bottom, 24)
 
-            Text("\(appState.completedChapterCount) of \(Chapter.totalChapters) chapters completed")
-                .font(.comfortaa(14, weight: .regular))
-                .foregroundColor(.mabelSubtle)
-                .padding(.bottom, 12)
-
-            ProgressBar(
-                progress: Double(appState.completedChapterCount) / Double(Chapter.totalChapters),
-                height: 8
+            // Progress card
+            ProgressCard(
+                chapters: appState.chapters,
+                currentChapterID: appState.currentChapter?.id
             )
             .padding(.bottom, 24)
 
-            // Featured chapter card
+            // Today's prompt
             if let current = appState.currentChapter {
-                let chapterIndex = current.id - 1
-                NavigationLink(value: chapterIndex) {
-                    FeaturedChapterCard(chapter: current)
+                let prompt = ChapterPrompts.getTodayPrompt(for: current.id)
+                PromptCard(
+                    title: prompt.title,
+                    description: prompt.description,
+                    emoji: prompt.emoji
+                ) {
+                    appState.navigationPath.append(current.id - 1)
                 }
-                .buttonStyle(FeaturedCardButtonStyle())
                 .padding(.bottom, 24)
             }
 

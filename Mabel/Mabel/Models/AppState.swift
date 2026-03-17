@@ -45,8 +45,8 @@ class AppState {
 
     // MARK: - Onboarding
 
-    func completeOnboarding(displayName: String, writingGoal: String, topicsOfInterest: [String] = []) {
-        var profile = UserProfile(displayName: displayName, writingGoal: writingGoal, topicsOfInterest: topicsOfInterest)
+    func completeOnboarding(displayName: String, writingGoal: String, topicsOfInterest: [String] = [], relationship: String? = nil) {
+        var profile = UserProfile(displayName: displayName, writingGoal: writingGoal, topicsOfInterest: topicsOfInterest, relationship: relationship)
         profile.hasCompletedOnboarding = true
         self.userProfile = profile
         self.chapters = Chapter.allChapters
@@ -247,7 +247,7 @@ class AppState {
 extension AppState {
     func seedDummyData() {
         // Create profile
-        var profile = UserProfile(displayName: "Margaret", writingGoal: "2x week", gender: "Female")
+        var profile = UserProfile(displayName: "Margaret", writingGoal: "2x week", relationship: "Myself", gender: "Female")
         profile.hasCompletedOnboarding = true
         self.userProfile = profile
 

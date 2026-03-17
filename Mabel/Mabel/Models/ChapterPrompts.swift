@@ -128,4 +128,25 @@ struct ChapterPrompts {
         guard let chapterPrompts = prompts[chapterID] else { return [] }
         return Array(chapterPrompts.shuffled().prefix(count))
     }
+
+    /// Returns a daily-rotating prompt for the given chapter, with a friendly title, description, and emoji.
+    static func getTodayPrompt(for chapterID: Int) -> (title: String, description: String, emoji: String) {
+        let chapterEmojis: [Int: String] = [
+            1: "\u{1F3E0}", 2: "\u{1F46A}", 3: "\u{1F4DA}", 4: "\u{1F331}",
+            5: "\u{2764}\u{FE0F}", 6: "\u{1F4BC}", 7: "\u{1F476}", 8: "\u{2708}\u{FE0F}",
+            9: "\u{1F4AA}", 10: "\u{2728}"
+        ]
+
+        guard let chapterPrompts = prompts[chapterID], !chapterPrompts.isEmpty else {
+            return (title: "Share a memory", description: "What story comes to mind today?", emoji: "\u{1F4AD}")
+        }
+
+        // Use day-of-year as seed for consistent daily rotation
+        let dayOfYear = Calendar.current.ordinality(of: .day, in: .year, for: Date()) ?? 1
+        let index = (dayOfYear + chapterID) % chapterPrompts.count
+        let prompt = chapterPrompts[index]
+        let emoji = chapterEmojis[chapterID] ?? "\u{1F4AD}"
+
+        return (title: prompt, description: "Take a moment to think about this, then tap below to start recording.", emoji: emoji)
+    }
 }
