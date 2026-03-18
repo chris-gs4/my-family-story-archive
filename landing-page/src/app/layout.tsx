@@ -30,15 +30,15 @@ export const metadata: Metadata = {
     title: "Mabel — Speak Your Memoir Into Existence",
     description:
       "Your memoir companion. Just talk — Mabel writes. Everyone\u2019s stories deserve to be heard.",
-    images: [{ url: "/images/og-image.jpg", width: 1200, height: 630 }],
+    images: [{ url: "/images/mabel-mascot.png", width: 512, height: 512 }],
     type: "website",
   },
   twitter: {
-    card: "summary_large_image",
+    card: "summary",
     title: "Mabel — Speak Your Memoir Into Existence",
     description:
       "Your memoir companion. Just talk — Mabel writes.",
-    images: ["/images/og-image.jpg"],
+    images: ["/images/mabel-mascot.png"],
   },
   other: {
     "theme-color": "#F3E0D2",
