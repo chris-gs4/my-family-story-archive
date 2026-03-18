@@ -34,6 +34,10 @@ export default function ForGiftGivers() {
         <div className="mx-auto flex justify-center">
           <WaitlistForm variant="dark" />
         </div>
+
+        <p className="mt-4 text-sm" style={{ color: "rgba(255,255,255,0.6)" }}>
+          No spam. Just the story of a lifetime.
+        </p>
       </div>
     </section>
   );
