@@ -27,12 +27,19 @@ export default function Header() {
           className="h-12 w-auto sm:h-14"
           priority
         />
-        <a
-          href="#waitlist"
-          className="rounded-full bg-mabel-primary px-6 py-2.5 text-sm font-semibold text-white shadow-[0_2px_8px_rgba(46,125,107,0.25)] transition-[background-color,transform,box-shadow] duration-200 hover:bg-mabel-primary-dark hover:scale-[0.98] active:scale-[0.96] focus-visible:ring-2 focus-visible:ring-mabel-primary focus-visible:ring-offset-2"
+        <button
+          type="button"
+          onClick={() => {
+            const input = document.querySelector<HTMLInputElement>('#waitlist input[type="email"]');
+            if (input) {
+              input.scrollIntoView({ behavior: "smooth", block: "center" });
+              setTimeout(() => input.focus(), 500);
+            }
+          }}
+          className="rounded-full bg-mabel-primary px-6 py-2.5 text-sm font-semibold text-white shadow-[0_2px_8px_rgba(46,125,107,0.25)] transition-[background-color,transform,box-shadow] duration-200 hover:bg-mabel-primary-dark hover:scale-[0.98] active:scale-[0.96] cursor-pointer focus-visible:ring-2 focus-visible:ring-mabel-primary focus-visible:ring-offset-2 focus-visible:outline-none"
         >
           Join Waitlist
-        </a>
+        </button>
       </nav>
     </header>
   );

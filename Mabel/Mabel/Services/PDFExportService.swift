@@ -27,8 +27,8 @@ struct PDFExportService {
         let chapterTitleFont = UIFont(name: "Comfortaa-Bold", size: 24) ?? UIFont.boldSystemFont(ofSize: 24)
         let bodyFont = UIFont(name: "Comfortaa-Regular", size: 12) ?? UIFont.systemFont(ofSize: 12)
 
-        let textColor = UIColor(red: 0.176, green: 0.125, blue: 0.098, alpha: 1.0) // mabelText
-        let subtleColor = UIColor(red: 0.478, green: 0.443, blue: 0.408, alpha: 1.0) // mabelSubtle
+        let textColor = UIColor(red: 0.176, green: 0.173, blue: 0.169, alpha: 1.0) // mabelText #2d2c2b
+        let subtleColor = UIColor(red: 0.176, green: 0.173, blue: 0.169, alpha: 0.6) // mabelSubtle #2d2c2b at 60%
 
         let renderer = UIGraphicsPDFRenderer(bounds: pageRect)
 

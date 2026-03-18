@@ -39,13 +39,13 @@ struct MascotGreetingHeader: View {
 
                 Text("\(greeting), \(userName)!")
                     .font(.comfortaa(28, weight: .bold))
-                    .foregroundColor(.mabelGreeting)
+                    .foregroundColor(.mabelText)
                     .lineLimit(2)
                     .minimumScaleFactor(0.7)
 
                 Text("Let's capture a memory")
                     .font(.comfortaa(18, weight: .regular))
-                    .foregroundColor(.mabelGreeting)
+                    .foregroundColor(.mabelText)
             }
             .padding(.top, 8)
 
