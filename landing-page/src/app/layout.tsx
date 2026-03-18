@@ -41,7 +41,7 @@ export const metadata: Metadata = {
     images: ["/images/mabel-mascot.png"],
   },
   other: {
-    "theme-color": "#F3E0D2",
+    "theme-color": "#FFFFFF",
   },
 };
 
@@ -53,12 +53,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <meta name="theme-color" content="#F3E0D2" />
+        <meta name="theme-color" content="#FFFFFF" />
       </head>
       <body className={`${comfortaa.variable} antialiased`}>
         <a
           href="#main-content"
-          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:rounded-full focus:bg-mabel-teal focus:px-4 focus:py-2 focus:text-white focus:outline-none"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:rounded-full focus:bg-mabel-primary focus:px-4 focus:py-2 focus:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mabel-primary focus-visible:ring-offset-2"
         >
           Skip to main content
         </a>

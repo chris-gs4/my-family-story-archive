@@ -14,24 +14,22 @@ export default function Header() {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-[background-color,box-shadow] duration-300 ${
-        scrolled
-          ? "bg-mabel-warm-bg/95 shadow-[0_2px_8px_rgba(0,0,0,0.06)] backdrop-blur-sm"
-          : "bg-transparent"
+      className={`fixed top-0 left-0 right-0 z-50 bg-mabel-bg transition-shadow duration-300 border-b border-[rgba(0,0,0,0.08)] ${
+        scrolled ? "shadow-[0_2px_8px_rgba(0,0,0,0.06)]" : ""
       }`}
     >
       <nav aria-label="Main navigation" className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
         <Image
           src="/images/mabel-logo.png"
           alt="Mabel"
-          width={160}
-          height={40}
-          className="h-8 w-auto sm:h-10"
+          width={200}
+          height={50}
+          className="h-12 w-auto sm:h-14"
           priority
         />
         <a
           href="#waitlist"
-          className="rounded-full bg-mabel-teal px-5 py-2.5 text-sm font-bold text-white shadow-[0_4px_10px_rgba(0,0,0,0.15)] transition-transform duration-200 hover:scale-[0.98] active:scale-[0.96] focus-visible:ring-2 focus-visible:ring-mabel-teal focus-visible:ring-offset-2 touch-action-manipulation"
+          className="rounded-full bg-mabel-primary px-6 py-2.5 text-sm font-semibold text-white shadow-[0_2px_8px_rgba(46,125,107,0.25)] transition-[background-color,transform,box-shadow] duration-200 hover:bg-mabel-primary-dark hover:scale-[0.98] active:scale-[0.96] focus-visible:ring-2 focus-visible:ring-mabel-primary focus-visible:ring-offset-2"
         >
           Join Waitlist
         </a>

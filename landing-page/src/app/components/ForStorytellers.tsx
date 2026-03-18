@@ -1,9 +1,7 @@
-import Image from "next/image";
-
 const benefits = [
   {
     icon: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
         <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
         <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
       </svg>
@@ -12,7 +10,7 @@ const benefits = [
   },
   {
     icon: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
         <circle cx="12" cy="12" r="10" />
         <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
         <line x1="12" y1="17" x2="12.01" y2="17" />
@@ -22,7 +20,7 @@ const benefits = [
   },
   {
     icon: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
         <path d="M12 19l7-7 3 3-7 7-3-3z" />
         <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z" />
       </svg>
@@ -31,9 +29,11 @@ const benefits = [
   },
   {
     icon: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-        <circle cx="12" cy="12" r="10" />
-        <polyline points="12 6 12 12 16 14" />
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <path d="M7 20h10" />
+        <path d="M10 20c5.5-2.5.8-6.4 3-10" />
+        <path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z" />
+        <path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z" />
       </svg>
     ),
     text: "Work at your own pace \u2014 minutes a day, over weeks or months",
@@ -42,52 +42,32 @@ const benefits = [
 
 export default function ForStorytellers() {
   return (
-    <section className="px-6 py-20">
-      <div className="mx-auto max-w-6xl">
-        <div className="grid items-center gap-12 lg:grid-cols-2">
-          {/* Text content */}
-          <div>
-            <p className="mb-2 text-sm font-bold tracking-widest text-mabel-teal uppercase">
-              For Storytellers
-            </p>
-            <h2 className="mb-4 text-2xl font-bold text-balance sm:text-3xl">
-              Your Life Story, Effortlessly
-            </h2>
-            <p className="mb-6 text-mabel-subtle leading-relaxed">
-              Writing a memoir sounds daunting. Talking to Mabel doesn&apos;t. She
-              interviews you chapter by chapter, asking thoughtful questions that
-              draw out memories you&apos;d forgotten. No blank pages. No
-              writer&apos;s block. Just your voice and your memories.
-            </p>
+    <section className="bg-mabel-bg px-6 py-12 sm:py-20">
+      <div className="mx-auto max-w-[800px] text-center">
+        <p className="mb-2 text-sm font-semibold tracking-[0.08em] text-mabel-primary uppercase">
+          For Storytellers
+        </p>
+        <h2 className="mb-4 text-2xl font-extrabold tracking-[-0.02em] sm:text-3xl">
+          Your Life Story, Effortlessly
+        </h2>
+        <p className="mb-10 text-base leading-relaxed sm:text-lg">
+          Writing a memoir sounds daunting. Talking to Mabel doesn&apos;t. She
+          interviews you chapter by chapter, asking thoughtful questions that
+          draw out memories you&apos;d forgotten. No blank pages. No
+          writer&apos;s block. Just your voice and your memories.
+        </p>
 
-            <ul className="space-y-4">
-              {benefits.map((item, i) => (
-                <li key={i} className="flex items-start gap-3">
-                  <span className="mt-0.5 shrink-0 text-mabel-teal">{item.icon}</span>
-                  <span className="text-sm leading-relaxed">{item.text}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* App mockup */}
-          <div className="flex justify-center">
-            <div className="relative">
-              {/* Phone frame */}
-              <div className="overflow-hidden rounded-[36px] border-[8px] border-mabel-text/10 bg-mabel-text/5 shadow-[0_8px_32px_rgba(0,0,0,0.12)]">
-                <Image
-                  src="/images/app-screens/screen3-recording.png"
-                  alt="Mabel app recording screen showing guided interview questions"
-                  width={280}
-                  height={560}
-                  className="h-auto w-56 sm:w-64"
-                  style={{ objectFit: "cover" }}
-                />
-              </div>
-              {/* Decorative glow */}
-              <div className="absolute -bottom-6 -right-6 h-32 w-32 rounded-full bg-mabel-gold/20 blur-2xl" aria-hidden="true" />
+        <div className="grid gap-4 sm:grid-cols-2 text-left">
+          {benefits.map((item, i) => (
+            <div
+              key={i}
+              className="flex items-start gap-4 rounded-xl bg-white px-5 py-4"
+              style={{ border: "1.5px solid #e8e0da", boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}
+            >
+              <span className="mt-0.5 shrink-0 flex h-10 w-10 items-center justify-center rounded-full bg-[#f0faf7] text-[#2E7D6B]">{item.icon}</span>
+              <span className="text-sm font-medium leading-relaxed sm:text-base">{item.text}</span>
             </div>
-          </div>
+          ))}
         </div>
       </div>
     </section>

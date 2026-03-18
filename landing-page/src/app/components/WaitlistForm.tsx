@@ -44,11 +44,11 @@ export default function WaitlistForm({ variant = "default" }: { variant?: "defau
 
   if (status === "success") {
     return (
-      <div role="status" aria-live="polite" className="flex items-center gap-3 rounded-2xl bg-mabel-surface px-6 py-4 shadow-sm">
+      <div role="status" aria-live="polite" className="flex items-center gap-3 rounded-xl border border-[rgba(0,0,0,0.08)] bg-mabel-bg-alt px-6 py-4">
         <span className="text-2xl" aria-hidden="true">&#10024;</span>
         <div>
-          <p className="font-bold text-mabel-teal">You&apos;re on the list!</p>
-          <p className="text-sm text-mabel-subtle">
+          <p className="font-bold text-mabel-primary">You&apos;re on the list!</p>
+          <p className="text-sm">
             We&apos;ll let you know as soon as Mabel is ready.
           </p>
         </div>
@@ -71,21 +71,26 @@ export default function WaitlistForm({ variant = "default" }: { variant?: "defau
           onChange={(e) => setEmail(e.target.value)}
           placeholder="you@example.com"
           aria-label="Email address"
-          className={`flex-1 rounded-[14px] border-[3px] bg-mabel-surface px-4 py-3.5 text-mabel-text placeholder:text-mabel-subtle/60 transition-[border-color,box-shadow] duration-200 focus-visible:outline-none ${
+          className={`min-w-0 flex-1 rounded-full bg-white text-[#2d2c2b] placeholder:text-mabel-text/40 transition-[border-color,box-shadow] duration-200 focus-visible:outline-none ${
             status === "error"
-              ? "border-mabel-burgundy focus-visible:ring-2 focus-visible:ring-mabel-burgundy/40"
-              : "border-mabel-teal/30 focus-visible:border-mabel-teal focus-visible:ring-2 focus-visible:ring-mabel-teal/30 focus-visible:shadow-[0_0_10px_rgba(31,122,111,0.3)]"
+              ? "focus-visible:shadow-[0_0_0_3px_rgba(251,44,54,0.15)]"
+              : "focus-visible:shadow-[0_0_0_3px_rgba(46,125,107,0.15)]"
           }`}
+          style={{
+            border: status === "error" ? "2px solid #fb2c36" : "2px solid #2E7D6B",
+            padding: "14px 24px",
+            fontSize: "16px",
+          }}
         />
         <button
           type="submit"
           disabled={status === "submitting"}
-          className="rounded-full bg-mabel-teal px-8 py-3.5 font-bold text-white shadow-[0_4px_10px_rgba(0,0,0,0.15)] transition-transform duration-200 hover:scale-[0.98] active:scale-[0.96] disabled:opacity-40 disabled:shadow-none cursor-pointer whitespace-nowrap focus-visible:ring-2 focus-visible:ring-mabel-teal focus-visible:ring-offset-2 focus-visible:outline-none touch-action-manipulation"
+          className="rounded-full bg-mabel-primary px-8 py-3.5 font-semibold text-white shadow-[0_2px_8px_rgba(46,125,107,0.25)] transition-[background-color,transform,box-shadow,opacity] duration-200 hover:bg-mabel-primary-dark hover:scale-[0.98] active:scale-[0.96] disabled:opacity-40 disabled:shadow-none cursor-pointer whitespace-nowrap focus-visible:ring-2 focus-visible:ring-mabel-primary focus-visible:ring-offset-2 focus-visible:outline-none"
         >
           {status === "submitting" ? (
             <span className="flex items-center justify-center gap-2">
               <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" aria-hidden="true" />
-              Joining\u2026
+              Joining&hellip;
             </span>
           ) : (
             "Join the Waitlist"
@@ -93,7 +98,7 @@ export default function WaitlistForm({ variant = "default" }: { variant?: "defau
         </button>
       </div>
       {status === "error" && (
-        <p role="alert" aria-live="polite" className="mt-2 text-sm text-mabel-burgundy">{errorMessage}</p>
+        <p role="alert" aria-live="polite" className="mt-2 text-sm text-red-600">{errorMessage}</p>
       )}
     </form>
   );
