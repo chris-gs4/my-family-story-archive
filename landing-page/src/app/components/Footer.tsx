@@ -51,9 +51,9 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* Dark copyright strip */}
-      <div className="bg-mabel-text px-6 py-4">
-        <p className="text-center text-sm text-white">
+      {/* Copyright strip */}
+      <div className="bg-mabel-bg-alt px-6 py-4">
+        <p className="text-center text-sm text-[#2d2c2b]">
           &copy; {new Date().getFullYear()} Mabel. All rights reserved.
         </p>
       </div>
