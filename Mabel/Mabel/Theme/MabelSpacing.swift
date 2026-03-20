@@ -126,8 +126,8 @@ struct MabelSpacing {
 
     // MARK: - Mascot Sizes
 
-    /// Welcome screen hero mascot — 220pt
-    static let mascotHero: CGFloat = 220
+    /// Welcome screen hero mascot — 260pt
+    static let mascotHero: CGFloat = 260
 
     /// Library greeting mascot — 140pt
     static let mascotGreeting: CGFloat = 140

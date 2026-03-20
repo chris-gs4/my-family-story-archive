@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct MabelWordmark: View {
-    var height: CGFloat = 32
+    var height: CGFloat = MabelSpacing.wordmarkHeight
 
     var body: some View {
         Image("MabelWordmark")

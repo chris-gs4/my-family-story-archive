@@ -66,6 +66,9 @@ struct MabelColors {
     /// Cards, elevated surfaces
     static let surface = adaptive(light: "FFFFFF", dark: "2C2C2E")
 
+    /// Gradient end color — soft sage/mint for subtle top-to-bottom gradients
+    static let backgroundGradientEnd = adaptive(light: "D5DFDB", dark: "2A3230")
+
     // MARK: - Text Hierarchy
 
     /// ALL text — headings, body, labels. Never use pure black.
@@ -124,6 +127,7 @@ extension Color {
     static let mabelBackground = MabelColors.background
     static let mabelWarmBg = MabelColors.background
     static let mabelBackgroundAlt = MabelColors.backgroundAlt
+    static let mabelBackgroundGradientEnd = MabelColors.backgroundGradientEnd
 
     // Text
     static let mabelText = MabelColors.text

@@ -79,6 +79,7 @@ ZStack {
 |-------|-----|-------|
 | `mabelBackground` | `#FFFFFF` | Screen background |
 | `mabelBackgroundAlt` | `#f8f4f2` | Alternate sections |
+| `mabelBackgroundGradientEnd` | `#D5DFDB` | Gradient end — soft sage for subtle gradients (Welcome screen) |
 | `mabelText` | `#2d2c2b` | ALL text |
 | `mabelSubtle` | `#2d2c2b` 60% | Helper text |
 | `mabelPrimary` | `#2E7D6B` | CTAs, links, icons, labels |
@@ -94,24 +95,30 @@ ZStack {
 **BANNED colors:** `#ed7d3c` (orange), `#F3E0D2` (old peach), `#1F7A6F` (old teal), `#000000` (pure black text)
 
 ### Typography (`MabelTypography.xxx()`)
-| Method | Weight | Size | Usage |
-|--------|--------|------|-------|
-| `.heroHeading()` | Bold | 32pt | Screen headlines |
-| `.heading()` | Bold | 28pt | Section titles |
-| `.subheading()` | Medium | 20pt | Secondary headings |
-| `.body()` | Regular | 16pt | Paragraphs |
-| `.helper()` | Regular | 14pt | Captions, hints |
-| `.smallLabel()` | Light | 12pt | Dates, metadata |
-| `.sectionLabel()` | SemiBold | 14pt | Uppercase section labels |
-| `.button()` | Bold | 17pt | CTA text |
-| `.pillButton()` | Regular/SemiBold | 15pt | Pill button text |
+
+**Two fonts:** Nunito (headlines) + Comfortaa (everything else)
+
+| Method | Font | Weight | Size | Usage |
+|--------|------|--------|------|-------|
+| `.heroHeading()` | Nunito | ExtraBold (800) | 32pt | Screen headlines |
+| `.heading()` | Nunito | ExtraBold (800) | 28pt | Section titles |
+| `.subheading()` | Comfortaa | Medium | 20pt | Secondary headings |
+| `.body()` | Comfortaa | Regular | 16pt | Paragraphs |
+| `.helper()` | Comfortaa | Regular | 14pt | Captions, hints |
+| `.smallLabel()` | Comfortaa | Light | 12pt | Dates, metadata |
+| `.sectionLabel()` | Comfortaa | SemiBold | 14pt | Uppercase section labels |
+| `.button()` | Comfortaa | Bold | 17pt | CTA text |
+| `.pillButton()` | Comfortaa | Regular/SemiBold | 15pt | Pill button text |
+
+**Font helpers:** `Font.nunito(size, weight:)` for Nunito, `Font.comfortaa(size, weight:)` for Comfortaa
 
 **View modifiers:** `.heroHeadingStyle()`, `.headingStyle()`, `.subheadingStyle()`, `.bodyStyle()`, `.helperStyle()`, `.smallLabelStyle()`, `.sectionLabelStyle()`
 
 **Critical rules:**
-- ALWAYS use Comfortaa. NEVER fall back to system font.
+- Headlines (hero + section) use **Nunito ExtraBold 800**. Everything else uses **Comfortaa**.
+- NEVER fall back to system font for either. If a font doesn't load, debug it.
 - The "Mabel" wordmark is ALWAYS `Image("MabelWordmark")`, never `Text()`.
-- Headings: tracking -0.02em, line-height 1.25
+- Headings: tracking -0.026em, line-height 1.25
 - Body: line-height 1.6
 - Section labels: tracking 0.08em, uppercase, `mabelPrimary` color
 - Minimum body font size: 16pt

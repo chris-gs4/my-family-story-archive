@@ -51,6 +51,7 @@ ZStack {
 |----------------------|-----------|------------------------|-------------------------------------------------|
 | `mabelBackground`    | `#FFFFFF` | 1.0, 1.0, 1.0         | Primary screen background (white)               |
 | `mabelBackgroundAlt` | `#f8f4f2` | 0.973, 0.957, 0.949   | Alternate section backgrounds for visual rhythm  |
+| `mabelBackgroundGradientEnd` | `#D5DFDB` | 0.835, 0.875, 0.859 | Gradient end — soft sage/mint for subtle top-to-bottom gradients (e.g., Welcome screen) |
 | `mabelText`          | `#2d2c2b` | 0.176, 0.173, 0.169   | ALL text — headings, body, labels. No exceptions |
 | `mabelSubtle`        | `#2d2c2b` at 60% | —             | Helper text, placeholders, secondary labels      |
 | `mabelPrimary`       | `#2E7D6B` | 0.180, 0.490, 0.420   | CTA buttons, links, icons, active states, labels |
@@ -97,24 +98,25 @@ These tokens map directly to the landing page CSS variables:
 
 ## Typography
 
-**Font Family:** Comfortaa (Google Font — imported as custom font via variable TTF in Xcode)
+**Headline Font:** Nunito (Google Font — variable TTF, weight range 200–1000). Used for hero headings and section headings ONLY.
+**Body Font:** Comfortaa (Google Font — variable TTF, weight range 300–700). Used for ALL other text.
 
-| Style          | Weight     | Size  | Color          | Usage                          |
-|----------------|------------|-------|----------------|--------------------------------|
-| Hero heading   | ExtraBold  | 32pt  | mabelText      | Main screen headlines           |
-| Heading        | Bold       | 28pt  | mabelText      | Section titles                  |
-| Subheading     | Medium     | 20pt  | mabelText      | Secondary headings              |
-| Body           | Regular    | 16pt  | mabelText      | Paragraphs, descriptions        |
-| Helper text    | Regular    | 14pt  | mabelSubtle    | Placeholders, captions, hints   |
-| Small label    | Light      | 12pt  | mabelSubtle    | Dates, metadata, fine print     |
-| Section label  | SemiBold   | 14pt  | mabelPrimary   | "FOR STORYTELLERS" — uppercase, letter-spacing 0.08em |
-| Wordmark       | —          | —     | —              | ALWAYS use MabelWordmark image asset, NOT text. Height: 24pt |
+| Style          | Font       | Weight     | Size  | Color          | Usage                          |
+|----------------|------------|------------|-------|----------------|--------------------------------|
+| Hero heading   | Nunito     | ExtraBold (800) | 32pt  | mabelText      | Main screen headlines           |
+| Heading        | Nunito     | ExtraBold (800) | 28pt  | mabelText      | Section titles                  |
+| Subheading     | Comfortaa  | Medium     | 20pt  | mabelText      | Secondary headings              |
+| Body           | Comfortaa  | Regular    | 16pt  | mabelText      | Paragraphs, descriptions        |
+| Helper text    | Comfortaa  | Regular    | 14pt  | mabelSubtle    | Placeholders, captions, hints   |
+| Small label    | Comfortaa  | Light      | 12pt  | mabelSubtle    | Dates, metadata, fine print     |
+| Section label  | Comfortaa  | SemiBold   | 14pt  | mabelPrimary   | "FOR STORYTELLERS" — uppercase, letter-spacing 0.08em |
+| Wordmark       | —          | —          | —     | —              | ALWAYS use MabelWordmark image asset, NOT text. Height: 24pt |
 
 ### Typography Rules
-- ALWAYS use Comfortaa font. NEVER fall back to system font.
-- If Comfortaa doesn't load, debug it — don't silently use San Francisco.
+- Headlines (hero + section) use **Nunito ExtraBold 800**. Everything else uses **Comfortaa**.
+- NEVER fall back to system font for either. If a font doesn't load, debug it.
 - The "Mabel" wordmark at the top of screens must be the IMAGE asset (MabelWordmark / mabel_type.png), never a Text() view.
-- Headings: letter-spacing -0.02em (tracking: -0.02em)
+- Headings: letter-spacing -0.026em (tracking: -0.026em)
 - Section labels: letter-spacing 0.08em, uppercase, `mabelPrimary` color
 - Body text: line-height 1.6
 - Headings: line-height 1.25
@@ -345,7 +347,7 @@ These principles were validated during the landing page design and apply to the 
 3. **Bordered cards with warmth** — Use `1.5pt #e8e0da` borders and `0 2px 8px rgba(0,0,0,0.06)` shadows. Not flat, not heavy.
 4. **Icon circles** — Icons inside `#f0faf7` circles with `#2E7D6B` color. Consistent, polished, branded.
 5. **Green as the anchor** — `#2E7D6B` is the primary brand color. CTAs, links, icons, labels, active states.
-6. **Typography weight matters** — Headings at 700-800 weight with -0.02em tracking. Section labels uppercase with 0.08em tracking in primary green.
+6. **Typography weight matters** — Headings use Nunito ExtraBold (800) with -0.026em tracking. Body/UI text uses Comfortaa. Section labels uppercase with 0.08em tracking in primary green.
 7. **Trust through visual weight** — Important elements get green borders, matching padding, consistent styling.
 8. **No orange** — `#ed7d3c` was removed from the palette. Do not use it anywhere.
 9. **Accent is decorative only** — `#f9e269` for mascot glows and tiny highlights. Never as backgrounds.
@@ -358,8 +360,8 @@ These principles were validated during the landing page design and apply to the 
 - **Background:** White (full screen)
 - **Top:** MabelWordmark IMAGE (24pt height, centered)
 - **Hero:** Mabel mascot PNG (full character, no rounded frame), 220pt, centered, with subtle warm gray radial glow behind
-- **Headline:** "Tell your story" — Comfortaa ExtraBold, 32pt, `mabelText`, centered
-- **Subtext:** "Record your memories. Mabel will turn them into something beautiful." — Comfortaa Regular, 16pt, `mabelSubtle`, centered, max 2 lines
+- **Headline:** "Welcome to Mabel" — Nunito ExtraBold 800, 32pt, `mabelText`, centered, tracking -0.026em
+- **Subtext:** Three lines — "Your AI-assisted ghost writer." / "Capture your stories and write a book for future generations." / "No typing, just talking." — Comfortaa Regular, 16pt, `mabelSubtle`, centered
 - **CTA:** "Get Started" — full-width primary pill button, pinned toward bottom
 - **Below CTA:** "Already have an account? Sign in" — Comfortaa Regular, 14pt, `mabelSubtle`, tappable
 - **Bottom padding:** 40pt minimum from safe area

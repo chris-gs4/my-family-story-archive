@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		0B2694DE10A76C72E13A6C8F /* SuggestionCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF3988DBFC8A4BBEA4E148D1 /* SuggestionCard.swift */; };
 		0C3A08593450F81908F185F0 /* MabelFonts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E5C754C7035FCAB426E34C0 /* MabelFonts.swift */; };
+		CC0002010000000000000001 /* DesignConceptPrototypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0001010000000000000001 /* DesignConceptPrototypes.swift */; };
 		10D371C201E9BBD4C0D0AA23 /* CTAButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 382FF0578D1F342556D6B446 /* CTAButton.swift */; };
 		370E69C609C3FD03BB9E4DDB /* WaveformView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69BAB34C868B293BAC9F2A0E /* WaveformView.swift */; };
 		5C1097C784EA25FB512A9F81 /* MabelApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABB24DE0618903DE68C06153 /* MabelApp.swift */; };
@@ -22,6 +23,7 @@
 		8E23EC0A01ADC4B0EBE88E0D /* MabelStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9172F33589E66F396552AA6D /* MabelStyle.swift */; };
 		97099A06C393E61E571B035B /* WelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28E923E74FD9F74D3FBFCFB8 /* WelcomeView.swift */; };
 		D4646E71CE8CC83C26A6EB16 /* Comfortaa-Variable.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8BDC2A50B95B1EEF1A53BCE3 /* Comfortaa-Variable.ttf */; };
+		DD0002010000000000000001 /* Nunito-Variable.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DD0001010000000000000001 /* Nunito-Variable.ttf */; };
 		E4332695D7A9053C07C9C820 /* MabelWordmark.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61DD224D61070C052EF867D1 /* MabelWordmark.swift */; };
 		AA0001010000000000000001 /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0002010000000000000001 /* UserProfile.swift */; };
 		AA0001010000000000000002 /* Memory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0002010000000000000002 /* Memory.swift */; };
@@ -68,12 +70,14 @@
 		1BBF357783A66732C0B0523B /* PillButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PillButton.swift; sourceTree = "<group>"; };
 		28E923E74FD9F74D3FBFCFB8 /* WelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeView.swift; sourceTree = "<group>"; };
 		3042620F7E213AF3FC7B9E49 /* MabelColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MabelColors.swift; sourceTree = "<group>"; };
+		CC0001010000000000000001 /* DesignConceptPrototypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignConceptPrototypes.swift; sourceTree = "<group>"; };
 		382FF0578D1F342556D6B446 /* CTAButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CTAButton.swift; sourceTree = "<group>"; };
 		559250AE118047B34ED66150 /* MabelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MabelTests.swift; sourceTree = "<group>"; };
 		61DD224D61070C052EF867D1 /* MabelWordmark.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MabelWordmark.swift; sourceTree = "<group>"; };
 		69BAB34C868B293BAC9F2A0E /* WaveformView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaveformView.swift; sourceTree = "<group>"; };
 		7E5C754C7035FCAB426E34C0 /* MabelFonts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MabelFonts.swift; sourceTree = "<group>"; };
 		8BDC2A50B95B1EEF1A53BCE3 /* Comfortaa-Variable.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Comfortaa-Variable.ttf"; sourceTree = "<group>"; };
+		DD0001010000000000000001 /* Nunito-Variable.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Nunito-Variable.ttf"; sourceTree = "<group>"; };
 		90F285CDA92F652EF7CC925A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		9172F33589E66F396552AA6D /* MabelStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MabelStyle.swift; sourceTree = "<group>"; };
 		ABB24DE0618903DE68C06153 /* MabelApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MabelApp.swift; sourceTree = "<group>"; };
@@ -118,6 +122,7 @@
 			isa = PBXGroup;
 			children = (
 				8BDC2A50B95B1EEF1A53BCE3 /* Comfortaa-Variable.ttf */,
+				DD0001010000000000000001 /* Nunito-Variable.ttf */,
 			);
 			path = Fonts;
 			sourceTree = "<group>";
@@ -145,6 +150,7 @@
 				AA0002010000000000000010 /* ChapterCard.swift */,
 				AA0002010000000000000020 /* ChapterCircleIndicator.swift */,
 				382FF0578D1F342556D6B446 /* CTAButton.swift */,
+				CC0001010000000000000001 /* DesignConceptPrototypes.swift */,
 				AA0002010000000000000011 /* FeaturedChapterCard.swift */,
 				AA0002010000000000000022 /* MascotGreetingHeader.swift */,
 				61DD224D61070C052EF867D1 /* MabelWordmark.swift */,
@@ -321,6 +327,7 @@
 			files = (
 				743819BE8EDF87B75DE14786 /* Assets.xcassets in Resources */,
 				D4646E71CE8CC83C26A6EB16 /* Comfortaa-Variable.ttf in Resources */,
+				DD0002010000000000000001 /* Nunito-Variable.ttf in Resources */,
 				AA0001010000000000000016 /* Config.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -348,6 +355,7 @@
 				AA0001010000000000000005 /* ChapterPrompts.swift in Sources */,
 				83A1C2D0B3D7A1C74448AD04 /* ContentView.swift in Sources */,
 				10D371C201E9BBD4C0D0AA23 /* CTAButton.swift in Sources */,
+				CC0002010000000000000001 /* DesignConceptPrototypes.swift in Sources */,
 				AA0001010000000000000011 /* FeaturedChapterCard.swift in Sources */,
 				AA0001010000000000000006 /* LibraryView.swift in Sources */,
 				5C1097C784EA25FB512A9F81 /* MabelApp.swift in Sources */,

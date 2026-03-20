@@ -47,16 +47,16 @@ struct MabelTypography {
 
     // MARK: - Heading Styles
 
-    /// Main screen headlines — ExtraBold 32pt
-    /// Tracking: -0.02em, Line height: 1.25
+    /// Main screen headlines — Nunito ExtraBold 32pt
+    /// Tracking: -0.026em, Line height: 1.25
     static func heroHeading() -> Font {
-        .comfortaa(scaled(32, relativeTo: .largeTitle), weight: .bold)
+        .nunito(scaled(32, relativeTo: .largeTitle), weight: .extraBold)
     }
 
-    /// Section titles — Bold 28pt
-    /// Tracking: -0.02em, Line height: 1.25
+    /// Section titles — Nunito ExtraBold 28pt
+    /// Tracking: -0.026em, Line height: 1.25
     static func heading() -> Font {
-        .comfortaa(scaled(28, relativeTo: .title), weight: .bold)
+        .nunito(scaled(28, relativeTo: .title), weight: .extraBold)
     }
 
     /// Secondary headings — Medium 20pt
@@ -131,8 +131,8 @@ struct MabelTypography {
 
     // MARK: - Tracking Values
 
-    /// Heading tracking: -0.02em (multiply by font size for points)
-    static let headingTracking: CGFloat = -0.02
+    /// Heading tracking: -0.026em (multiply by font size for points)
+    static let headingTracking: CGFloat = -0.026
 
     /// Section label tracking: 0.08em
     static let sectionLabelTracking: CGFloat = 0.08
