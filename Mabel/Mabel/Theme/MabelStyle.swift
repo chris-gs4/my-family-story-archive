@@ -5,23 +5,27 @@ struct CTAButtonStyle: ButtonStyle {
 
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .font(.comfortaa(17, weight: .bold))
-            .foregroundColor(isDisabled ? .mabelSubtle : .white)
+            .font(MabelTypography.button())
+            .foregroundColor(isDisabled ? MabelColors.subtle : .white)
             .frame(maxWidth: .infinity)
-            .frame(height: 56)
+            .frame(height: MabelSpacing.ctaHeight)
             .background(
                 Capsule()
-                    .fill(isDisabled ? Color.mabelSurface : Color.mabelTeal)
+                    .fill(isDisabled ? MabelColors.surface : MabelColors.primary)
             )
             .overlay(
                 Capsule()
-                    .strokeBorder(isDisabled ? Color.clear : Color.mabelTeal.opacity(0.8), lineWidth: 3)
+                    .strokeBorder(
+                        isDisabled ? Color.clear : MabelColors.primary.opacity(0.8),
+                        lineWidth: MabelSpacing.borderButton
+                    )
             )
             .clipShape(Capsule())
-            .shadow(color: isDisabled ? .clear : .black.opacity(0.15), radius: 10, x: 0, y: 4)
+            .mabelCtaShadow()
+            .shadow(color: isDisabled ? .clear : .clear, radius: 0) // override shadow when disabled
             .opacity(isDisabled ? 0.4 : 1.0)
-            .scaleEffect(configuration.isPressed && !isDisabled ? 0.98 : 1.0)
-            .animation(.spring(response: 0.3), value: configuration.isPressed)
+            .scaleEffect(configuration.isPressed && !isDisabled ? MabelAnimation.ctaPressScale : 1.0)
+            .animation(MabelAnimation.ctaPress, value: configuration.isPressed)
     }
 }
 
@@ -31,46 +35,50 @@ struct PillButtonStyle: ButtonStyle {
 
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .font(.comfortaa(15, weight: isSelected ? .semiBold : .regular))
-            .foregroundColor(isDisabled ? .mabelSubtle.opacity(0.5) : (isSelected ? .white : .mabelText))
-            .padding(.horizontal, 12)
-            .padding(.vertical, 10)
+            .font(MabelTypography.pillButton(selected: isSelected))
+            .foregroundColor(
+                isDisabled
+                    ? MabelColors.subtle.opacity(0.5)
+                    : (isSelected ? .white : MabelColors.text)
+            )
+            .padding(.horizontal, MabelSpacing.pillPadH)
+            .padding(.vertical, MabelSpacing.pillPadV)
             .frame(maxWidth: .infinity)
-            .frame(minHeight: 48)
+            .frame(minHeight: MabelSpacing.pillMinHeight)
             .background(
-                RoundedRectangle(cornerRadius: 14)
+                RoundedRectangle(cornerRadius: MabelSpacing.cornerRadiusPill)
                     .fill(
                         isDisabled
                             ? AnyShapeStyle(Color.gray.opacity(0.15))
                             : (isSelected
-                                ? AnyShapeStyle(Color.mabelTeal)
+                                ? AnyShapeStyle(MabelColors.primary)
                                 : AnyShapeStyle(Color.white))
                     )
             )
             .overlay(
-                RoundedRectangle(cornerRadius: 14)
+                RoundedRectangle(cornerRadius: MabelSpacing.cornerRadiusPill)
                     .strokeBorder(
-                        isSelected ? Color.mabelTeal : (isDisabled ? Color.gray.opacity(0.35) : Color.gray.opacity(0.35)),
-                        lineWidth: 3
+                        isSelected ? MabelColors.primary : Color.gray.opacity(0.35),
+                        lineWidth: MabelSpacing.borderButton
                     )
             )
-            .shadow(color: isSelected ? .mabelTeal.opacity(0.4) : .black.opacity(0.1), radius: isSelected ? 12 : 4, x: 0, y: isSelected ? 4 : 2)
+            .mabelPillShadow(selected: isSelected)
             .opacity(isDisabled ? 0.5 : 1.0)
-            .scaleEffect(configuration.isPressed && !isDisabled ? 0.95 : 1.0)
-            .animation(.spring(response: 0.3, dampingFraction: 0.6), value: configuration.isPressed)
+            .scaleEffect(configuration.isPressed && !isDisabled ? MabelAnimation.pillPressScale : 1.0)
+            .animation(MabelAnimation.pillSelect, value: configuration.isPressed)
     }
 }
 
 struct SecondaryButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .font(.comfortaa(14, weight: .medium))
-            .foregroundColor(.mabelTeal)
+            .font(MabelTypography.helper())
+            .foregroundColor(MabelColors.primary)
             .padding(.horizontal, 20)
-            .padding(.vertical, 10)
+            .padding(.vertical, MabelSpacing.pillPadV)
             .background(
                 Capsule()
-                    .strokeBorder(Color.mabelTeal, lineWidth: 1.5)
+                    .strokeBorder(MabelColors.primary, lineWidth: MabelSpacing.borderCard)
             )
             .opacity(configuration.isPressed ? 0.7 : 1.0)
     }
