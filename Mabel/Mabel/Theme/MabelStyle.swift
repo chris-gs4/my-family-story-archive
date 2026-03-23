@@ -32,14 +32,16 @@ struct CTAButtonStyle: ButtonStyle {
 struct PillButtonStyle: ButtonStyle {
     var isSelected: Bool
     var isDisabled: Bool = false
+    var isDashed: Bool = false
 
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .font(MabelTypography.pillButton(selected: isSelected))
+            .italic(isDashed && !isSelected)
             .foregroundColor(
                 isDisabled
                     ? MabelColors.subtle.opacity(0.5)
-                    : (isSelected ? .white : MabelColors.text)
+                    : (isSelected ? .white : (isDashed ? MabelColors.subtle : MabelColors.text))
             )
             .padding(.horizontal, MabelSpacing.pillPadH)
             .padding(.vertical, MabelSpacing.pillPadV)
@@ -59,8 +61,20 @@ struct PillButtonStyle: ButtonStyle {
                 RoundedRectangle(cornerRadius: MabelSpacing.cornerRadiusPill)
                     .strokeBorder(
                         isSelected ? MabelColors.primary : Color.gray.opacity(0.35),
-                        lineWidth: MabelSpacing.borderButton
+                        lineWidth: MabelSpacing.borderButton,
+                        antialiased: true
                     )
+                    .opacity(isDashed && !isSelected ? 0 : 1)
+            )
+            .overlay(
+                // Dashed border for unselected dashed variant
+                isDashed && !isSelected
+                    ? RoundedRectangle(cornerRadius: MabelSpacing.cornerRadiusPill)
+                        .strokeBorder(
+                            style: StrokeStyle(lineWidth: MabelSpacing.borderButton, dash: [8, 5])
+                        )
+                        .foregroundColor(Color.gray.opacity(0.35))
+                    : nil
             )
             .mabelPillShadow(selected: isSelected)
             .opacity(isDisabled ? 0.5 : 1.0)
