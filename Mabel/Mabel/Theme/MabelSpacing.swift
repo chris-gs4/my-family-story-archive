@@ -143,6 +143,9 @@ struct MabelSpacing {
 
     // MARK: - Icon Sizes
 
+    /// MabelIcon head icon — 28pt
+    static let mabelIconSize: CGFloat = 28
+
     /// Feature card icon — 26pt
     static let iconFeature: CGFloat = 26
 

@@ -18,9 +18,7 @@ struct ProfileView: View {
                 VStack(alignment: .leading, spacing: 0) {
                     // Header
                     HStack {
-                        Text("Edit Profile")
-                            .font(.comfortaa(22, weight: .bold))
-                            .foregroundColor(.mabelText)
+                        MabelWordmarkLockup()
                         Spacer()
                         Button(action: { dismiss() }) {
                             Image(systemName: "xmark")

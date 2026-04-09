@@ -118,12 +118,8 @@ struct SetupView: View {
 
             ScrollView(showsIndicators: false) {
                 VStack(spacing: 0) {
-                    // Wordmark — centered, matching Welcome pattern
-                    Image("MabelWordmark")
-                        .renderingMode(.original)
-                        .resizable()
-                        .scaledToFit()
-                        .frame(height: MabelSpacing.wordmarkHeight)
+                    // Lockup — icon + wordmark, centered
+                    MabelWordmarkLockup()
                         .frame(maxWidth: .infinity)
                         .padding(.top, MabelSpacing.topSafe)
                         .padding(.bottom, MabelSpacing.xxxl)

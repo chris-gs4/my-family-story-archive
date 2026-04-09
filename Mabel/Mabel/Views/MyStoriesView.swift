@@ -18,13 +18,12 @@ struct MyStoriesView: View {
                 // FIXED top bar (below safe area)
                 HStack {
                     Button(action: { appState.selectedTab = 0 }) {
-                        HStack(spacing: 6) {
+                        HStack(spacing: MabelSpacing.tightGap) {
                             Image(systemName: "chevron.left")
                                 .font(.system(size: 16, weight: .semibold))
-                            Text("Home")
-                                .font(.comfortaa(14, weight: .medium))
+                            MabelWordmarkLockup()
                         }
-                        .foregroundColor(.mabelTeal)
+                        .foregroundColor(.mabelPrimary)
                         .frame(height: 44)
                         .contentShape(Rectangle())
                     }

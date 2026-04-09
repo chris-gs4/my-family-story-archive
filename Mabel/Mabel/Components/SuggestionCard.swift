@@ -6,23 +6,11 @@ struct SuggestionCard: View {
 
     var body: some View {
         Button(action: action) {
-            HStack {
-                Text(prompt)
-                    .font(.comfortaa(15, weight: .regular))
-                    .foregroundColor(.mabelText)
-                    .multilineTextAlignment(.leading)
-                Spacer()
-                Image(systemName: "chevron.right")
-                    .font(.system(size: 12, weight: .semibold))
-                    .foregroundColor(.mabelSubtle)
-            }
-            .padding(16)
-            .background(
-                RoundedRectangle(cornerRadius: 16)
-                    .fill(Color.mabelSurface)
-            )
+            SuggestionCardContent(prompt: prompt)
         }
         .buttonStyle(.plain)
+        .accessibilityLabel(prompt)
+        .accessibilityHint("Double tap to start recording with this prompt")
     }
 }
 
@@ -31,9 +19,20 @@ struct SuggestionCardLabel: View {
     let prompt: String
 
     var body: some View {
+        SuggestionCardContent(prompt: prompt)
+            .accessibilityLabel(prompt)
+            .accessibilityHint("Double tap to start recording with this prompt")
+    }
+}
+
+/// Shared visual content for suggestion cards
+private struct SuggestionCardContent: View {
+    let prompt: String
+
+    var body: some View {
         HStack {
             Text(prompt)
-                .font(.comfortaa(15, weight: .regular))
+                .font(MabelTypography.body())
                 .foregroundColor(.mabelText)
                 .multilineTextAlignment(.leading)
             Spacer()
@@ -41,16 +40,20 @@ struct SuggestionCardLabel: View {
                 .font(.system(size: 12, weight: .semibold))
                 .foregroundColor(.mabelSubtle)
         }
-        .padding(16)
+        .padding(MabelSpacing.cardPaddingGeneral)
         .background(
-            RoundedRectangle(cornerRadius: 16)
+            RoundedRectangle(cornerRadius: MabelSpacing.cornerRadiusSuggestion)
                 .fill(Color.mabelSurface)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: MabelSpacing.cornerRadiusSuggestion)
+                .strokeBorder(Color.mabelBorderWarm, lineWidth: MabelSpacing.borderCard)
         )
     }
 }
 
 #Preview {
-    VStack(spacing: 8) {
+    VStack(spacing: MabelSpacing.tightGap) {
         SuggestionCard(prompt: "What are your favorite family traditions?") {}
         SuggestionCard(prompt: "Describe your childhood home.") {}
         SuggestionCard(prompt: "Tell me about when you first met Grandma.") {}

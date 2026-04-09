@@ -30,9 +30,7 @@ struct ChapterReviewView: View {
                         .contentShape(Rectangle())
                 }
                 Spacer()
-                Text("Review Chapter")
-                    .font(.comfortaa(18, weight: .bold))
-                    .foregroundColor(.mabelText)
+                MabelWordmarkLockup()
                 Spacer()
                 // Balance the layout
                 Color.clear.frame(width: 44, height: 44)

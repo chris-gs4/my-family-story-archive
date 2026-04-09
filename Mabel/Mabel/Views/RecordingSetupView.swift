@@ -11,6 +11,7 @@ struct RecordingSetupView: View {
     @State private var showChapterReview = false
     @State private var memoryToDelete: Memory? = nil
     @State private var showDeleteConfirmation = false
+    @State private var micPulse = false
 
     private var chapter: Chapter {
         guard chapterIndex >= 0, chapterIndex < appState.chapters.count else {
@@ -24,92 +25,44 @@ struct RecordingSetupView: View {
     }
 
     var body: some View {
-        VStack(spacing: 0) {
-                // FIXED top bar (below safe area)
-                HStack {
-                    Button(action: {
-                        if !appState.navigationPath.isEmpty {
-                            appState.navigationPath.removeLast()
-                        }
-                    }) {
-                        HStack(spacing: 6) {
-                            Image(systemName: "chevron.left")
-                                .font(.system(size: 16, weight: .semibold))
-                                .foregroundColor(.mabelTeal)
-                            MabelWordmark(height: 20)
-                        }
-                        .frame(height: 44)
-                        .contentShape(Rectangle())
-                    }
-                    .buttonStyle(.plain)
-                    Spacer()
-                    ProfileButton { showProfile = true }
-                }
-                .padding(.horizontal, 24)
-                .padding(.top, 8)
-                .padding(.bottom, 8)
+        ZStack {
+            Color.mabelBackground.ignoresSafeArea()
 
-                // Scrollable content
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 0) {
-                        // Chapter heading
-                        Text("Chapter \(chapter.id) – \(chapter.title)")
-                            .font(.comfortaa(22, weight: .bold))
-                            .foregroundColor(.mabelText)
-                            .padding(.top, 16)
-                            .padding(.bottom, 8)
+            VStack(spacing: 0) {
+                // MARK: - Top Bar
+                topBar
 
-                        Text("\(chapter.completedMemoryCount) of \(Chapter.memoriesPerChapter) memories recorded")
-                            .font(.comfortaa(14, weight: .regular))
-                            .foregroundColor(.mabelSubtle)
-                            .padding(.bottom, 12)
+                // MARK: - Scrollable Content
+                ScrollView(showsIndicators: false) {
+                    VStack(spacing: 0) {
+                        // Chapter badge — compact row
+                        chapterBadge
+                            .padding(.top, MabelSpacing.sectionGap)
 
                         ProgressBar(
                             progress: Double(chapter.completedMemoryCount) / Double(Chapter.memoriesPerChapter),
                             height: 6
                         )
-                        .padding(.bottom, 24)
+                        .padding(.bottom, MabelSpacing.xxxl)
+                        .accessibilityLabel("Chapter progress: \(chapter.completedMemoryCount) of \(Chapter.memoriesPerChapter)")
 
                         // MARK: - Memory List
                         if !displayableMemories.isEmpty {
-                            Text("Your memories")
-                                .font(.comfortaa(16, weight: .bold))
-                                .foregroundColor(.mabelText)
-                                .padding(.bottom, 10)
-
-                            VStack(spacing: 8) {
-                                ForEach(Array(displayableMemories.enumerated()), id: \.element.id) { index, memory in
-                                    MemoryCard(
-                                        memory: memory,
-                                        index: index,
-                                        onDelete: {
-                                            memoryToDelete = memory
-                                            showDeleteConfirmation = true
-                                        },
-                                        onRetry: {
-                                            appState.retryMemory(chapterIndex: chapterIndex, memoryID: memory.id)
-                                        }
-                                    )
-                                }
-                            }
-                            .padding(.bottom, 24)
+                            memoryList
                         }
 
                         if chapter.completedMemoryCount >= Chapter.memoriesPerChapter {
-                            // MARK: - Chapter Complete State
                             chapterCompleteView
                         } else {
-                            // MARK: - Recording UI
                             recordingUI
                         }
 
-                        Spacer()
-                            .frame(height: 40)
+                        Spacer().frame(height: MabelSpacing.bottomSafe)
                     }
-                    .padding(.horizontal, 24)
+                    .screenPadding()
                 }
+            }
         }
-        .background(MabelGradientBackground())
         .toolbar(.hidden, for: .navigationBar)
         .navigationDestination(for: RecordingDestination.self) { dest in
             RecordingView(chapterIndex: dest.chapterIndex, prompt: dest.prompt)
@@ -145,208 +98,329 @@ struct RecordingSetupView: View {
             }
         }
         .onChange(of: appState.chapters[chapterIndex].generatedNarrative) { oldValue, newValue in
-            // Auto-open review when narrative finishes generating
             if oldValue == nil, newValue != nil, !appState.chapters[chapterIndex].isApproved {
                 showChapterReview = true
             }
         }
     }
 
+    // MARK: - Top Bar
+
+    private var topBar: some View {
+        HStack {
+            Button(action: {
+                if !appState.navigationPath.isEmpty {
+                    appState.navigationPath.removeLast()
+                }
+            }) {
+                HStack(spacing: MabelSpacing.tightGap) {
+                    Image(systemName: "chevron.left")
+                        .font(.system(size: 16, weight: .semibold))
+                        .foregroundColor(.mabelPrimary)
+                    MabelWordmarkLockup()
+                }
+                .frame(height: 44)
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel("Go back")
+            Spacer()
+            ProfileButton { showProfile = true }
+        }
+        .padding(.horizontal, MabelSpacing.screenPadH)
+        .padding(.top, MabelSpacing.tightGap)
+        .padding(.bottom, MabelSpacing.tightGap)
+    }
+
+    // MARK: - Chapter Badge
+
+    private var chapterBadge: some View {
+        VStack(alignment: .leading, spacing: MabelSpacing.tightGap) {
+            HStack(spacing: MabelSpacing.tightGap) {
+                Text("CH. \(chapter.id)")
+                    .font(MabelTypography.badge())
+                    .foregroundColor(.mabelPrimary)
+                    .padding(.horizontal, MabelSpacing.md)
+                    .padding(.vertical, MabelSpacing.xs)
+                    .background(Capsule().fill(Color.mabelPrimaryLight))
+
+                Text(chapter.title)
+                    .font(MabelTypography.subheading())
+                    .foregroundColor(.mabelText)
+
+                Spacer()
+
+                Text("\(chapter.completedMemoryCount)/\(Chapter.memoriesPerChapter)")
+                    .font(MabelTypography.badge())
+                    .foregroundColor(.mabelPrimary)
+            }
+            .accessibilityElement(children: .combine)
+            .accessibilityLabel("Chapter \(chapter.id), \(chapter.title). \(chapter.completedMemoryCount) of \(Chapter.memoriesPerChapter) memories recorded")
+        }
+        .padding(.bottom, MabelSpacing.tightGap)
+    }
+
+    // MARK: - Memory List
+
+    private var memoryList: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            Text("YOUR MEMORIES")
+                .sectionLabelStyle()
+                .padding(.bottom, MabelSpacing.pillPadV)
+
+            VStack(spacing: MabelSpacing.tightGap) {
+                ForEach(Array(displayableMemories.enumerated()), id: \.element.id) { index, memory in
+                    MemoryCard(
+                        memory: memory,
+                        index: index,
+                        onDelete: {
+                            memoryToDelete = memory
+                            showDeleteConfirmation = true
+                        },
+                        onRetry: {
+                            appState.retryMemory(chapterIndex: chapterIndex, memoryID: memory.id)
+                        }
+                    )
+                }
+            }
+            .padding(.bottom, MabelSpacing.sectionGap)
+        }
+    }
+
     // MARK: - Chapter Complete View
 
     private var chapterCompleteView: some View {
-        VStack(spacing: 20) {
-            // Processing indicator
+        VStack(spacing: MabelSpacing.cardPaddingContent) {
             if chapter.memories.contains(where: { $0.state == .processing }) {
-                HStack(spacing: 10) {
+                HStack(spacing: MabelSpacing.pillPadV) {
                     ProgressView()
-                        .tint(.mabelTeal)
+                        .tint(.mabelPrimary)
                     Text("Processing your memories...")
-                        .font(.comfortaa(13, weight: .medium))
+                        .font(MabelTypography.helper())
                         .foregroundColor(.mabelSubtle)
                 }
-                .padding(14)
+                .padding(MabelSpacing.inputPadV)
                 .frame(maxWidth: .infinity)
                 .background(
-                    RoundedRectangle(cornerRadius: 12)
+                    RoundedRectangle(cornerRadius: MabelSpacing.cornerRadiusBadge)
                         .fill(Color.mabelSurface.opacity(0.9))
                 )
             }
 
-            // Error indicator
             if let failedMemory = chapter.memories.first(where: { $0.state == .failed }) {
-                HStack(spacing: 10) {
+                HStack(spacing: MabelSpacing.pillPadV) {
                     Image(systemName: "exclamationmark.triangle.fill")
                         .foregroundColor(.mabelBurgundy)
-                    VStack(alignment: .leading, spacing: 2) {
+                    VStack(alignment: .leading, spacing: MabelSpacing.xs) {
                         Text("Processing failed")
-                            .font(.comfortaa(13, weight: .bold))
+                            .font(MabelTypography.helper())
+                            .fontWeight(.bold)
                             .foregroundColor(.mabelText)
                         Text(failedMemory.errorMessage ?? "An error occurred.")
-                            .font(.comfortaa(11, weight: .regular))
+                            .font(MabelTypography.smallLabel())
                             .foregroundColor(.mabelSubtle)
                     }
                 }
-                .padding(14)
+                .padding(MabelSpacing.inputPadV)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .background(
-                    RoundedRectangle(cornerRadius: 12)
+                    RoundedRectangle(cornerRadius: MabelSpacing.cornerRadiusBadge)
                         .fill(Color.mabelBurgundy.opacity(0.08))
                 )
             }
 
             if chapter.isApproved {
-                // Approved state
                 Image(systemName: "checkmark.seal.fill")
                     .font(.system(size: 48))
-                    .foregroundColor(.mabelTeal)
-                    .padding(.top, 20)
-
+                    .foregroundColor(.mabelPrimary)
+                    .padding(.top, MabelSpacing.cardPaddingContent)
                 Text("Chapter approved!")
-                    .font(.comfortaa(22, weight: .bold))
-                    .foregroundColor(.mabelText)
-
+                    .headingStyle()
                 Text("This chapter is finalized and ready for your book.")
-                    .font(.comfortaa(14, weight: .regular))
-                    .foregroundColor(.mabelSubtle)
+                    .helperStyle()
                     .multilineTextAlignment(.center)
-
                 CTAButton(title: "VIEW IN MY STORIES") {
                     appState.navigationPath = NavigationPath()
                     appState.selectedTab = 1
                 }
             } else if chapter.generatedNarrative != nil {
-                // Narrative ready for review
                 Image(systemName: "doc.text.magnifyingglass")
                     .font(.system(size: 48))
-                    .foregroundColor(.mabelTeal)
-                    .padding(.top, 20)
-
+                    .foregroundColor(.mabelPrimary)
+                    .padding(.top, MabelSpacing.cardPaddingContent)
                 Text("Your chapter is ready!")
-                    .font(.comfortaa(22, weight: .bold))
-                    .foregroundColor(.mabelText)
-
+                    .headingStyle()
                 Text("Review your generated narrative. You can approve it or request changes.")
-                    .font(.comfortaa(14, weight: .regular))
-                    .foregroundColor(.mabelSubtle)
+                    .helperStyle()
                     .multilineTextAlignment(.center)
-
                 CTAButton(title: "REVIEW CHAPTER") {
                     showChapterReview = true
                 }
             } else {
-                // Still processing
                 Image(systemName: "text.badge.star")
                     .font(.system(size: 48))
-                    .foregroundColor(.mabelTeal)
-                    .padding(.top, 20)
-
+                    .foregroundColor(.mabelPrimary)
+                    .padding(.top, MabelSpacing.cardPaddingContent)
                 Text("All memories recorded!")
-                    .font(.comfortaa(22, weight: .bold))
-                    .foregroundColor(.mabelText)
-
+                    .headingStyle()
                 Text("Your stories are being woven into a chapter narrative. This may take a moment.")
-                    .font(.comfortaa(14, weight: .regular))
-                    .foregroundColor(.mabelSubtle)
+                    .helperStyle()
                     .multilineTextAlignment(.center)
             }
         }
-        .padding(.top, 16)
+        .padding(.top, MabelSpacing.elementGap)
     }
 
-    // MARK: - Recording UI
+    // MARK: - Recording UI (Focused Flow)
 
     private var recordingUI: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            // Mic button — centered
-            HStack {
-                Spacer()
-                NavigationLink(value: RecordingDestination(chapterIndex: chapterIndex, prompt: nil)) {
-                    ZStack {
-                        Circle()
-                            .fill(Color.mabelTeal.opacity(0.08))
-                            .frame(width: 112, height: 112)
-                        Circle()
-                            .fill(Color.mabelTeal)
-                            .frame(width: 80, height: 80)
-                            .shadow(color: .mabelTeal.opacity(0.3), radius: 10, x: 0, y: 4)
-                        Image(systemName: "mic.fill")
-                            .font(.system(size: 30))
-                            .foregroundColor(.white)
-                    }
-                }
-                Spacer()
-            }
-            .padding(.bottom, 24)
-
-            // Instruction text
-            Text("Pick a topic related to \(chapter.title.lowercased()) and start recording:")
-                .font(.comfortaa(14, weight: .regular))
-                .foregroundColor(.mabelSubtle)
-                .padding(.bottom, 16)
-
-            // Suggestion cards
-            if isLoadingPrompts {
-                HStack(spacing: 10) {
-                    ProgressView()
-                        .tint(.mabelTeal)
-                    Text("Generating prompts...")
-                        .font(.comfortaa(13, weight: .medium))
-                        .foregroundColor(.mabelSubtle)
-                }
+        VStack(spacing: 0) {
+            // Hero heading — tight line spacing
+            Text("What story would\nyou like to tell?")
+                .font(MabelTypography.heading())
+                .foregroundColor(.mabelText)
+                .lineSpacing(-2)
+                .multilineTextAlignment(.center)
                 .frame(maxWidth: .infinity)
-                .padding(.vertical, 20)
-            } else {
-                VStack(spacing: 8) {
-                    ForEach(suggestionPrompts, id: \.self) { prompt in
-                        NavigationLink(value: RecordingDestination(chapterIndex: chapterIndex, prompt: prompt)) {
-                            SuggestionCardLabel(prompt: prompt)
+                .padding(.bottom, MabelSpacing.tightGap)
+
+            Text("Tap the mic and start speaking.")
+                .helperStyle()
+                .multilineTextAlignment(.center)
+                .frame(maxWidth: .infinity)
+                .padding(.bottom, MabelSpacing.sectionGap)
+
+            // Hero mic button — larger 100pt
+            ZStack {
+                Circle()
+                    .fill(Color.mabelPrimary.opacity(0.08))
+                    .frame(width: 140, height: 140)
+                    .scaleEffect(micPulse ? MabelAnimation.micPulseScale : 1.0)
+                    .opacity(micPulse ? MabelAnimation.micPulseOpacity : 1.0)
+                Circle()
+                    .fill(Color.mabelPrimary)
+                    .frame(width: 100, height: 100)
+                    .shadow(color: .mabelPrimary.opacity(0.3), radius: 14, x: 0, y: 6)
+                Image(systemName: "mic.fill")
+                    .font(.system(size: 36))
+                    .foregroundColor(.white)
+            }
+            .accessibilityLabel("Record a memory")
+            .accessibilityHint("Double tap to start recording")
+            .padding(.bottom, MabelSpacing.xxxl)
+            .onAppear {
+                withAnimation(MabelAnimation.micPulse) {
+                    micPulse = true
+                }
+            }
+
+            // Divider — "or pick a prompt"
+            HStack(spacing: MabelSpacing.md) {
+                Rectangle().fill(Color.mabelBorderWarm).frame(height: 1)
+                Text("or pick a prompt")
+                    .font(MabelTypography.smallLabel())
+                    .foregroundColor(.mabelSubtle)
+                    .layoutPriority(1)
+                Rectangle().fill(Color.mabelBorderWarm).frame(height: 1)
+            }
+            .padding(.bottom, MabelSpacing.elementGap)
+
+            // Suggestion cards — high contrast with shadows
+            Group {
+                if isLoadingPrompts {
+                    HStack(spacing: MabelSpacing.pillPadV) {
+                        ProgressView()
+                            .tint(.mabelPrimary)
+                        Text("Generating prompts...")
+                            .font(MabelTypography.helper())
+                            .foregroundColor(.mabelSubtle)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, MabelSpacing.cardPaddingContent)
+                } else {
+                    VStack(spacing: MabelSpacing.md) {
+                        ForEach(suggestionPrompts, id: \.self) { prompt in
+                            NavigationLink(value: RecordingDestination(chapterIndex: chapterIndex, prompt: prompt)) {
+                                SuggestionCardLabel(prompt: prompt)
+                                    .mabelCardShadow()
+                            }
+                            .buttonStyle(.plain)
                         }
-                        .buttonStyle(.plain)
                     }
                 }
             }
-            Spacer().frame(height: 24)
+            .padding(.bottom, MabelSpacing.sectionGap)
 
-            // Write here toggle
+            // Write here — card style with icon circle
             Button(action: { showWriteBox.toggle() }) {
-                HStack {
+                HStack(spacing: MabelSpacing.md) {
+                    Image(systemName: "pencil.line")
+                        .font(.system(size: 14))
+                        .foregroundColor(.mabelPrimary)
+                        .frame(width: 36, height: 36)
+                        .background(Circle().fill(Color.mabelPrimaryLight))
+
+                    VStack(alignment: .leading, spacing: MabelSpacing.xs) {
+                        Text("Write instead")
+                            .font(MabelTypography.body())
+                            .foregroundColor(.mabelText)
+                        Text("Type your memory if you prefer writing")
+                            .font(MabelTypography.smallLabel())
+                            .foregroundColor(.mabelSubtle)
+                    }
+                    Spacer()
                     Image(systemName: showWriteBox ? "chevron.down" : "chevron.right")
                         .font(.system(size: 12, weight: .semibold))
-                    Text("Or write here...")
-                        .font(.comfortaa(14, weight: .medium))
+                        .foregroundColor(.mabelSubtle)
                 }
-                .foregroundColor(.mabelTeal)
+                .padding(MabelSpacing.cardPaddingGeneral)
+                .background(
+                    RoundedRectangle(cornerRadius: MabelSpacing.cornerRadiusSuggestion)
+                        .fill(Color.mabelSurface)
+                )
+                .overlay(
+                    RoundedRectangle(cornerRadius: MabelSpacing.cornerRadiusSuggestion)
+                        .strokeBorder(Color.mabelBorderWarm, lineWidth: MabelSpacing.borderCard)
+                )
+                .mabelCardShadow()
             }
-            .padding(.bottom, 8)
+            .buttonStyle(.plain)
+            .accessibilityLabel("Write a memory instead")
+            .padding(.bottom, MabelSpacing.md)
 
             if showWriteBox {
                 TextEditor(text: $typedEntry)
-                    .font(.comfortaa(14, weight: .regular))
+                    .font(MabelTypography.body())
                     .foregroundColor(.mabelText)
                     .scrollContentBackground(.hidden)
-                    .padding(12)
-                    .frame(minHeight: 120)
+                    .padding(MabelSpacing.cardPaddingGeneral)
+                    .frame(minHeight: 160)
                     .background(
-                        RoundedRectangle(cornerRadius: 12)
-                            .fill(Color.mabelSurface.opacity(0.9))
+                        RoundedRectangle(cornerRadius: MabelSpacing.cornerRadiusSuggestion)
+                            .fill(Color.mabelSurface)
                     )
-                    .padding(.bottom, 12)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: MabelSpacing.cornerRadiusSuggestion)
+                            .strokeBorder(Color.mabelBorderWarm, lineWidth: MabelSpacing.borderCard)
+                    )
+                    .accessibilityLabel("Type your memory here")
+                    .padding(.bottom, MabelSpacing.md)
 
                 if !typedEntry.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
                     CTAButton(title: "SAVE WRITTEN MEMORY") {
                         saveTypedMemory()
                     }
-                    .padding(.bottom, 12)
+                    .padding(.bottom, MabelSpacing.md)
                 }
             }
         }
     }
 
+    // MARK: - Data Methods
+
     private func loadPrompts() async {
         isLoadingPrompts = true
 
-        // Gather previous memory transcripts/narratives across all chapters for context
         let previousMemories = appState.chapters
             .flatMap { $0.memories }
             .compactMap { $0.narrativeText ?? $0.transcript }
@@ -365,7 +439,6 @@ struct RecordingSetupView: View {
                 suggestionPrompts = ChapterPrompts.getPrompts(for: chapter.id, count: 3)
             }
         } catch {
-            // Fall back to static prompts on any failure
             print("AI prompts failed, using static: \(error.localizedDescription)")
             suggestionPrompts = ChapterPrompts.getPrompts(for: chapter.id, count: 3)
         }
@@ -383,7 +456,6 @@ struct RecordingSetupView: View {
         )
         appState.addMemory(chapterIndex: chapterIndex, memory: memory)
 
-        // Process typed entry through GPT
         let memoryID = memory.id
         Task {
             await StoryProcessingService.shared.processTypedMemory(
