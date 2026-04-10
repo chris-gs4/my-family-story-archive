@@ -28,6 +28,9 @@ build/
 *.swo
 *~
 
+# Xcode user state
+*.xcuserstate
+
 # Testing
 coverage/
 .nyc_output/
