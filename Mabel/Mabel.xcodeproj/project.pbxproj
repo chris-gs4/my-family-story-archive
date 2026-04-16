@@ -11,10 +11,12 @@
 		0C3A08593450F81908F185F0 /* MabelFonts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E5C754C7035FCAB426E34C0 /* MabelFonts.swift */; };
 		CC0002010000000000000001 /* DesignConceptPrototypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0001010000000000000001 /* DesignConceptPrototypes.swift */; };
 		10D371C201E9BBD4C0D0AA23 /* CTAButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 382FF0578D1F342556D6B446 /* CTAButton.swift */; };
+		EE0003010000000000000001 /* SecondaryButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0003020000000000000001 /* SecondaryButton.swift */; };
 		370E69C609C3FD03BB9E4DDB /* WaveformView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69BAB34C868B293BAC9F2A0E /* WaveformView.swift */; };
 		5C1097C784EA25FB512A9F81 /* MabelApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABB24DE0618903DE68C06153 /* MabelApp.swift */; };
 		60D38AEEEA8026ED08225174 /* MabelColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3042620F7E213AF3FC7B9E49 /* MabelColors.swift */; };
 		71C2D3A783ED7A2EF9C406E0 /* MabelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 559250AE118047B34ED66150 /* MabelTests.swift */; };
+		EE0004010000000000000001 /* DesignConceptSnapshotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0004020000000000000001 /* DesignConceptSnapshotTests.swift */; };
 		743819BE8EDF87B75DE14786 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D5FDF2EF878B61D179960D79 /* Assets.xcassets */; };
 		76AEFD3B3EE12EF90CAEA3EC /* PillButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BBF357783A66732C0B0523B /* PillButton.swift */; };
 		78A17D318DCB33213FA37F68 /* SetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0C2451C222B33C06C68B6FA /* SetupView.swift */; };
@@ -73,7 +75,9 @@
 		3042620F7E213AF3FC7B9E49 /* MabelColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MabelColors.swift; sourceTree = "<group>"; };
 		CC0001010000000000000001 /* DesignConceptPrototypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignConceptPrototypes.swift; sourceTree = "<group>"; };
 		382FF0578D1F342556D6B446 /* CTAButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CTAButton.swift; sourceTree = "<group>"; };
+		EE0003020000000000000001 /* SecondaryButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondaryButton.swift; sourceTree = "<group>"; };
 		559250AE118047B34ED66150 /* MabelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MabelTests.swift; sourceTree = "<group>"; };
+		EE0004020000000000000001 /* DesignConceptSnapshotTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignConceptSnapshotTests.swift; sourceTree = "<group>"; };
 		61DD224D61070C052EF867D1 /* MabelWordmark.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MabelWordmark.swift; sourceTree = "<group>"; };
 		DD0009020000000000000001 /* MabelWordmarkLockup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MabelWordmarkLockup.swift; sourceTree = "<group>"; };
 		69BAB34C868B293BAC9F2A0E /* WaveformView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaveformView.swift; sourceTree = "<group>"; };
@@ -142,6 +146,7 @@
 			isa = PBXGroup;
 			children = (
 				559250AE118047B34ED66150 /* MabelTests.swift */,
+				EE0004020000000000000001 /* DesignConceptSnapshotTests.swift */,
 			);
 			path = MabelTests;
 			sourceTree = "<group>";
@@ -162,6 +167,7 @@
 				AA0002010000000000000012 /* ProgressBar.swift */,
 				AA0002010000000000000021 /* ProgressCard.swift */,
 				AA0002010000000000000023 /* PromptCard.swift */,
+				EE0003020000000000000001 /* SecondaryButton.swift */,
 				AF3988DBFC8A4BBEA4E148D1 /* SuggestionCard.swift */,
 				69BAB34C868B293BAC9F2A0E /* WaveformView.swift */,
 			);
@@ -343,6 +349,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				71C2D3A783ED7A2EF9C406E0 /* MabelTests.swift in Sources */,
+				EE0004010000000000000001 /* DesignConceptSnapshotTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -377,6 +384,7 @@
 				AA0001010000000000000019 /* MemoryCard.swift in Sources */,
 				AA0001010000000000000008 /* MyStoriesView.swift in Sources */,
 				AA0001010000000000000014 /* OpenAIService.swift in Sources */,
+				EE0003010000000000000001 /* SecondaryButton.swift in Sources */,
 				AA0001010000000000000018 /* PDFExportService.swift in Sources */,
 				76AEFD3B3EE12EF90CAEA3EC /* PillButton.swift in Sources */,
 				AA0001010000000000000009 /* ProfileView.swift in Sources */,

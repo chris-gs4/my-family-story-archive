@@ -15,39 +15,38 @@ struct MascotGreetingHeader: View {
     }
 
     var body: some View {
-        HStack(alignment: .top, spacing: 16) {
+        HStack(alignment: .top, spacing: MabelSpacing.elementGap) {
             Image("MabelMascot")
                 .renderingMode(.original)
                 .resizable()
                 .scaledToFit()
-                .frame(width: 140, height: 140)
+                .frame(width: MabelSpacing.mascotGreeting, height: MabelSpacing.mascotGreeting)
 
-            VStack(alignment: .leading, spacing: 8) {
+            VStack(alignment: .leading, spacing: MabelSpacing.tightGap) {
                 // Mabel badge
                 HStack(spacing: 6) {
                     ZStack {
                         Circle()
                             .fill(Color.mabelGold.opacity(0.2))
-                            .frame(width: 28, height: 28)
+                            .frame(width: MabelSpacing.mabelIconSize, height: MabelSpacing.mabelIconSize)
                         Text("\u{1F475}")
                             .font(.system(size: 14))
                     }
                     Text("Mabel")
-                        .font(.comfortaa(13, weight: .semiBold))
+                        .font(MabelTypography.badge())
                         .foregroundColor(.mabelSubtle)
                 }
 
                 Text("\(greeting), \(userName)!")
-                    .font(.comfortaa(28, weight: .bold))
-                    .foregroundColor(.mabelText)
+                    .headingStyle()
                     .lineLimit(2)
                     .minimumScaleFactor(0.7)
 
                 Text("Let's capture a memory")
-                    .font(.comfortaa(18, weight: .regular))
+                    .font(MabelTypography.subheading())
                     .foregroundColor(.mabelText)
             }
-            .padding(.top, 8)
+            .padding(.top, MabelSpacing.tightGap)
 
             Spacer(minLength: 0)
         }

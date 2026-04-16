@@ -102,6 +102,20 @@ struct MabelTypography {
         .comfortaa(scaled(15, relativeTo: .subheadline), weight: selected ? .semiBold : .regular)
     }
 
+    // MARK: - Screen & Form Labels
+
+    /// Screen/section title — Bold 18pt (Comfortaa, not Nunito)
+    /// Used for "All Chapters", "My Stories", chapter headings in non-hero contexts
+    static func screenTitle() -> Font {
+        .comfortaa(scaled(18, relativeTo: .headline), weight: .bold)
+    }
+
+    /// Form field label — Bold 14pt
+    /// Used for "Display Name", "Gender", input field labels
+    static func formLabel() -> Font {
+        .comfortaa(scaled(14, relativeTo: .subheadline), weight: .bold)
+    }
+
     // MARK: - Specialized
 
     /// Timer display on recording screen — Medium 24pt
@@ -203,6 +217,22 @@ struct SectionLabelStyle: ViewModifier {
     }
 }
 
+struct ScreenTitleStyle: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .font(MabelTypography.screenTitle())
+            .foregroundColor(MabelColors.text)
+    }
+}
+
+struct FormLabelStyle: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .font(MabelTypography.formLabel())
+            .foregroundColor(MabelColors.text)
+    }
+}
+
 extension View {
     /// Hero heading: ExtraBold 32pt, mabelText, -0.02em tracking
     func heroHeadingStyle() -> some View {
@@ -237,5 +267,15 @@ extension View {
     /// Section label: SemiBold 14pt, mabelPrimary, uppercase, 0.08em tracking
     func sectionLabelStyle() -> some View {
         modifier(SectionLabelStyle())
+    }
+
+    /// Screen title: Bold 18pt, mabelText
+    func screenTitleStyle() -> some View {
+        modifier(ScreenTitleStyle())
+    }
+
+    /// Form label: Bold 14pt, mabelText
+    func formLabelStyle() -> some View {
+        modifier(FormLabelStyle())
     }
 }

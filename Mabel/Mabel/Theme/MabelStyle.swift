@@ -84,16 +84,41 @@ struct PillButtonStyle: ButtonStyle {
 }
 
 struct SecondaryButtonStyle: ButtonStyle {
+    var isDisabled: Bool = false
+
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .font(MabelTypography.helper())
-            .foregroundColor(MabelColors.primary)
-            .padding(.horizontal, 20)
-            .padding(.vertical, MabelSpacing.pillPadV)
+            .font(MabelTypography.badge())
+            .foregroundColor(isDisabled ? MabelColors.subtle : MabelColors.primary)
+            .frame(maxWidth: .infinity)
+            .frame(height: 48)
             .background(
                 Capsule()
-                    .strokeBorder(MabelColors.primary, lineWidth: MabelSpacing.borderCard)
+                    .strokeBorder(
+                        isDisabled ? MabelColors.subtle.opacity(0.3) : MabelColors.primary,
+                        lineWidth: MabelSpacing.borderCard
+                    )
             )
-            .opacity(configuration.isPressed ? 0.7 : 1.0)
+            .opacity(isDisabled ? 0.5 : (configuration.isPressed ? 0.7 : 1.0))
+    }
+}
+
+struct DestructiveSecondaryButtonStyle: ButtonStyle {
+    var isDisabled: Bool = false
+
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .font(MabelTypography.badge())
+            .foregroundColor(isDisabled ? MabelColors.subtle : MabelColors.burgundy)
+            .frame(maxWidth: .infinity)
+            .frame(height: 48)
+            .background(
+                Capsule()
+                    .strokeBorder(
+                        isDisabled ? MabelColors.subtle.opacity(0.3) : MabelColors.burgundy.opacity(0.5),
+                        lineWidth: MabelSpacing.borderCard
+                    )
+            )
+            .opacity(isDisabled ? 0.5 : (configuration.isPressed ? 0.7 : 1.0))
     }
 }

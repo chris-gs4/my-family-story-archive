@@ -1,156 +1,96 @@
 import SwiftUI
 
-// MARK: - Welcome Screen Concept A: "Elevated Simplicity"
-// UX Principle: Figure-Ground (Gestalt) — maximize contrast between mascot and background
-// with subtle depth cues. Minimal elements, maximum breathing room.
+// MARK: - Profile Concept A: "Token Polish"
+// UX Principle: Consistency (Nielsen) — pure token swap. formLabelStyle for labels,
+// body() for inputs, spacing tokens throughout. HOME -> SecondaryButton,
+// LOG OUT -> DestructiveButton (burgundy). Dev tools use badge() font. Low risk.
 
-struct WelcomeConceptA: View {
+struct ProfileConceptA: View {
+    @State private var name = "Margaret"
+    @State private var selectedGender: String? = "Female"
+
     var body: some View {
         ZStack {
-            MabelBackground()
-
-            VStack(spacing: 0) {
-                MabelWordmark(height: MabelSpacing.wordmarkHeight)
-                    .padding(.top, MabelSpacing.topSafe)
-                    .accessibilityHidden(true)
-
-                Spacer()
-
-                // Mascot with warm gray atmospheric glow
-                ZStack {
-                    RadialGradient(
-                        colors: [Color.mabelText.opacity(0.04), Color.clear],
-                        center: .center,
-                        startRadius: 0,
-                        endRadius: 165
-                    )
-                    .frame(width: 330, height: 330)
-
-                    Image("MabelMascot")
-                        .renderingMode(.original)
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: MabelSpacing.mascotHero, height: MabelSpacing.mascotHero)
-                }
-                .accessibilityHidden(true)
-
-                Spacer()
-
-                // Text group
-                VStack(spacing: MabelSpacing.elementGap) {
-                    Text("Tell your story")
-                        .heroHeadingStyle()
-                        .multilineTextAlignment(.center)
-
-                    Text("Record your memories. Mabel will turn them\ninto something beautiful.")
-                        .bodyStyle()
-                        .foregroundColor(.mabelSubtle)
-                        .multilineTextAlignment(.center)
-                }
-                .accessibilityElement(children: .combine)
-
-                Spacer()
-
-                // CTA area
-                VStack(spacing: MabelSpacing.md) {
-                    CTAButton(title: "Get Started", action: {})
-
-                    Button(action: {}) {
-                        Text("Already have an account? Sign in")
-                            .font(MabelTypography.helper())
-                            .foregroundColor(.mabelSubtle)
-                    }
-                    .accessibilityHint("Sign in to your existing Mabel account")
-                }
-                .padding(.bottom, MabelSpacing.bottomSafe)
-            }
-            .screenPadding()
-        }
-    }
-}
-
-// MARK: - Welcome Screen Concept B: "Story Invitation"
-// UX Principle: Proximity (Gestalt) — group mascot tightly with headline to create
-// a unified "invitation" block. Adds a trust indicator pill for social proof.
-
-struct WelcomeConceptB: View {
-    var body: some View {
-        ZStack {
-            MabelBackground()
+            MabelGradientBackground()
 
             ScrollView(showsIndicators: false) {
-                VStack(spacing: 0) {
-                    MabelWordmark(height: MabelSpacing.wordmarkHeight)
-                        .padding(.top, MabelSpacing.topSafe)
-                        .padding(.bottom, MabelSpacing.xl)
-                        .accessibilityHidden(true)
-
-                    // Mascot + headline grouped tightly
-                    VStack(spacing: MabelSpacing.elementGap) {
+                VStack(alignment: .leading, spacing: 0) {
+                    // Header
+                    HStack {
+                        MabelWordmarkLockup()
+                        Spacer()
                         ZStack {
-                            RadialGradient(
-                                colors: [Color.mabelText.opacity(0.04), Color.clear],
-                                center: .center,
-                                startRadius: 0,
-                                endRadius: 140
-                            )
-                            .frame(width: 280, height: 280)
-
-                            Image("MabelMascot")
-                                .renderingMode(.original)
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: MabelSpacing.mascotHero, height: MabelSpacing.mascotHero)
-                        }
-                        .accessibilityHidden(true)
-
-                        Text("Tell your story")
-                            .heroHeadingStyle()
-                            .multilineTextAlignment(.center)
-                    }
-                    .padding(.bottom, MabelSpacing.elementGap)
-
-                    Text("Record your memories. Mabel will turn them\ninto something beautiful.")
-                        .bodyStyle()
-                        .foregroundColor(.mabelSubtle)
-                        .multilineTextAlignment(.center)
-                        .padding(.bottom, MabelSpacing.sectionGap)
-
-                    // Trust indicator pill
-                    HStack(spacing: MabelSpacing.tightGap) {
-                        Image(systemName: "mic.fill")
-                            .font(.system(size: MabelSpacing.iconTrust))
-                            .foregroundColor(.mabelPrimary)
-                        Text("No writing required — just talk")
-                            .font(MabelTypography.helper())
-                            .foregroundColor(.mabelText)
-                    }
-                    .padding(.horizontal, 18)
-                    .padding(.vertical, 10)
-                    .background(
-                        Capsule()
-                            .fill(Color.mabelPrimaryLight)
-                            .overlay(
-                                Capsule()
-                                    .strokeBorder(Color.mabelPrimary, lineWidth: MabelSpacing.borderCard)
-                            )
-                    )
-                    .accessibilityElement(children: .combine)
-                    .accessibilityLabel("No writing required, just talk")
-                    .padding(.bottom, MabelSpacing.sectionGap)
-
-                    // CTA area
-                    VStack(spacing: MabelSpacing.md) {
-                        CTAButton(title: "Get Started", action: {})
-
-                        Button(action: {}) {
-                            Text("Already have an account? Sign in")
-                                .font(MabelTypography.helper())
+                            Circle()
+                                .fill(Color.mabelBackgroundAlt)
+                                .frame(width: 44, height: 44)
+                            Image(systemName: "xmark")
+                                .font(.system(size: 14, weight: .semibold))
                                 .foregroundColor(.mabelSubtle)
                         }
-                        .accessibilityHint("Sign in to your existing Mabel account")
                     }
-                    .padding(.bottom, MabelSpacing.bottomSafe)
+                    .padding(.top, MabelSpacing.xl)
+                    .padding(.bottom, MabelSpacing.sectionGap)
+
+                    // Display Name
+                    VStack(alignment: .leading, spacing: MabelSpacing.tightGap) {
+                        Text("Display Name")
+                            .formLabelStyle()
+
+                        TextField("Your name", text: $name)
+                            .font(MabelTypography.body())
+                            .foregroundColor(.mabelText)
+                            .padding(.horizontal, MabelSpacing.inputPadH)
+                            .padding(.vertical, MabelSpacing.inputPadV)
+                            .background(
+                                RoundedRectangle(cornerRadius: MabelSpacing.cornerRadiusPill)
+                                    .fill(Color.mabelSurface)
+                            )
+                    }
+                    .padding(.bottom, MabelSpacing.xl)
+
+                    // Gender
+                    VStack(alignment: .leading, spacing: MabelSpacing.pillPadV) {
+                        Text("Gender")
+                            .formLabelStyle()
+
+                        HStack(spacing: MabelSpacing.tightGap) {
+                            ForEach(["Male", "Female", "Other"], id: \.self) { g in
+                                PillButton(title: g, isSelected: selectedGender == g) {
+                                    selectedGender = g
+                                }
+                            }
+                        }
+                    }
+                    .padding(.bottom, MabelSpacing.xl)
+
+                    // Payment
+                    VStack(alignment: .leading, spacing: MabelSpacing.tightGap) {
+                        Text("Payment Method")
+                            .formLabelStyle()
+
+                        TextField("Coming soon...", text: .constant(""))
+                            .font(MabelTypography.body())
+                            .foregroundColor(.mabelSubtle)
+                            .disabled(true)
+                            .padding(.horizontal, MabelSpacing.inputPadH)
+                            .padding(.vertical, MabelSpacing.inputPadV)
+                            .background(
+                                RoundedRectangle(cornerRadius: MabelSpacing.cornerRadiusPill)
+                                    .fill(Color.mabelSurface)
+                            )
+                    }
+                    .padding(.bottom, MabelSpacing.xxxl)
+
+                    // Buttons
+                    CTAButton(title: "SAVE") {}
+                        .padding(.bottom, MabelSpacing.md)
+
+                    SecondaryButton(title: "HOME") {}
+                        .padding(.bottom, MabelSpacing.md)
+
+                    DestructiveButton(title: "LOG OUT") {}
+
+                    Spacer().frame(height: MabelSpacing.bottomSafe)
                 }
                 .screenPadding()
             }
@@ -158,94 +98,247 @@ struct WelcomeConceptB: View {
     }
 }
 
-// MARK: - Welcome Screen Concept C: "Warm Greeting Card"
-// UX Principle: Aesthetic-Minimalist (Nielsen) + Closure (Gestalt) — card-based layout
-// wraps the invitation in a warm bordered card, creating a "greeting card" feel
-// that matches Mabel's warm journal aesthetic. Content card as hero element.
+// MARK: - Profile Concept B: "Settings Card"
+// UX Principle: Figure-Ground (Gestalt) + Proximity — groups form fields into
+// a bordered card, creating a clear "settings" surface. Buttons separated below
+// the card. Section label "YOUR PROFILE" at top. Flat white background.
+// Dismiss button gets circle background. Consistent with other uplifted screens.
 
-struct WelcomeConceptC: View {
+struct ProfileConceptB: View {
+    @State private var name = "Margaret"
+    @State private var selectedGender: String? = "Female"
+
     var body: some View {
-        ZStack {
-            Color.mabelBackgroundAlt
-                .ignoresSafeArea(.all, edges: .all)
+        VStack(spacing: 0) {
+            // Header
+            HStack {
+                MabelWordmarkLockup()
+                Spacer()
+                ZStack {
+                    Circle()
+                        .fill(Color.mabelBackgroundAlt)
+                        .frame(width: 44, height: 44)
+                    Image(systemName: "xmark")
+                        .font(.system(size: 14, weight: .semibold))
+                        .foregroundColor(.mabelSubtle)
+                }
+            }
+            .padding(.horizontal, MabelSpacing.screenPadH)
+            .topSafePadding()
+            .padding(.bottom, MabelSpacing.tightGap)
 
             ScrollView(showsIndicators: false) {
-                VStack(spacing: 0) {
-                    MabelWordmark(height: MabelSpacing.wordmarkHeight)
-                        .padding(.top, MabelSpacing.topSafe)
-                        .padding(.bottom, MabelSpacing.xl)
-                        .accessibilityHidden(true)
+                VStack(alignment: .leading, spacing: 0) {
+                    // Section label
+                    Text("Your Profile")
+                        .sectionLabelStyle()
+                        .padding(.top, MabelSpacing.elementGap)
+                        .padding(.bottom, MabelSpacing.elementGap)
 
-                    // Hero card containing mascot + text
-                    VStack(spacing: MabelSpacing.xl) {
-                        ZStack {
-                            RadialGradient(
-                                colors: [Color.mabelText.opacity(0.03), Color.clear],
-                                center: .center,
-                                startRadius: 0,
-                                endRadius: 130
-                            )
-                            .frame(width: 260, height: 260)
+                    // Settings card
+                    VStack(alignment: .leading, spacing: MabelSpacing.xl) {
+                        // Display Name
+                        VStack(alignment: .leading, spacing: MabelSpacing.tightGap) {
+                            Text("Display Name")
+                                .formLabelStyle()
 
-                            Image("MabelMascot")
-                                .renderingMode(.original)
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 200, height: 200)
+                            TextField("Your name", text: $name)
+                                .font(MabelTypography.body())
+                                .foregroundColor(.mabelText)
+                                .padding(.horizontal, MabelSpacing.inputPadH)
+                                .padding(.vertical, MabelSpacing.inputPadV)
+                                .background(
+                                    RoundedRectangle(cornerRadius: MabelSpacing.cornerRadiusPill)
+                                        .fill(Color.mabelBackgroundAlt)
+                                )
                         }
-                        .accessibilityHidden(true)
 
-                        VStack(spacing: MabelSpacing.tightGap) {
-                            Text("Tell your story")
-                                .heroHeadingStyle()
-                                .multilineTextAlignment(.center)
+                        // Gender
+                        VStack(alignment: .leading, spacing: MabelSpacing.pillPadV) {
+                            Text("Gender")
+                                .formLabelStyle()
 
-                            Text("Record your memories. Mabel will\nturn them into something beautiful.")
-                                .bodyStyle()
+                            HStack(spacing: MabelSpacing.tightGap) {
+                                ForEach(["Male", "Female", "Other"], id: \.self) { g in
+                                    PillButton(title: g, isSelected: selectedGender == g) {
+                                        selectedGender = g
+                                    }
+                                }
+                            }
+                        }
+
+                        // Payment
+                        VStack(alignment: .leading, spacing: MabelSpacing.tightGap) {
+                            Text("Payment Method")
+                                .formLabelStyle()
+
+                            TextField("Coming soon...", text: .constant(""))
+                                .font(MabelTypography.body())
                                 .foregroundColor(.mabelSubtle)
-                                .multilineTextAlignment(.center)
+                                .disabled(true)
+                                .padding(.horizontal, MabelSpacing.inputPadH)
+                                .padding(.vertical, MabelSpacing.inputPadV)
+                                .background(
+                                    RoundedRectangle(cornerRadius: MabelSpacing.cornerRadiusPill)
+                                        .fill(Color.mabelBackgroundAlt)
+                                )
                         }
-                        .accessibilityElement(children: .combine)
                     }
                     .cardPadding()
+                    .frame(maxWidth: .infinity, alignment: .leading)
                     .background(
                         RoundedRectangle(cornerRadius: MabelSpacing.cornerRadiusCard)
                             .fill(Color.mabelSurface)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: MabelSpacing.cornerRadiusCard)
-                                    .strokeBorder(Color.mabelBorderWarm, lineWidth: MabelSpacing.borderCard)
-                            )
+                    )
+                    .overlay(
+                        RoundedRectangle(cornerRadius: MabelSpacing.cornerRadiusCard)
+                            .strokeBorder(Color.mabelBorderWarm, lineWidth: MabelSpacing.borderCard)
                     )
                     .mabelCardShadow()
                     .padding(.bottom, MabelSpacing.sectionGap)
 
-                    // CTA area
-                    VStack(spacing: MabelSpacing.md) {
-                        CTAButton(title: "Get Started", action: {})
+                    // Action buttons — outside the card
+                    CTAButton(title: "SAVE") {}
+                        .padding(.bottom, MabelSpacing.md)
 
-                        Button(action: {}) {
-                            Text("Already have an account? Sign in")
-                                .font(MabelTypography.helper())
-                                .foregroundColor(.mabelSubtle)
-                        }
-                        .accessibilityHint("Sign in to your existing Mabel account")
-                    }
-                    .padding(.bottom, MabelSpacing.bottomSafe)
+                    SecondaryButton(title: "HOME") {}
+                        .padding(.bottom, MabelSpacing.md)
+
+                    DestructiveButton(title: "LOG OUT") {}
+
+                    Spacer().frame(height: MabelSpacing.bottomSafe)
                 }
                 .screenPadding()
             }
         }
+        .background(
+            Color.mabelBackground.ignoresSafeArea(.all, edges: .all)
+        )
     }
 }
 
-#Preview("Concept A — Elevated Simplicity") {
-    WelcomeConceptA()
+// MARK: - Profile Concept C: "Minimal Form"
+// UX Principle: Aesthetic-Minimalist (Nielsen) — strips the profile to its essentials.
+// No card wrapper — fields sit directly on white background with subtle dividers.
+// Save is the only CTA; Home and Log Out are text links at the bottom.
+// Most minimal approach. Flat white background.
+
+struct ProfileConceptC: View {
+    @State private var name = "Margaret"
+    @State private var selectedGender: String? = "Female"
+
+    var body: some View {
+        VStack(spacing: 0) {
+            // Header
+            HStack {
+                MabelWordmarkLockup()
+                Spacer()
+                ZStack {
+                    Circle()
+                        .fill(Color.mabelBackgroundAlt)
+                        .frame(width: 44, height: 44)
+                    Image(systemName: "xmark")
+                        .font(.system(size: 14, weight: .semibold))
+                        .foregroundColor(.mabelSubtle)
+                }
+            }
+            .padding(.horizontal, MabelSpacing.screenPadH)
+            .topSafePadding()
+            .padding(.bottom, MabelSpacing.tightGap)
+
+            ScrollView(showsIndicators: false) {
+                VStack(alignment: .leading, spacing: 0) {
+                    Text("Your Profile")
+                        .headingStyle()
+                        .padding(.top, MabelSpacing.sectionGap)
+                        .padding(.bottom, MabelSpacing.sectionGap)
+
+                    // Display Name
+                    VStack(alignment: .leading, spacing: MabelSpacing.tightGap) {
+                        Text("Display Name")
+                            .formLabelStyle()
+
+                        TextField("Your name", text: $name)
+                            .font(MabelTypography.body())
+                            .foregroundColor(.mabelText)
+                            .padding(.horizontal, MabelSpacing.inputPadH)
+                            .padding(.vertical, MabelSpacing.inputPadV)
+                            .background(
+                                RoundedRectangle(cornerRadius: MabelSpacing.cornerRadiusPill)
+                                    .fill(Color.mabelBackgroundAlt)
+                            )
+                    }
+                    .padding(.bottom, MabelSpacing.xl)
+
+                    // Gender
+                    VStack(alignment: .leading, spacing: MabelSpacing.pillPadV) {
+                        Text("Gender")
+                            .formLabelStyle()
+
+                        HStack(spacing: MabelSpacing.tightGap) {
+                            ForEach(["Male", "Female", "Other"], id: \.self) { g in
+                                PillButton(title: g, isSelected: selectedGender == g) {
+                                    selectedGender = g
+                                }
+                            }
+                        }
+                    }
+                    .padding(.bottom, MabelSpacing.xl)
+
+                    // Payment
+                    VStack(alignment: .leading, spacing: MabelSpacing.tightGap) {
+                        Text("Payment Method")
+                            .formLabelStyle()
+
+                        Text("Coming soon...")
+                            .font(MabelTypography.helper())
+                            .foregroundColor(.mabelSubtle)
+                    }
+                    .padding(.bottom, MabelSpacing.xxxl)
+
+                    // Save only
+                    CTAButton(title: "SAVE") {}
+                        .padding(.bottom, MabelSpacing.sectionGap)
+
+                    // Text links
+                    HStack {
+                        Spacer()
+                        Button(action: {}) {
+                            Text("Home")
+                                .font(MabelTypography.helper())
+                                .foregroundColor(.mabelPrimary)
+                        }
+                        Text("\u{2022}")
+                            .foregroundColor(.mabelSubtle)
+                        Button(action: {}) {
+                            Text("Log Out")
+                                .font(MabelTypography.helper())
+                                .foregroundColor(.mabelBurgundy)
+                        }
+                        Spacer()
+                    }
+
+                    Spacer().frame(height: MabelSpacing.bottomSafe)
+                }
+                .screenPadding()
+            }
+        }
+        .background(
+            Color.mabelBackground.ignoresSafeArea(.all, edges: .all)
+        )
+    }
 }
 
-#Preview("Concept B — Story Invitation") {
-    WelcomeConceptB()
+// MARK: - Previews
+
+#Preview("Concept A \u{2014} Token Polish") {
+    ProfileConceptA()
 }
 
-#Preview("Concept C — Warm Greeting Card") {
-    WelcomeConceptC()
+#Preview("Concept B \u{2014} Settings Card") {
+    ProfileConceptB()
+}
+
+#Preview("Concept C \u{2014} Minimal Form") {
+    ProfileConceptC()
 }

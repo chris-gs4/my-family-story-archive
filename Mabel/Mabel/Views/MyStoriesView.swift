@@ -15,52 +15,59 @@ struct MyStoriesView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-                // FIXED top bar (below safe area)
-                HStack {
-                    Button(action: { appState.selectedTab = 0 }) {
-                        HStack(spacing: MabelSpacing.tightGap) {
-                            Image(systemName: "chevron.left")
-                                .font(.system(size: 16, weight: .semibold))
-                            MabelWordmarkLockup()
-                        }
-                        .foregroundColor(.mabelPrimary)
-                        .frame(height: 44)
-                        .contentShape(Rectangle())
+            // FIXED top bar
+            HStack {
+                Button(action: { appState.selectedTab = 0 }) {
+                    HStack(spacing: MabelSpacing.tightGap) {
+                        Image(systemName: "chevron.left")
+                            .font(.system(size: 16, weight: .semibold))
+                        MabelWordmarkLockup()
                     }
-                    Spacer()
-                    Text("My Stories")
-                        .font(.comfortaa(18, weight: .bold))
-                        .foregroundColor(.mabelText)
-                    Spacer()
-                    ProfileButton { showProfile = true }
+                    .foregroundColor(.mabelPrimary)
+                    .frame(height: 44)
+                    .contentShape(Rectangle())
                 }
-                .padding(.horizontal, 24)
-                .padding(.top, 8)
-                .padding(.bottom, 8)
+                Spacer()
+                Text("My Stories")
+                    .screenTitleStyle()
+                Spacer()
+                ProfileButton { showProfile = true }
+            }
+            .padding(.horizontal, MabelSpacing.screenPadH)
+            .padding(.top, MabelSpacing.tightGap)
+            .padding(.bottom, MabelSpacing.tightGap)
 
-                if chaptersWithNarratives.isEmpty {
-                    Spacer()
-                    emptyState
-                    Spacer()
-                } else {
-                    // Scrollable content
-                    ScrollView {
-                        VStack(alignment: .leading, spacing: 0) {
-                            // Chapter narratives
-                            ForEach(chaptersWithNarratives) { chapter in
-                                chapterNarrativeCard(chapter)
-                                    .padding(.bottom, 20)
-                            }
+            if chaptersWithNarratives.isEmpty {
+                Spacer()
+                emptyState
+                Spacer()
+            } else {
+                // Scrollable content
+                ScrollView(showsIndicators: false) {
+                    VStack(alignment: .leading, spacing: 0) {
+                        // Section label
+                        Text("Your Chapters")
+                            .sectionLabelStyle()
+                            .padding(.top, MabelSpacing.elementGap)
+                            .padding(.bottom, MabelSpacing.elementGap)
 
-                            Spacer()
-                                .frame(height: 60)
+                        // Chapter narrative cards
+                        ForEach(chaptersWithNarratives) { chapter in
+                            chapterNarrativeCard(chapter)
+                                .padding(.bottom, MabelSpacing.elementGap)
                         }
-                        .padding(.horizontal, 24)
-                        .padding(.top, 8)
+
+                        Spacer()
+                            .frame(height: MabelSpacing.bottomSafe + MabelSpacing.cardPaddingContent)
                     }
+                    .screenPadding()
                 }
+            }
         }
-        .background(MabelGradientBackground())
+        .background(
+            Color.mabelBackground
+                .ignoresSafeArea(.all, edges: .all)
+        )
         .toolbar(.hidden, for: .navigationBar)
         .sheet(isPresented: $showProfile) {
             ProfileView()
@@ -73,100 +80,105 @@ struct MyStoriesView: View {
     // MARK: - Empty State
 
     private var emptyState: some View {
-        VStack(spacing: 16) {
+        VStack(spacing: MabelSpacing.elementGap) {
             Image("MabelMascot")
                 .resizable()
                 .scaledToFit()
-                .frame(width: 80, height: 80)
+                .frame(width: MabelSpacing.mascotEmpty, height: MabelSpacing.mascotEmpty)
 
             Text("Your book is taking shape!")
-                .font(.comfortaa(18, weight: .bold))
-                .foregroundColor(.mabelText)
+                .screenTitleStyle()
+                .multilineTextAlignment(.center)
 
             Text("Complete a chapter to see your story here.")
-                .font(.comfortaa(14, weight: .regular))
-                .foregroundColor(.mabelSubtle)
+                .helperStyle()
                 .multilineTextAlignment(.center)
         }
-        .padding(.horizontal, 40)
+        .screenPadding()
     }
 
     // MARK: - Chapter Card
 
     private func chapterNarrativeCard(_ chapter: Chapter) -> some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack {
-                Text("Chapter \(chapter.id) – \(chapter.title)")
-                    .font(.comfortaa(18, weight: .bold))
+        VStack(alignment: .leading, spacing: MabelSpacing.md) {
+            // Chapter badge + status
+            HStack(spacing: MabelSpacing.tightGap) {
+                Text("CH. \(chapter.id)")
+                    .font(MabelTypography.badge())
+                    .foregroundColor(.mabelPrimary)
+                    .padding(.horizontal, MabelSpacing.md)
+                    .padding(.vertical, MabelSpacing.xs)
+                    .background(Capsule().fill(Color.mabelPrimaryLight))
+
+                Text(chapter.title)
+                    .font(MabelTypography.screenTitle())
                     .foregroundColor(.mabelText)
+
                 Spacer()
+
                 if chapter.isApproved {
-                    Text("Approved")
-                        .font(.comfortaa(11, weight: .bold))
-                        .foregroundColor(.mabelTeal)
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 4)
+                    Text("APPROVED")
+                        .font(MabelTypography.smallLabel())
+                        .foregroundColor(.mabelPrimary)
+                        .padding(.horizontal, MabelSpacing.tightGap)
+                        .padding(.vertical, MabelSpacing.xs)
                         .background(
-                            Capsule().fill(Color.mabelTeal.opacity(0.12))
+                            Capsule().fill(Color.mabelPrimary.opacity(0.1))
                         )
                 } else if chapter.generatedNarrative != nil {
-                    Text("Draft")
-                        .font(.comfortaa(11, weight: .bold))
+                    Text("DRAFT")
+                        .font(MabelTypography.smallLabel())
                         .foregroundColor(.mabelBurgundy)
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 4)
+                        .padding(.horizontal, MabelSpacing.tightGap)
+                        .padding(.vertical, MabelSpacing.xs)
                         .background(
                             Capsule().fill(Color.mabelBurgundy.opacity(0.1))
                         )
                 }
             }
 
+            // Narrative text
             if let narrative = chapter.generatedNarrative {
                 Text(narrative)
-                    .font(.comfortaa(14, weight: .regular))
+                    .font(MabelTypography.helper())
                     .foregroundColor(.mabelText)
                     .lineSpacing(6)
             }
 
-            // Show individual memory narratives if no combined chapter narrative
+            // Individual memory narratives if no combined chapter narrative
             let processedMemories = chapter.memories.filter { $0.narrativeText != nil }
             if chapter.generatedNarrative == nil {
                 ForEach(processedMemories) { memory in
                     if let text = memory.narrativeText {
                         Text(text)
-                            .font(.comfortaa(14, weight: .regular))
+                            .font(MabelTypography.helper())
                             .foregroundColor(.mabelText)
                             .lineSpacing(6)
-                            .padding(.bottom, 8)
+                            .padding(.bottom, MabelSpacing.tightGap)
                     }
                 }
             }
 
             // Review button for unapproved chapters with narratives
             if chapter.generatedNarrative != nil && !chapter.isApproved {
-                Button(action: {
+                CTAButton(title: "REVIEW & APPROVE") {
                     reviewingChapterIndex = chapter.id - 1
                     showChapterReview = true
-                }) {
-                    Text("REVIEW & APPROVE")
-                        .font(.comfortaa(12, weight: .bold))
-                        .foregroundColor(.white)
-                        .frame(maxWidth: .infinity)
-                        .frame(height: 40)
-                        .background(
-                            Capsule().fill(Color.mabelTeal)
-                        )
                 }
-                .padding(.top, 4)
+                .padding(.top, MabelSpacing.xs)
             }
         }
-        .padding(20)
+        .cardPadding()
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(
-            RoundedRectangle(cornerRadius: 20)
+            RoundedRectangle(cornerRadius: MabelSpacing.cornerRadiusCard)
                 .fill(Color.mabelSurface)
         )
-        .shadow(color: .black.opacity(0.06), radius: 12, x: 0, y: 4)
+        .overlay(
+            RoundedRectangle(cornerRadius: MabelSpacing.cornerRadiusCard)
+                .strokeBorder(Color.mabelBorderWarm, lineWidth: MabelSpacing.borderCard)
+        )
+        .mabelCardShadow()
     }
 }
 

@@ -17,28 +17,28 @@ struct LibraryView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-                // FIXED top bar (below safe area)
-                HStack {
-                    MabelWordmark(height: 20)
-                    Spacer()
-                    ProfileButton { showProfile = true }
-                }
-                .padding(.horizontal, 24)
-                .padding(.top, 8)
-                .padding(.bottom, 8)
+            // FIXED top bar (below safe area)
+            HStack {
+                MabelWordmark()
+                Spacer()
+                ProfileButton { showProfile = true }
+            }
+            .padding(.horizontal, MabelSpacing.screenPadH)
+            .padding(.top, MabelSpacing.tightGap)
+            .padding(.bottom, MabelSpacing.tightGap)
 
-                // Scrollable content
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 0) {
-                        if allCompleted {
-                            completedBookView
-                        } else {
-                            activeBookView
-                        }
+            // Scrollable content
+            ScrollView(showsIndicators: false) {
+                VStack(alignment: .leading, spacing: 0) {
+                    if allCompleted {
+                        completedBookView
+                    } else {
+                        activeBookView
                     }
-                    .padding(.horizontal, 24)
-                    .padding(.top, 8)
                 }
+                .screenPadding()
+                .padding(.top, MabelSpacing.tightGap)
+            }
         }
         .background(MabelGradientBackground())
         .toolbar(.hidden, for: .navigationBar)
@@ -58,14 +58,21 @@ struct LibraryView: View {
         VStack(alignment: .leading, spacing: 0) {
             // Greeting header
             MascotGreetingHeader(userName: appState.userProfile?.displayName ?? "Friend")
-                .padding(.bottom, 24)
+                .padding(.bottom, MabelSpacing.xl)
 
-            // Progress card
-            ProgressCard(
-                chapters: appState.chapters,
-                currentChapterID: appState.currentChapter?.id
-            )
-            .padding(.bottom, 24)
+            // Continue Your Story — hero FeaturedChapterCard
+            if let current = appState.currentChapter {
+                VStack(alignment: .leading, spacing: MabelSpacing.md) {
+                    Text("Continue Your Story")
+                        .sectionLabelStyle()
+
+                    NavigationLink(value: current.id - 1) {
+                        FeaturedChapterCard(chapter: current)
+                    }
+                    .buttonStyle(ChapterCardButtonStyle())
+                }
+                .padding(.bottom, MabelSpacing.sectionGap)
+            }
 
             // Today's prompt
             if let current = appState.currentChapter {
@@ -77,20 +84,29 @@ struct LibraryView: View {
                 ) {
                     appState.navigationPath.append(current.id - 1)
                 }
-                .padding(.bottom, 24)
+                .padding(.bottom, MabelSpacing.sectionGap)
             }
 
-            // All chapters heading
-            Text("All Chapters")
-                .font(.comfortaa(18, weight: .bold))
-                .foregroundColor(.mabelText)
-                .padding(.bottom, 12)
+            // Your Progress
+            Text("Your Progress")
+                .sectionLabelStyle()
+                .padding(.bottom, MabelSpacing.md)
 
-            // 2-column grid
+            ProgressCard(
+                chapters: appState.chapters,
+                currentChapterID: appState.currentChapter?.id
+            )
+            .padding(.bottom, MabelSpacing.sectionGap)
+
+            // All Chapters
+            Text("All Chapters")
+                .sectionLabelStyle()
+                .padding(.bottom, MabelSpacing.md)
+
             LazyVGrid(columns: [
-                GridItem(.flexible(), spacing: 12),
-                GridItem(.flexible(), spacing: 12)
-            ], spacing: 12) {
+                GridItem(.flexible(), spacing: MabelSpacing.md),
+                GridItem(.flexible(), spacing: MabelSpacing.md)
+            ], spacing: MabelSpacing.md) {
                 ForEach(appState.chapters) { chapter in
                     NavigationLink(value: chapter.id - 1) {
                         ChapterCard(chapter: chapter)
@@ -98,7 +114,7 @@ struct LibraryView: View {
                     .buttonStyle(ChapterCardButtonStyle())
                 }
             }
-            .padding(.bottom, 60)
+            .padding(.bottom, MabelSpacing.bottomSafe + MabelSpacing.cardPaddingContent)
         }
     }
 
@@ -128,20 +144,19 @@ struct LibraryView: View {
     // MARK: - Completed Book View
 
     private var completedBookView: some View {
-        VStack(spacing: 24) {
+        VStack(spacing: MabelSpacing.xl) {
             Spacer()
-                .frame(height: 40)
+                .frame(height: MabelSpacing.xxxl)
 
             Image(systemName: "book.closed.fill")
                 .font(.system(size: 60))
-                .foregroundColor(.mabelTeal)
+                .foregroundColor(.mabelPrimary)
 
             Text("Congratulations!")
-                .font(.comfortaa(28, weight: .bold))
-                .foregroundColor(.mabelText)
+                .headingStyle()
 
             Text("You've completed all \(Chapter.totalChapters) chapters of your book.")
-                .font(.comfortaa(16, weight: .regular))
+                .font(MabelTypography.body())
                 .foregroundColor(.mabelSubtle)
                 .multilineTextAlignment(.center)
 
@@ -180,12 +195,12 @@ struct ProfileButton: View {
                     .frame(width: 36, height: 36)
                     .overlay(
                         Circle()
-                            .strokeBorder(Color.mabelTeal.opacity(0.2), lineWidth: 1.5)
+                            .strokeBorder(Color.mabelPrimary.opacity(0.2), lineWidth: MabelSpacing.borderCard)
                     )
                     .shadow(color: .black.opacity(0.08), radius: 4, x: 0, y: 2)
 
                 Text(initial)
-                    .font(.comfortaa(16, weight: .bold))
+                    .font(MabelTypography.progress())
                     .foregroundColor(.mabelText)
             }
         }

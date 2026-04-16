@@ -18,99 +18,154 @@ struct ChapterReviewView: View {
         return appState.chapters[chapterIndex]
     }
 
+    private var statusBadgeText: String? {
+        if chapter.isApproved { return "APPROVED" }
+        if chapter.generatedNarrative != nil { return "DRAFT" }
+        return nil
+    }
+
+    private var statusBadgeColor: Color {
+        chapter.isApproved ? .mabelPrimary : .mabelBurgundy
+    }
+
     var body: some View {
         VStack(spacing: 0) {
             // Header
             HStack {
                 Button(action: { dismiss() }) {
-                    Image(systemName: "xmark")
-                        .font(.system(size: 16, weight: .semibold))
-                        .foregroundColor(.mabelSubtle)
-                        .frame(width: 44, height: 44)
-                        .contentShape(Rectangle())
+                    ZStack {
+                        Circle()
+                            .fill(Color.mabelBackgroundAlt)
+                            .frame(width: 44, height: 44)
+                        Image(systemName: "xmark")
+                            .font(.system(size: 14, weight: .semibold))
+                            .foregroundColor(.mabelSubtle)
+                    }
+                    .contentShape(Circle())
                 }
                 Spacer()
                 MabelWordmarkLockup()
                 Spacer()
-                // Balance the layout
                 Color.clear.frame(width: 44, height: 44)
             }
-            .padding(.horizontal, 24)
-            .padding(.top, 16)
-            .padding(.bottom, 8)
+            .padding(.horizontal, MabelSpacing.screenPadH)
+            .topSafePadding()
+            .padding(.bottom, MabelSpacing.tightGap)
 
-            // Scrollable narrative
-            ScrollView {
-                VStack(alignment: .leading, spacing: 16) {
-                    Text("Chapter \(chapter.id) – \(chapter.title)")
-                        .font(.comfortaa(20, weight: .bold))
-                        .foregroundColor(.mabelText)
+            // Scrollable content
+            ScrollView(showsIndicators: false) {
+                VStack(alignment: .leading, spacing: 0) {
+                    // Chapter badge + status
+                    HStack(spacing: MabelSpacing.tightGap) {
+                        Text("CH. \(chapter.id)")
+                            .font(MabelTypography.badge())
+                            .foregroundColor(.mabelPrimary)
+                            .padding(.horizontal, MabelSpacing.md)
+                            .padding(.vertical, MabelSpacing.xs)
+                            .background(Capsule().fill(Color.mabelPrimaryLight))
 
-                    if let narrative = chapter.generatedNarrative {
-                        Text(narrative)
-                            .font(.comfortaa(14, weight: .regular))
-                            .foregroundColor(.mabelText)
-                            .lineSpacing(6)
-                    }
+                        Text(chapter.title)
+                            .subheadingStyle()
 
-                    // Error message
-                    if let error = errorMessage {
-                        HStack(spacing: 8) {
-                            Image(systemName: "exclamationmark.triangle.fill")
-                                .foregroundColor(.mabelBurgundy)
-                            Text(error)
-                                .font(.comfortaa(12, weight: .regular))
-                                .foregroundColor(.mabelBurgundy)
+                        Spacer()
+
+                        if let badgeText = statusBadgeText {
+                            Text(badgeText)
+                                .font(MabelTypography.smallLabel())
+                                .foregroundColor(statusBadgeColor)
+                                .padding(.horizontal, MabelSpacing.tightGap)
+                                .padding(.vertical, MabelSpacing.xs)
+                                .background(
+                                    Capsule().fill(statusBadgeColor.opacity(0.1))
+                                )
                         }
-                        .padding(12)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .background(
-                            RoundedRectangle(cornerRadius: 10)
-                                .fill(Color.mabelBurgundy.opacity(0.08))
-                        )
                     }
+                    .padding(.top, MabelSpacing.elementGap)
+                    .padding(.bottom, MabelSpacing.xl)
+
+                    // Narrative card — the "page"
+                    VStack(alignment: .leading, spacing: MabelSpacing.elementGap) {
+                        Text("Chapter \(chapter.id) \u{2013} \(chapter.title)")
+                            .font(MabelTypography.storyTitle())
+                            .foregroundColor(.mabelText)
+
+                        if let narrative = chapter.generatedNarrative {
+                            Text(narrative)
+                                .font(MabelTypography.helper())
+                                .foregroundColor(.mabelText)
+                                .lineSpacing(6)
+                        }
+
+                        // Error message
+                        if let error = errorMessage {
+                            HStack(spacing: MabelSpacing.tightGap) {
+                                Image(systemName: "exclamationmark.triangle.fill")
+                                    .foregroundColor(.mabelBurgundy)
+                                Text(error)
+                                    .font(MabelTypography.smallLabel())
+                                    .foregroundColor(.mabelBurgundy)
+                            }
+                            .padding(MabelSpacing.md)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .background(
+                                RoundedRectangle(cornerRadius: MabelSpacing.cornerRadiusBadge)
+                                    .fill(Color.mabelBurgundy.opacity(0.08))
+                            )
+                        }
+                    }
+                    .cardPadding()
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(
+                        RoundedRectangle(cornerRadius: MabelSpacing.cornerRadiusCard)
+                            .fill(Color.mabelSurface)
+                    )
+                    .overlay(
+                        RoundedRectangle(cornerRadius: MabelSpacing.cornerRadiusCard)
+                            .strokeBorder(Color.mabelBorderWarm, lineWidth: MabelSpacing.borderCard)
+                    )
+                    .mabelCardShadow()
+                    .padding(.bottom, MabelSpacing.sectionGap)
 
                     // Feedback section
                     if showFeedbackField {
-                        VStack(alignment: .leading, spacing: 8) {
+                        VStack(alignment: .leading, spacing: MabelSpacing.tightGap) {
                             Text("What would you like to change?")
-                                .font(.comfortaa(14, weight: .bold))
-                                .foregroundColor(.mabelText)
+                                .formLabelStyle()
 
                             TextEditor(text: $feedback)
-                                .font(.comfortaa(14, weight: .regular))
+                                .font(MabelTypography.helper())
                                 .foregroundColor(.mabelText)
                                 .scrollContentBackground(.hidden)
-                                .padding(12)
+                                .padding(MabelSpacing.md)
                                 .frame(minHeight: 100)
                                 .background(
-                                    RoundedRectangle(cornerRadius: 12)
-                                        .fill(Color.mabelSurface.opacity(0.9))
+                                    RoundedRectangle(cornerRadius: MabelSpacing.cornerRadiusPill)
+                                        .fill(Color.mabelBackgroundAlt)
                                 )
 
                             Text("e.g. \"Make it more emotional\", \"Add more detail about the house\", \"Use a lighter tone\"")
-                                .font(.comfortaa(11, weight: .regular))
+                                .font(MabelTypography.smallLabel())
                                 .foregroundColor(.mabelSubtle)
                         }
+                        .padding(.bottom, MabelSpacing.xl)
                     }
 
-                    Spacer().frame(height: 20)
+                    Spacer().frame(height: MabelSpacing.cardPaddingContent)
                 }
-                .padding(.horizontal, 24)
-                .padding(.top, 8)
+                .screenPadding()
             }
 
             // Bottom actions
-            VStack(spacing: 10) {
+            VStack(spacing: MabelSpacing.pillPadV) {
                 if isRegenerating {
-                    HStack(spacing: 10) {
+                    HStack(spacing: MabelSpacing.pillPadV) {
                         ProgressView()
-                            .tint(.mabelTeal)
+                            .tint(.mabelPrimary)
                         Text("Rewriting your chapter...")
-                            .font(.comfortaa(13, weight: .medium))
+                            .font(MabelTypography.helper())
                             .foregroundColor(.mabelSubtle)
                     }
-                    .padding(.bottom, 8)
+                    .padding(.bottom, MabelSpacing.tightGap)
                 }
 
                 if showFeedbackField {
@@ -123,36 +178,28 @@ struct ChapterReviewView: View {
 
                     Button(action: { showFeedbackField = false; feedback = "" }) {
                         Text("Cancel")
-                            .font(.comfortaa(14, weight: .medium))
+                            .font(MabelTypography.helper())
                             .foregroundColor(.mabelSubtle)
                     }
                 } else {
-                    // Approve button
                     CTAButton(title: "APPROVE CHAPTER", isDisabled: isRegenerating) {
                         appState.approveChapter(chapterIndex: chapterIndex)
                         dismiss()
                     }
 
-                    // Request changes button
-                    Button(action: { showFeedbackField = true }) {
-                        Text("REQUEST CHANGES")
-                            .font(.comfortaa(14, weight: .bold))
-                            .foregroundColor(.mabelTeal)
-                            .frame(maxWidth: .infinity)
-                            .frame(height: 48)
-                            .background(
-                                Capsule()
-                                    .strokeBorder(Color.mabelTeal, lineWidth: 1.5)
-                            )
+                    SecondaryButton(title: "REQUEST CHANGES", isDisabled: isRegenerating) {
+                        showFeedbackField = true
                     }
-                    .disabled(isRegenerating)
                 }
             }
-            .padding(.horizontal, 24)
-            .padding(.bottom, 40)
-            .padding(.top, 8)
+            .screenPadding()
+            .bottomSafePadding()
+            .padding(.top, MabelSpacing.tightGap)
         }
-        .background(MabelGradientBackground())
+        .background(
+            Color.mabelBackground
+                .ignoresSafeArea(.all, edges: .all)
+        )
     }
 
     private func regenerateNarrative() {

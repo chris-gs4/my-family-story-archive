@@ -11,81 +11,101 @@ struct ProfileView: View {
     private let genderOptions = ["Male", "Female", "Other"]
 
     var body: some View {
-        ZStack {
-            MabelGradientBackground()
+        VStack(spacing: 0) {
+            // Header
+            HStack {
+                MabelWordmarkLockup()
+                Spacer()
+                Button(action: { dismiss() }) {
+                    ZStack {
+                        Circle()
+                            .fill(Color.mabelBackgroundAlt)
+                            .frame(width: 44, height: 44)
+                        Image(systemName: "xmark")
+                            .font(.system(size: 14, weight: .semibold))
+                            .foregroundColor(.mabelSubtle)
+                    }
+                    .contentShape(Circle())
+                }
+            }
+            .padding(.horizontal, MabelSpacing.screenPadH)
+            .topSafePadding()
+            .padding(.bottom, MabelSpacing.tightGap)
 
-            ScrollView {
+            ScrollView(showsIndicators: false) {
                 VStack(alignment: .leading, spacing: 0) {
-                    // Header
-                    HStack {
-                        MabelWordmarkLockup()
-                        Spacer()
-                        Button(action: { dismiss() }) {
-                            Image(systemName: "xmark")
-                                .font(.system(size: 16, weight: .semibold))
-                                .foregroundColor(.mabelSubtle)
+                    // Section label
+                    Text("Your Profile")
+                        .sectionLabelStyle()
+                        .padding(.top, MabelSpacing.elementGap)
+                        .padding(.bottom, MabelSpacing.elementGap)
+
+                    // Settings card
+                    VStack(alignment: .leading, spacing: MabelSpacing.xl) {
+                        // Display Name
+                        VStack(alignment: .leading, spacing: MabelSpacing.tightGap) {
+                            Text("Display Name")
+                                .formLabelStyle()
+
+                            TextField("Your name", text: $displayName)
+                                .font(MabelTypography.body())
+                                .foregroundColor(.mabelText)
+                                .padding(.horizontal, MabelSpacing.inputPadH)
+                                .padding(.vertical, MabelSpacing.inputPadV)
+                                .background(
+                                    RoundedRectangle(cornerRadius: MabelSpacing.cornerRadiusPill)
+                                        .fill(Color.mabelBackgroundAlt)
+                                )
                         }
-                    }
-                    .padding(.top, 24)
-                    .padding(.bottom, 32)
 
-                    // Display Name
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("Display Name")
-                            .font(.comfortaa(14, weight: .bold))
-                            .foregroundColor(.mabelText)
+                        // Gender
+                        VStack(alignment: .leading, spacing: MabelSpacing.pillPadV) {
+                            Text("Gender")
+                                .formLabelStyle()
 
-                        TextField("Your name", text: $displayName)
-                            .font(.comfortaa(16, weight: .regular))
-                            .foregroundColor(.mabelText)
-                            .padding(.horizontal, 16)
-                            .padding(.vertical, 14)
-                            .background(
-                                RoundedRectangle(cornerRadius: 12)
-                                    .fill(Color.mabelSurface.opacity(0.9))
-                            )
-                    }
-                    .padding(.bottom, 24)
-
-                    // Gender
-                    VStack(alignment: .leading, spacing: 10) {
-                        Text("Gender")
-                            .font(.comfortaa(14, weight: .bold))
-                            .foregroundColor(.mabelText)
-
-                        HStack(spacing: 8) {
-                            ForEach(genderOptions, id: \.self) { gender in
-                                PillButton(
-                                    title: gender,
-                                    isSelected: selectedGender == gender
-                                ) {
-                                    selectedGender = gender
+                            HStack(spacing: MabelSpacing.tightGap) {
+                                ForEach(genderOptions, id: \.self) { gender in
+                                    PillButton(
+                                        title: gender,
+                                        isSelected: selectedGender == gender
+                                    ) {
+                                        selectedGender = gender
+                                    }
                                 }
                             }
                         }
+
+                        // Payment Method (placeholder)
+                        VStack(alignment: .leading, spacing: MabelSpacing.tightGap) {
+                            Text("Payment Method")
+                                .formLabelStyle()
+
+                            TextField("Coming soon...", text: .constant(""))
+                                .font(MabelTypography.body())
+                                .foregroundColor(.mabelSubtle)
+                                .disabled(true)
+                                .padding(.horizontal, MabelSpacing.inputPadH)
+                                .padding(.vertical, MabelSpacing.inputPadV)
+                                .background(
+                                    RoundedRectangle(cornerRadius: MabelSpacing.cornerRadiusPill)
+                                        .fill(Color.mabelBackgroundAlt)
+                                )
+                        }
                     }
-                    .padding(.bottom, 24)
+                    .cardPadding()
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(
+                        RoundedRectangle(cornerRadius: MabelSpacing.cornerRadiusCard)
+                            .fill(Color.mabelSurface)
+                    )
+                    .overlay(
+                        RoundedRectangle(cornerRadius: MabelSpacing.cornerRadiusCard)
+                            .strokeBorder(Color.mabelBorderWarm, lineWidth: MabelSpacing.borderCard)
+                    )
+                    .mabelCardShadow()
+                    .padding(.bottom, MabelSpacing.sectionGap)
 
-                    // Payment Method (placeholder)
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("Payment Method")
-                            .font(.comfortaa(14, weight: .bold))
-                            .foregroundColor(.mabelText)
-
-                        TextField("Coming soon...", text: .constant(""))
-                            .font(.comfortaa(16, weight: .regular))
-                            .foregroundColor(.mabelSubtle)
-                            .disabled(true)
-                            .padding(.horizontal, 16)
-                            .padding(.vertical, 14)
-                            .background(
-                                RoundedRectangle(cornerRadius: 12)
-                                    .fill(Color.mabelSurface.opacity(0.9))
-                            )
-                    }
-                    .padding(.bottom, 40)
-
-                    // Buttons
+                    // Action buttons — outside the card
                     CTAButton(title: "SAVE") {
                         appState.updateProfile(
                             displayName: displayName.trimmingCharacters(in: .whitespaces),
@@ -93,76 +113,61 @@ struct ProfileView: View {
                         )
                         dismiss()
                     }
-                    .padding(.bottom, 12)
+                    .padding(.bottom, MabelSpacing.md)
 
-                    Button(action: { dismiss() }) {
-                        Text("HOME")
-                            .font(.comfortaa(14, weight: .medium))
-                            .foregroundColor(.mabelTeal)
-                            .frame(maxWidth: .infinity)
-                            .frame(height: 48)
-                            .background(
-                                Capsule()
-                                    .strokeBorder(Color.mabelTeal, lineWidth: 1.5)
-                            )
+                    SecondaryButton(title: "HOME") {
+                        dismiss()
                     }
-                    .padding(.bottom, 12)
+                    .padding(.bottom, MabelSpacing.md)
 
-                    // Log Out Button
-                    Button(action: {
+                    DestructiveButton(title: "LOG OUT") {
                         appState.logout()
                         dismiss()
-                    }) {
-                        Text("LOG OUT")
-                            .font(.comfortaa(14, weight: .medium))
-                            .foregroundColor(.red)
-                            .frame(maxWidth: .infinity)
-                            .frame(height: 48)
-                            .background(
-                                Capsule()
-                                    .strokeBorder(Color.red.opacity(0.5), lineWidth: 1.5)
-                            )
                     }
 
                     #if DEBUG
                     // Developer Tools
-                    VStack(alignment: .leading, spacing: 12) {
+                    VStack(alignment: .leading, spacing: MabelSpacing.md) {
                         Text("Developer Tools")
-                            .font(.comfortaa(14, weight: .bold))
+                            .formLabelStyle()
                             .foregroundColor(.mabelSubtle)
-                            .padding(.top, 24)
+                            .padding(.top, MabelSpacing.xl)
 
                         Button(action: {
                             appState.seedDummyData()
                             dismiss()
                         }) {
                             Text("SEED DUMMY DATA")
-                                .font(.comfortaa(14, weight: .bold))
+                                .font(MabelTypography.badge())
                                 .foregroundColor(.white)
                                 .frame(maxWidth: .infinity)
                                 .frame(height: 48)
-                                .background(Capsule().fill(Color.orange))
+                                .background(Capsule().fill(Color.mabelPrimary))
                         }
 
                         Button(action: {
                             showResetAlert = true
                         }) {
                             Text("RESET ALL DATA")
-                                .font(.comfortaa(14, weight: .bold))
+                                .font(MabelTypography.badge())
                                 .foregroundColor(.white)
                                 .frame(maxWidth: .infinity)
                                 .frame(height: 48)
-                                .background(Capsule().fill(Color.red))
+                                .background(Capsule().fill(Color.mabelBurgundy))
                         }
                     }
                     #endif
 
                     Spacer()
-                        .frame(height: 40)
+                        .frame(height: MabelSpacing.bottomSafe)
                 }
-                .padding(.horizontal, 24)
+                .screenPadding()
             }
         }
+        .background(
+            Color.mabelBackground
+                .ignoresSafeArea(.all, edges: .all)
+        )
         .alert("Reset All Data?", isPresented: $showResetAlert) {
             Button("Reset", role: .destructive) {
                 appState.resetAll()
