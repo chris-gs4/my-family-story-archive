@@ -1,7 +1,13 @@
 # Mabel — Claude Code Design System Instructions
 
-> This file is auto-loaded by Claude Code at the start of every session when working inside the `Mabel/` directory.
+> This file is auto-loaded by Claude Code at the start of every session when working inside the `Mabel/` directory (it's the `CLAUDE.md` at this folder's root — Claude Code picks up nested `CLAUDE.md` files automatically).
 > It tells Claude Code what resources exist, how to use them, and what rules to follow when building or modifying any SwiftUI view.
+
+---
+
+## Before proposing architecture, library, or UX changes
+
+Grep `Mabel/decisions/` for related entries first. If a decision entry already settles the question you're about to raise, cite it and confirm with the user before re-opening it. See `Mabel/decisions/README.md` for the format and `Mabel/decisions/MISTAKES.md` for specific mistakes to avoid repeating.
 
 ---
 
@@ -36,16 +42,16 @@ These are COMPLETE and IN USE. Reference them when building views. Never hardcod
 
 ### 3. UI Review References (use for every PR / screen completion)
 ```
-Mabel/ui-review-skills/SKILL.md                    — Review process and output format
-Mabel/ui-review-skills/hig-checklist.md             — iOS HIG compliance audit
-Mabel/ui-review-skills/font-guidelines.md           — Dynamic Type and typography best practices
-Mabel/ui-review-skills/accessibility-quick-ref.md   — VoiceOver, labels, traits
+.claude/skills/ui-review/SKILL.md                    — Review process and output format
+.claude/skills/ui-review/hig-checklist.md             — iOS HIG compliance audit
+.claude/skills/ui-review/font-guidelines.md           — Dynamic Type and typography best practices
+.claude/skills/ui-review/accessibility-quick-ref.md   — VoiceOver, labels, traits
 ```
-These are generic iOS quality checklists. Use them as-is to audit every screen you build.
+These are generic iOS quality checklists. Invoke the skill via `/ui-review` or the phrases in its description field — Claude Code auto-discovers it from `.claude/skills/ui-review/`.
 
 ### 4. Design Uplift Skill
 ```
-Mabel/SKILL.md — /design-uplift workflow for generating competing visual concepts with UX science ranking
+.claude/skills/design-uplift/SKILL.md — /design-uplift workflow for generating competing visual concepts with UX science ranking
 ```
 
 ---

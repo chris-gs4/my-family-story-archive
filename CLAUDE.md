@@ -50,6 +50,19 @@ archive/                 # Archived reference materials (NOT part of the app)
 
 The `archive/` directory contains legacy web code, demo night materials, and old configs. **Do not reference or modify anything in `archive/`** — it exists only as future reference material.
 
+## Claude Code Resources
+
+Auto-loaded context and workflows:
+
+- **`Mabel/CLAUDE.md`** — SwiftUI design-system instructions, auto-loaded when working inside `Mabel/`
+- **`Mabel/STYLE_GUIDE.md`** — THE single source of truth for all UI decisions (overrides everything else)
+- **`Mabel/ARCHITECTURE.md`** — navigation, data model, view consolidation rules
+- **`Mabel/decisions/`** — ADR-style log of architecture and UX decisions. Before proposing any non-trivial change, grep here first. `MISTAKES.md` in the same folder lists specific errors to not repeat.
+- **`.claude/skills/`** — auto-discovered skills:
+  - `/ui-review` — HIG, font, and accessibility audit
+  - `/design-uplift` — generate 3 visual concepts with UX-science ranking
+  - `/check-past-decisions` — search `decisions/` + `MISTAKES.md` before re-opening settled questions
+
 ## Project Context
 
 ### Target Customer
