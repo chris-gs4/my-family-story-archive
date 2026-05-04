@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mabel — Headline Font Comparison</title>
+
+<style>
+  @font-face {
+    font-family: 'Nunito';
+    src: url('Nunito-Variable.ttf') format('truetype');
+    font-weight: 200 1000;
+  }
+  @font-face {
+    font-family: 'Rubik';
+    src: url('Rubik-Variable.ttf') format('truetype');
+    font-weight: 300 900;
+  }
+  @font-face {
+    font-family: 'Outfit';
+    src: url('Outfit-Variable.ttf') format('truetype');
+    font-weight: 100 900;
+  }
+  @font-face {
+    font-family: 'Comfortaa';
+    src: url('../Mabel/Fonts/Comfortaa-Variable.ttf') format('truetype');
+    font-weight: 300 700;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #1a1a1a;
+    color: #e0e0e0;
+    font-family: -apple-system, sans-serif;
+    padding: 40px 20px;
+  }
+
+  h1 {
+    text-align: center;
+    font-size: 28px;
+    margin-bottom: 8px;
+    color: #fff;
+  }
+  .subtitle {
+    text-align: center;
+    font-size: 14px;
+    color: #888;
+    margin-bottom: 40px;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(375px, 1fr));
+    gap: 32px;
+    max-width: 1700px;
+    margin: 0 auto;
+  }
+
+  .card {
+    background: #2a2a2a;
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid #3a3a3a;
+  }
+
+  .card-header {
+    padding: 16px 20px;
+    background: #333;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #444;
+  }
+  .card-header h2 {
+    font-size: 16px;
+    color: #fff;
+  }
+  .badge {
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-weight: 600;
+  }
+  .badge-recommended {
+    background: #2E7D6B;
+    color: #fff;
+  }
+  .badge-alt {
+    background: #444;
+    color: #ccc;
+  }
+  .badge-current {
+    background: #555;
+    color: #aaa;
+  }
+
+  /* Phone mockup */
+  .phone {
+    margin: 24px auto;
+    width: 320px;
+    height: 620px;
+    background: #FFFFFF;
+    border-radius: 36px;
+    border: 3px solid #d0d0d0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 28px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .phone .mascot {
+    width: 160px;
+    height: 160px;
+    background: #f0f0f0;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 80px;
+    margin-bottom: 20px;
+  }
+
+  .phone .headline {
+    color: #2d2c2b;
+    text-align: center;
+    margin-bottom: 14px;
+    letter-spacing: -0.02em;
+    line-height: 1.25;
+  }
+
+  .phone .body-text {
+    font-family: 'Comfortaa', sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    color: rgba(45, 44, 43, 0.6);
+    text-align: center;
+    line-height: 1.6;
+    margin-bottom: 4px;
+  }
+
+  .phone .cta {
+    margin-top: auto;
+    width: 100%;
+    height: 48px;
+    background: #2E7D6B;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-family: 'Comfortaa', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+  }
+
+  /* Font-specific headline styles */
+  .font-comfortaa .headline {
+    font-family: 'Comfortaa', sans-serif;
+    font-weight: 700;
+    font-size: 28px;
+  }
+  .font-nunito .headline {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900;
+    font-size: 28px;
+  }
+  .font-nunito-800 .headline {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: 28px;
+  }
+  .font-rubik .headline {
+    font-family: 'Rubik', sans-serif;
+    font-weight: 900;
+    font-size: 28px;
+  }
+  .font-outfit .headline {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 900;
+    font-size: 28px;
+  }
+
+  /* Info section */
+  .info {
+    padding: 16px 20px;
+    border-top: 1px solid #3a3a3a;
+  }
+  .info-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+    font-size: 13px;
+  }
+  .info-label { color: #888; }
+  .info-value { color: #ccc; font-weight: 500; }
+
+  /* Weight samples */
+  .weight-samples {
+    padding: 16px 20px;
+    border-top: 1px solid #3a3a3a;
+  }
+  .weight-samples h3 {
+    font-size: 12px;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 12px;
+  }
+  .weight-row {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+  .weight-label {
+    font-size: 11px;
+    color: #666;
+    width: 80px;
+    flex-shrink: 0;
+  }
+  .weight-sample {
+    color: #2d2c2b;
+    background: #f8f4f2;
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 22px;
+    letter-spacing: -0.02em;
+    flex: 1;
+  }
+
+  .sample-nunito { font-family: 'Nunito', sans-serif; }
+  .sample-rubik { font-family: 'Rubik', sans-serif; }
+  .sample-outfit { font-family: 'Outfit', sans-serif; }
+  .sample-comfortaa { font-family: 'Comfortaa', sans-serif; }
+
+  .section-title {
+    text-align: center;
+    font-size: 18px;
+    color: #888;
+    margin: 48px 0 24px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .type-scale {
+    max-width: 900px;
+    margin: 0 auto 48px;
+    background: #2a2a2a;
+    border-radius: 16px;
+    padding: 32px;
+    border: 1px solid #3a3a3a;
+  }
+  .type-scale h3 {
+    font-size: 14px;
+    color: #2E7D6B;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .scale-row {
+    display: flex;
+    align-items: baseline;
+    gap: 20px;
+    padding: 12px 0;
+    border-bottom: 1px solid #333;
+  }
+  .scale-row:last-child { border-bottom: none; }
+  .scale-label {
+    font-size: 11px;
+    color: #666;
+    width: 120px;
+    flex-shrink: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .scale-text {
+    color: #e0e0e0;
+    letter-spacing: -0.02em;
+    line-height: 1.25;
+  }
+  .scale-body {
+    font-family: 'Comfortaa', sans-serif;
+    font-weight: 400;
+    color: rgba(224, 224, 224, 0.6);
+    line-height: 1.6;
+  }
+</style>
+</head>
+<body>
+
+<h1>Headline Font Comparison</h1>
+<p class="subtitle">Nunito ExtraBold 800 — Tracking Comparison</p>
+
+<!-- Phone Mockups -->
+<div class="grid">
+
+  <!-- Nunito 800 — No tracking (default) -->
+  <div class="card">
+    <div class="card-header">
+      <h2>Nunito 800 — tracking: 0</h2>
+      <span class="badge badge-current">DEFAULT</span>
+    </div>
+    <div class="phone">
+      <div class="mascot">👵</div>
+      <div class="headline" style="font-family:'Nunito',sans-serif; font-weight:800; font-size:28px; letter-spacing:0;">Welcome to Mabel</div>
+      <div class="body-text">Your AI-assisted ghost writer.</div>
+      <div class="body-text">Capture your stories and write a book for future generations.</div>
+      <div class="body-text">No typing, just talking.</div>
+      <div class="cta">Get Started</div>
+    </div>
+    <div class="info">
+      <div class="info-row"><span class="info-label">Tracking</span><span class="info-value">0 (none)</span></div>
+      <div class="info-row"><span class="info-label">SwiftUI</span><span class="info-value">.tracking(0)</span></div>
+    </div>
+  </div>
+
+  <!-- Nunito 800 — tracking: -0.02em (current style guide) -->
+  <div class="card">
+    <div class="card-header">
+      <h2>Nunito 800 — tracking: -0.02em</h2>
+      <span class="badge badge-alt">STYLE GUIDE</span>
+    </div>
+    <div class="phone">
+      <div class="mascot">👵</div>
+      <div class="headline" style="font-family:'Nunito',sans-serif; font-weight:800; font-size:28px; letter-spacing:-0.02em;">Welcome to Mabel</div>
+      <div class="body-text">Your AI-assisted ghost writer.</div>
+      <div class="body-text">Capture your stories and write a book for future generations.</div>
+      <div class="body-text">No typing, just talking.</div>
+      <div class="cta">Get Started</div>
+    </div>
+    <div class="info">
+      <div class="info-row"><span class="info-label">Tracking</span><span class="info-value">-0.02em (~-0.56px at 28px)</span></div>
+      <div class="info-row"><span class="info-label">SwiftUI</span><span class="info-value">.tracking(28 * -0.02) = -0.56</span></div>
+    </div>
+  </div>
+
+  <!-- Nunito 800 — tracking: -0.025em (YOUR PICK) -->
+  <div class="card">
+    <div class="card-header">
+      <h2>Nunito 800 — tracking: -0.025em</h2>
+      <span class="badge badge-recommended">YOUR PICK</span>
+    </div>
+    <div class="phone">
+      <div class="mascot">👵</div>
+      <div class="headline" style="font-family:'Nunito',sans-serif; font-weight:800; font-size:28px; letter-spacing:-0.025em;">Welcome to Mabel</div>
+      <div class="body-text">Your AI-assisted ghost writer.</div>
+      <div class="body-text">Capture your stories and write a book for future generations.</div>
+      <div class="body-text">No typing, just talking.</div>
+      <div class="cta">Get Started</div>
+    </div>
+    <div class="info">
+      <div class="info-row"><span class="info-label">Tracking</span><span class="info-value">-0.025em (~-0.7px at 28px)</span></div>
+      <div class="info-row"><span class="info-label">SwiftUI</span><span class="info-value">.tracking(28 * -0.025) = -0.7</span></div>
+    </div>
+  </div>
+
+  <!-- Nunito 800 — tracking: -0.03em (tighter) -->
+  <div class="card">
+    <div class="card-header">
+      <h2>Nunito 800 — tracking: -0.03em</h2>
+      <span class="badge badge-alt">TIGHTER</span>
+    </div>
+    <div class="phone">
+      <div class="mascot">👵</div>
+      <div class="headline" style="font-family:'Nunito',sans-serif; font-weight:800; font-size:28px; letter-spacing:-0.03em;">Welcome to Mabel</div>
+      <div class="body-text">Your AI-assisted ghost writer.</div>
+      <div class="body-text">Capture your stories and write a book for future generations.</div>
+      <div class="body-text">No typing, just talking.</div>
+      <div class="cta">Get Started</div>
+    </div>
+    <div class="info">
+      <div class="info-row"><span class="info-label">Tracking</span><span class="info-value">-0.03em (~-0.84px at 28px)</span></div>
+      <div class="info-row"><span class="info-label">SwiftUI</span><span class="info-value">.tracking(28 * -0.03) = -0.84</span></div>
+    </div>
+  </div>
+
+  <!-- Nunito 800 — tracking: -0.04em (very tight) -->
+  <div class="card">
+    <div class="card-header">
+      <h2>Nunito 800 — tracking: -0.04em</h2>
+      <span class="badge badge-alt">VERY TIGHT</span>
+    </div>
+    <div class="phone">
+      <div class="mascot">👵</div>
+      <div class="headline" style="font-family:'Nunito',sans-serif; font-weight:800; font-size:28px; letter-spacing:-0.04em;">Welcome to Mabel</div>
+      <div class="body-text">Your AI-assisted ghost writer.</div>
+      <div class="body-text">Capture your stories and write a book for future generations.</div>
+      <div class="body-text">No typing, just talking.</div>
+      <div class="cta">Get Started</div>
+    </div>
+    <div class="info">
+      <div class="info-row"><span class="info-label">Tracking</span><span class="info-value">-0.04em (~-1.12px at 28px)</span></div>
+      <div class="info-row"><span class="info-label">SwiftUI</span><span class="info-value">.tracking(28 * -0.04) = -1.12</span></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Tracking at 32pt (actual hero heading size) -->
+<div class="section-title">At 32pt (Hero Heading Size)</div>
+
+<div class="type-scale">
+  <h3>Nunito ExtraBold 800 — Tracking at 32pt</h3>
+  <div class="scale-row">
+    <span class="scale-label">0 (none)</span>
+    <span class="scale-text sample-nunito" style="font-weight:800; font-size:32px; letter-spacing:0;">Welcome to Mabel</span>
+  </div>
+  <div class="scale-row">
+    <span class="scale-label">-0.02em</span>
+    <span class="scale-text sample-nunito" style="font-weight:800; font-size:32px; letter-spacing:-0.02em;">Welcome to Mabel</span>
+  </div>
+  <div class="scale-row">
+    <span class="scale-label">-0.025em</span>
+    <span class="scale-text sample-nunito" style="font-weight:800; font-size:32px; letter-spacing:-0.025em;">Welcome to Mabel</span>
+  </div>
+  <div class="scale-row">
+    <span class="scale-label">-0.03em</span>
+    <span class="scale-text sample-nunito" style="font-weight:800; font-size:32px; letter-spacing:-0.03em;">Welcome to Mabel</span>
+  </div>
+  <div class="scale-row">
+    <span class="scale-label">-0.04em</span>
+    <span class="scale-text sample-nunito" style="font-weight:800; font-size:32px; letter-spacing:-0.04em;">Welcome to Mabel</span>
+  </div>
+  <div class="scale-row">
+    <span class="scale-label">Body</span>
+    <span class="scale-body" style="font-size:16px;">Your AI-assisted ghost writer. Capture your stories and write a book for future generations. No typing, just talking.</span>
+  </div>
+</div>
+
+<!-- Multi-line test -->
+<div class="type-scale">
+  <h3>Multi-line Test — Nunito 800 at -0.025em</h3>
+  <div class="scale-row">
+    <span class="scale-label">Short</span>
+    <span class="scale-text sample-nunito" style="font-weight:800; font-size:32px; letter-spacing:-0.025em;">Tell your story</span>
+  </div>
+  <div class="scale-row">
+    <span class="scale-label">Medium</span>
+    <span class="scale-text sample-nunito" style="font-weight:800; font-size:32px; letter-spacing:-0.025em;">Welcome to Mabel</span>
+  </div>
+  <div class="scale-row">
+    <span class="scale-label">Long (wraps)</span>
+    <span class="scale-text sample-nunito" style="font-weight:800; font-size:32px; letter-spacing:-0.025em; max-width:300px; line-height:1.25;">What would you like to talk about?</span>
+  </div>
+  <div class="scale-row">
+    <span class="scale-label">Section head</span>
+    <span class="scale-text sample-nunito" style="font-weight:800; font-size:28px; letter-spacing:-0.025em;">Your Chapters</span>
+  </div>
+</div>
+
+</body>
+</html>

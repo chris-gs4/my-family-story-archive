@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mabel — Topics Skip UI Options</title>
+<link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&family=Nunito:wght@800&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #1a1a2e;
+    color: #e0e0e0;
+    padding: 40px 24px;
+    min-height: 100vh;
+  }
+
+  h1 {
+    font-size: 28px;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 8px;
+    color: #fff;
+  }
+
+  .page-subtitle {
+    text-align: center;
+    color: #888;
+    font-size: 14px;
+    margin-bottom: 48px;
+  }
+
+  .concepts-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    max-width: 1200px;
+    margin: 0 auto 48px;
+  }
+
+  .concept-card {
+    background: #16213e;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid #2a2a4a;
+    position: relative;
+    transition: transform 0.2s;
+  }
+
+  .concept-card:hover {
+    transform: translateY(-4px);
+  }
+
+  .concept-card.recommended {
+    border-color: #4CA894;
+    box-shadow: 0 0 24px rgba(76, 168, 148, 0.15);
+  }
+
+  .recommended-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: #4CA894;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 100px;
+    letter-spacing: 0.05em;
+    z-index: 2;
+  }
+
+  .rank-badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 14px;
+    z-index: 2;
+  }
+
+  .rank-1 { background: #FFD700; color: #1a1a2e; }
+  .rank-2 { background: #C0C0C0; color: #1a1a2e; }
+  .rank-3 { background: #CD7F32; color: #fff; }
+
+  /* Phone frame */
+  .phone-frame-wrapper {
+    width: 100%;
+    background: #f5f5f5;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 20px 16px;
+  }
+
+  .phone-frame {
+    width: 100%;
+    max-width: 300px;
+    background: linear-gradient(to bottom, #FFFFFF 0%, #D5DFDB 100%);
+    border-radius: 36px;
+    border: 3px solid #1a1a2e;
+    padding: 20px 20px 24px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Section label */
+  .section-label-new {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: 16px;
+    color: #2d2c2b;
+    letter-spacing: -0.026em;
+    line-height: 1.25;
+    margin-bottom: 4px;
+  }
+
+  .topics-count {
+    font-family: 'Comfortaa', cursive;
+    font-size: 11px;
+    font-weight: 400;
+    color: rgba(45,44,43,0.6);
+  }
+
+  /* Pill button styles */
+  .pill {
+    font-family: 'Comfortaa', cursive;
+    font-size: 12px;
+    font-weight: 400;
+    color: #2d2c2b;
+    background: #FFFFFF;
+    border: 2.5px solid rgba(128,128,128,0.35);
+    border-radius: 14px;
+    padding: 10px 12px;
+    text-align: center;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  .pill.selected {
+    background: #2E7D6B;
+    color: #FFFFFF;
+    border-color: #2E7D6B;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(46,125,107,0.4);
+  }
+
+  .pill.skip-pill {
+    border-style: dashed;
+    border-color: rgba(128,128,128,0.35);
+    color: rgba(45,44,43,0.6);
+    font-style: italic;
+  }
+
+  .pill.skip-pill.selected {
+    background: #2E7D6B;
+    color: #FFFFFF;
+    border-color: #2E7D6B;
+    border-style: solid;
+    font-style: normal;
+    font-weight: 600;
+  }
+
+  .pill.skip-inline {
+    border-color: rgba(128,128,128,0.25);
+    color: rgba(45,44,43,0.5);
+    background: rgba(255,255,255,0.7);
+  }
+
+  .topics-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  /* Skip link (old style) */
+  .skip-link {
+    font-family: 'Comfortaa', cursive;
+    font-size: 11px;
+    color: rgba(45,44,43,0.6);
+    text-decoration: underline;
+    margin-bottom: 10px;
+    cursor: pointer;
+  }
+
+  /* Skip as subtle text below grid */
+  .skip-below {
+    font-family: 'Comfortaa', cursive;
+    font-size: 11px;
+    color: rgba(45,44,43,0.5);
+    text-align: center;
+    margin-top: 8px;
+    cursor: pointer;
+  }
+
+  .skip-below span {
+    text-decoration: underline;
+    text-decoration-color: rgba(45,44,43,0.25);
+    text-underline-offset: 3px;
+  }
+
+  /* Section label with inline optional */
+  .optional-badge {
+    font-family: 'Comfortaa', cursive;
+    font-size: 9px;
+    font-weight: 500;
+    color: rgba(45,44,43,0.5);
+    background: rgba(45,44,43,0.06);
+    border-radius: 100px;
+    padding: 3px 8px;
+    margin-left: 6px;
+    vertical-align: middle;
+    display: inline-block;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+  }
+
+  /* CTA button */
+  .cta-mock {
+    background: #2E7D6B;
+    color: #fff;
+    border-radius: 100px;
+    padding: 12px 20px;
+    font-family: 'Comfortaa', cursive;
+    font-size: 13px;
+    font-weight: 700;
+    text-align: center;
+    border: 2.5px solid rgba(46,125,107,0.8);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  }
+
+  .helper-text {
+    font-family: 'Comfortaa', cursive;
+    font-size: 10px;
+    color: rgba(45,44,43,0.6);
+    text-align: center;
+    margin-top: 8px;
+    font-weight: 500;
+  }
+
+  /* Info section */
+  .concept-info {
+    padding: 20px;
+  }
+
+  .concept-label {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #4CA894;
+    margin-bottom: 4px;
+  }
+
+  .concept-name {
+    font-size: 18px;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 8px;
+  }
+
+  .concept-desc {
+    font-size: 13px;
+    line-height: 1.6;
+    color: #aaa;
+    margin-bottom: 16px;
+  }
+
+  .science-box {
+    background: #0f3460;
+    border-radius: 10px;
+    padding: 14px;
+    border-left: 3px solid #4CA894;
+  }
+
+  .science-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #4CA894;
+    margin-bottom: 6px;
+  }
+
+  .science-principle {
+    font-size: 13px;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 6px;
+  }
+
+  .science-evidence {
+    font-size: 12px;
+    line-height: 1.5;
+    color: #aaa;
+    margin-bottom: 10px;
+  }
+
+  .score-summary {
+    font-size: 11px;
+    color: #888;
+    line-height: 1.6;
+  }
+
+  .score-summary strong {
+    color: #4CA894;
+  }
+
+  /* Score table */
+  .score-table {
+    max-width: 1200px;
+    margin: 0 auto 48px;
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .score-table th, .score-table td {
+    padding: 10px 16px;
+    text-align: center;
+    border-bottom: 1px solid #2a2a4a;
+    font-size: 13px;
+  }
+
+  .score-table th {
+    color: #4CA894;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 11px;
+  }
+
+  .score-table td:first-child {
+    text-align: left;
+    color: #ccc;
+  }
+
+  .score-table tr:last-child td {
+    border-bottom: none;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  .score-table tr:nth-last-child(2) td {
+    font-weight: 700;
+    color: #4CA894;
+  }
+
+  .instructions {
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: center;
+    padding: 32px;
+    background: #16213e;
+    border-radius: 12px;
+    border: 1px solid #2a2a4a;
+  }
+
+  .instructions p {
+    color: #aaa;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .instructions strong {
+    color: #fff;
+  }
+
+  @media (max-width: 1000px) {
+    .concepts-grid {
+      grid-template-columns: 1fr;
+      max-width: 420px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<h1>Topics "Skip" UI — 3 Options Ranked by UX Science</h1>
+<p class="page-subtitle">How should users opt out of topic selection? &nbsp;·&nbsp; Replacing the underlined "I'll figure it out as I go" link</p>
+
+<div class="concepts-grid">
+
+  <!-- OPTION A — Rank #1: Skip as last pill in grid -->
+  <div class="concept-card recommended">
+    <div class="recommended-badge">RECOMMENDED</div>
+    <div class="rank-badge rank-1">1</div>
+    <div class="phone-frame-wrapper">
+      <div class="phone-frame">
+        <div class="section-label-new">Topics of interest <span class="topics-count">(pick up to 5)</span></div>
+        <div style="height: 10px;"></div>
+        <div class="topics-grid">
+          <div class="pill selected">Childhood</div>
+          <div class="pill selected">Family</div>
+          <div class="pill">Immigration</div>
+          <div class="pill">Career</div>
+          <div class="pill">War / Service</div>
+          <div class="pill">Education</div>
+          <div class="pill">Faith</div>
+          <div class="pill">Love</div>
+          <div class="pill" style="grid-column: span 2;">Health / Overcoming Adversity</div>
+          <div class="pill skip-pill" style="grid-column: span 2;">Surprise me</div>
+        </div>
+
+        <div class="cta-mock">Let's Start</div>
+        <div class="helper-text">2/5 topics selected</div>
+      </div>
+    </div>
+    <div class="concept-info">
+      <div class="concept-label">Option A</div>
+      <div class="concept-name">"Surprise me" Pill in Grid</div>
+      <div class="concept-desc">The skip option becomes a pill button at the bottom of the grid with a dashed border and italic text, visually distinct but part of the same interaction pattern. Selecting it deselects all topics. Copy: "Surprise me" — playful, warm, and low-pressure.</div>
+      <div class="science-box">
+        <div class="science-label">UX Science</div>
+        <div class="science-principle">Jakob's Law + Fitts's Law + Hobson's Choice Avoidance</div>
+        <div class="science-evidence">Users expect consistent interaction patterns (Jakob's Law) — mixing a text link with pill buttons forces a mode switch. By making the skip option a pill, all choices share the same affordance. The dashed border provides visual differentiation (preattentive processing) without breaking the pattern. "Surprise me" avoids negative framing ("skip") which triggers loss aversion — instead it frames opting out as a positive, exciting choice.</div>
+        <div class="score-summary">
+          Score: <strong>4.45</strong>/5.00 —
+          Consistency: 5 | Discoverability: 5 | Emotional: 5 | Density: 4 | Familiarity: 4 | Effort: 4
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OPTION B — Rank #2: Optional badge + skip below grid -->
+  <div class="concept-card">
+    <div class="rank-badge rank-2">2</div>
+    <div class="phone-frame-wrapper">
+      <div class="phone-frame">
+        <div class="section-label-new">Topics of interest <span class="optional-badge">Optional</span></div>
+        <div class="topics-count" style="margin-bottom: 10px;">Pick up to 5 — or skip and let Mabel decide</div>
+        <div class="topics-grid">
+          <div class="pill selected">Childhood</div>
+          <div class="pill selected">Family</div>
+          <div class="pill">Immigration</div>
+          <div class="pill">Career</div>
+          <div class="pill">War / Service</div>
+          <div class="pill">Education</div>
+          <div class="pill">Faith</div>
+          <div class="pill">Love</div>
+          <div class="pill" style="grid-column: span 2;">Health / Overcoming Adversity</div>
+        </div>
+
+        <div class="cta-mock">Let's Start</div>
+        <div class="helper-text">2/5 topics selected</div>
+      </div>
+    </div>
+    <div class="concept-info">
+      <div class="concept-label">Option B</div>
+      <div class="concept-name">Optional Badge + Permissive Subtitle</div>
+      <div class="concept-desc">An "OPTIONAL" badge next to the heading signals this section can be skipped. The subtitle says "Pick up to 5 — or skip and let Mabel decide." No separate skip control needed — the CTA validates without topics if none are selected.</div>
+      <div class="science-box">
+        <div class="science-label">UX Science</div>
+        <div class="science-principle">Progressive Disclosure + Minimal Interaction Cost</div>
+        <div class="science-evidence">The optional badge is preattentively processed (capsule shape + muted color), reducing the cognitive load of deciding whether to engage. By making the section implicitly skippable (no topics required), the user doesn't need to find and tap a separate "skip" control — they just scroll past. This reduces interaction cost (Fitts's Law) and decision points (Hick's Law).</div>
+        <div class="score-summary">
+          Score: <strong>4.10</strong>/5.00 —
+          Consistency: 4 | Discoverability: 4 | Emotional: 4 | Density: 5 | Familiarity: 4 | Effort: 4
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OPTION C — Rank #3: Skip text below grid -->
+  <div class="concept-card">
+    <div class="rank-badge rank-3">3</div>
+    <div class="phone-frame-wrapper">
+      <div class="phone-frame">
+        <div class="section-label-new">Topics of interest <span class="topics-count">(pick up to 5)</span></div>
+        <div style="height: 10px;"></div>
+        <div class="topics-grid">
+          <div class="pill selected">Childhood</div>
+          <div class="pill selected">Family</div>
+          <div class="pill">Immigration</div>
+          <div class="pill">Career</div>
+          <div class="pill">War / Service</div>
+          <div class="pill">Education</div>
+          <div class="pill">Faith</div>
+          <div class="pill">Love</div>
+          <div class="pill" style="grid-column: span 2;">Health / Overcoming Adversity</div>
+        </div>
+
+        <div class="skip-below"><span>or let Mabel decide for you</span></div>
+
+        <div style="height: 16px;"></div>
+        <div class="cta-mock">Let's Start</div>
+        <div class="helper-text">2/5 topics selected</div>
+      </div>
+    </div>
+    <div class="concept-info">
+      <div class="concept-label">Option C</div>
+      <div class="concept-name">Subtle Skip Below Grid</div>
+      <div class="concept-desc">Move the skip text below the grid as a soft, centered, tappable line: "or let Mabel decide for you". Underline with very subtle decoration. The text sits between the grid and CTA as a gentle offramp.</div>
+      <div class="science-box">
+        <div class="science-label">UX Science</div>
+        <div class="science-principle">Serial Position Effect + Visual Hierarchy</div>
+        <div class="science-evidence">Placing the skip option after the grid leverages the serial position effect — users process the primary action (selecting topics) first, then encounter the escape hatch. This respects the natural reading flow. However, the text link still breaks the pill interaction pattern (consistency violation), and its subtle styling may reduce discoverability for less tech-savvy users (Mabel's target audience includes grandparents).</div>
+        <div class="score-summary">
+          Score: <strong>3.40</strong>/5.00 —
+          Consistency: 3 | Discoverability: 3 | Emotional: 3 | Density: 4 | Familiarity: 4 | Effort: 3
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Score breakdown table -->
+<table class="score-table">
+  <thead>
+    <tr>
+      <th style="text-align:left;">Dimension</th>
+      <th>A: "Surprise me" Pill<br><small style="font-weight:400;color:#888;">In-grid pill</small></th>
+      <th>B: Optional Badge<br><small style="font-weight:400;color:#888;">Implicit skip</small></th>
+      <th>C: Skip Below Grid<br><small style="font-weight:400;color:#888;">Subtle text link</small></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>Interaction Consistency (25%)</td><td>5</td><td>4</td><td>3</td></tr>
+    <tr><td>Discoverability (20%)</td><td>5</td><td>4</td><td>3</td></tr>
+    <tr><td>Emotional Framing (15%)</td><td>5</td><td>4</td><td>3</td></tr>
+    <tr><td>Information Density (15%)</td><td>4</td><td>5</td><td>4</td></tr>
+    <tr><td>Familiarity (15%)</td><td>4</td><td>4</td><td>4</td></tr>
+    <tr><td>Implementation Effort (10%)</td><td>4</td><td>4</td><td>3</td></tr>
+    <tr><td>Weighted Total</td><td><strong>4.45</strong></td><td>4.10</td><td>3.40</td></tr>
+    <tr><td>Rank</td><td>#1 ★</td><td>#2</td><td>#3</td></tr>
+  </tbody>
+</table>
+
+<div class="instructions">
+  <p><strong>Pick your favorite (A, B, or C)</strong> — I'll implement the winner along with the name subtext fix.</p>
+  <p style="margin-top:12px; font-size:12px; color:#666;">The name helper text will also be updated to: "Enter your name, or the person whose story we're telling."</p>
+</div>
+
+</body>
+</html>

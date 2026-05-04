@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mabel Profile — Design Concepts</title>
+<style>
+  :root { --bg: #1a1a2e; --card-bg: #16213e; --text: #e8e8e8; --muted: #8b8fa3; --gold: #f9e269; --silver: #c0c0c0; --bronze: #cd7f32; --teal: #2E7D6B; --border: #2a2e45; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); padding: 40px 32px; }
+  h1 { font-size: 28px; font-weight: 700; margin-bottom: 8px; color: #fff; }
+  .subtitle { color: var(--muted); font-size: 15px; margin-bottom: 40px; }
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 40px; }
+  .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; position: relative; }
+  .card.recommended { border-color: var(--teal); box-shadow: 0 0 20px rgba(46, 125, 107, 0.3); }
+  .badge { position: absolute; top: 12px; right: 12px; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; z-index: 2; }
+  .badge.recommended { background: var(--teal); color: #fff; }
+  .badge.rank-1 { background: var(--gold); color: #1a1a2e; }
+  .badge.rank-2 { background: var(--silver); color: #1a1a2e; }
+  .badge.rank-3 { background: var(--bronze); color: #fff; }
+  .screenshot { width: 100%; aspect-ratio: 393 / 852; object-fit: cover; object-position: top; border-bottom: 1px solid var(--border); }
+  .card-body { padding: 20px; }
+  .concept-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 4px; }
+  .concept-name { font-size: 18px; font-weight: 600; margin-bottom: 8px; color: #fff; }
+  .concept-desc { font-size: 14px; line-height: 1.5; color: var(--muted); margin-bottom: 16px; }
+  .science-box { background: rgba(46, 125, 107, 0.08); border: 1px solid rgba(46, 125, 107, 0.2); border-radius: 10px; padding: 14px; }
+  .science-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: var(--teal); margin-bottom: 6px; }
+  .science-principle { font-size: 14px; font-weight: 600; color: #fff; margin-bottom: 6px; }
+  .science-evidence { font-size: 12px; line-height: 1.5; color: var(--muted); margin-bottom: 8px; }
+  .score-summary { font-size: 11px; color: var(--muted); line-height: 1.4; }
+  .score-summary strong { color: var(--text); }
+  .score-table { width: 100%; border-collapse: collapse; margin-bottom: 40px; font-size: 13px; }
+  .score-table th, .score-table td { padding: 10px 14px; text-align: center; border-bottom: 1px solid var(--border); }
+  .score-table th { text-align: left; color: var(--muted); font-weight: 500; }
+  .score-table td:first-child { text-align: left; color: var(--muted); }
+  .score-table tr:last-child td { font-weight: 700; color: #fff; border-bottom: none; }
+  .score-table tr:nth-last-child(2) td { font-weight: 700; color: #fff; }
+</style>
+</head>
+<body>
+
+<h1>Profile Screen — Design Concepts</h1>
+<p class="subtitle">3 competing concepts for the settings/profile screen. Ordered by rank (best = left).</p>
+
+<div class="grid">
+  <!-- Concept B — Rank #1 (Recommended) -->
+  <div class="card recommended">
+    <span class="badge recommended">Recommended</span>
+    <span class="badge rank-1" style="top: 40px;">#1</span>
+    <img src="profile_concept_b.png" alt="Concept B" class="screenshot">
+    <div class="card-body">
+      <div class="concept-label">Concept B</div>
+      <div class="concept-name">Settings Card</div>
+      <div class="concept-desc">Form fields grouped in a bordered card — clear "settings surface." "YOUR PROFILE" section label. Inputs use mabelBackgroundAlt fill for subtle contrast inside the white card. Buttons below the card: CTAButton SAVE, SecondaryButton HOME, DestructiveButton LOG OUT (burgundy). Flat white background. Circle dismiss button.</div>
+      <div class="science-box">
+        <div class="science-label">UX Science</div>
+        <div class="science-principle">Figure-Ground (Gestalt) + Proximity</div>
+        <div class="science-evidence">The bordered card groups all editable fields into a clear "figure" against the white background, signaling "this is where you edit." Proximity within the card implies relatedness. Buttons outside the card create a distinct action zone. The card pattern matches ChapterReview and MyStories for cross-screen consistency.</div>
+        <div class="score-summary">
+          Score: <strong>4.05</strong>/5.00 —
+          Encoding: 4 | Pre-attentive: 4 | Density: 4 | Familiar: 4 | Accuracy: 4 | Effort: 3
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Concept A — Rank #2 -->
+  <div class="card">
+    <span class="badge rank-2">#2</span>
+    <img src="profile_concept_a.png" alt="Concept A" class="screenshot">
+    <div class="card-body">
+      <div class="concept-label">Concept A</div>
+      <div class="concept-name">Token Polish</div>
+      <div class="concept-desc">Pure token swap — preserves existing layout. formLabelStyle for labels, body() for inputs, spacing tokens throughout. HOME uses SecondaryButton, LOG OUT uses DestructiveButton (burgundy replaces red). Gradient background. Lowest risk.</div>
+      <div class="science-box">
+        <div class="science-label">UX Science</div>
+        <div class="science-principle">Consistency (Nielsen's Heuristic #4)</div>
+        <div class="science-evidence">Maintains the familiar form layout while standardizing all tokens. The DestructiveButton with burgundy replaces the off-palette Color.red, bringing LOG OUT into the design system. No layout disruption for existing users.</div>
+        <div class="score-summary">
+          Score: <strong>3.55</strong>/5.00 —
+          Encoding: 3 | Pre-attentive: 3 | Density: 3 | Familiar: 5 | Accuracy: 3 | Effort: 5
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Concept C — Rank #3 -->
+  <div class="card">
+    <span class="badge rank-3">#3</span>
+    <img src="profile_concept_c.png" alt="Concept C" class="screenshot">
+    <div class="card-body">
+      <div class="concept-label">Concept C</div>
+      <div class="concept-name">Minimal Form</div>
+      <div class="concept-desc">Strips to essentials — no card wrapper, fields on white background. "Your Profile" as Nunito heading. Save is the only CTA; Home and Log Out are text links at the bottom. Payment shown as helper text (no disabled input). Most minimal, but may feel sparse.</div>
+      <div class="science-box">
+        <div class="science-label">UX Science</div>
+        <div class="science-principle">Aesthetic-Minimalist (Nielsen)</div>
+        <div class="science-evidence">Every element competes for attention — removing the card wrapper and reducing buttons to text links minimizes visual noise. The Nunito heading adds warmth. However, text links for critical actions (Log Out) reduce discoverability per Fitts's Law, and the sparse layout may feel unfinished.</div>
+        <div class="score-summary">
+          Score: <strong>3.15</strong>/5.00 —
+          Encoding: 3 | Pre-attentive: 3 | Density: 3 | Familiar: 3 | Accuracy: 3 | Effort: 4
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Score Table -->
+<table class="score-table">
+  <thead>
+    <tr>
+      <th>Dimension (Weight)</th>
+      <th>B — Settings Card</th>
+      <th>A — Token Polish</th>
+      <th>C — Minimal Form</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>Encoding Redundancy (25%)</td><td>4</td><td>3</td><td>3</td></tr>
+    <tr><td>Pre-attentive Processing (20%)</td><td>4</td><td>3</td><td>3</td></tr>
+    <tr><td>Information Density (15%)</td><td>4</td><td>3</td><td>3</td></tr>
+    <tr><td>Familiarity (15%)</td><td>4</td><td>5</td><td>3</td></tr>
+    <tr><td>Perceptual Accuracy (15%)</td><td>4</td><td>3</td><td>3</td></tr>
+    <tr><td>Implementation Efficiency (10%)</td><td>3</td><td>5</td><td>4</td></tr>
+    <tr><td><strong>Weighted Total</strong></td><td><strong>4.05</strong></td><td><strong>3.55</strong></td><td><strong>3.15</strong></td></tr>
+    <tr><td><strong>Rank</strong></td><td><strong>#1</strong></td><td><strong>#2</strong></td><td><strong>#3</strong></td></tr>
+  </tbody>
+</table>
+
+</body>
+</html>

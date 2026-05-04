@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mabel — Setup Screen Redesign (Before / After)</title>
+<link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&family=Nunito:wght@800&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #1a1a2e;
+    color: #e0e0e0;
+    padding: 40px 24px;
+    min-height: 100vh;
+  }
+
+  h1 {
+    font-size: 28px;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 8px;
+    color: #fff;
+  }
+
+  .page-subtitle {
+    text-align: center;
+    color: #888;
+    font-size: 14px;
+    margin-bottom: 48px;
+  }
+
+  .concepts-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 32px;
+    max-width: 900px;
+    margin: 0 auto 48px;
+  }
+
+  .concept-card {
+    background: #16213e;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid #2a2a4a;
+    position: relative;
+    transition: transform 0.2s;
+  }
+
+  .concept-card:hover { transform: translateY(-4px); }
+
+  .concept-card.after {
+    border-color: #4CA894;
+    box-shadow: 0 0 24px rgba(76, 168, 148, 0.15);
+  }
+
+  .version-badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 100px;
+    letter-spacing: 0.05em;
+    z-index: 2;
+  }
+
+  .version-badge.before { background: #3a3a5a; color: #aaa; }
+  .version-badge.after { background: #4CA894; color: #fff; }
+
+  .phone-frame-wrapper {
+    width: 100%;
+    background: #f5f5f5;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 24px 20px;
+  }
+
+  .phone-frame {
+    width: 100%;
+    max-width: 320px;
+    border-radius: 40px;
+    border: 3px solid #1a1a2e;
+    padding: 48px 24px 32px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .phone-frame.bg-white { background: #FFFFFF; }
+  .phone-frame.bg-gradient { background: linear-gradient(to bottom, #FFFFFF 0%, #D5DFDB 100%); }
+
+  .phone-frame::before {
+    content: '';
+    position: absolute;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90px;
+    height: 24px;
+    background: #1a1a2e;
+    border-radius: 12px;
+  }
+
+  .wordmark {
+    font-family: 'Comfortaa', cursive;
+    font-size: 16px;
+    color: #2E7D6B;
+    font-weight: 700;
+    text-align: center;
+    letter-spacing: 1.5px;
+    margin-bottom: 28px;
+  }
+
+  .heading-old {
+    font-family: 'Comfortaa', cursive;
+    font-weight: 700;
+    font-size: 20px;
+    color: #2d2c2b;
+    text-align: left;
+    line-height: 1.3;
+    margin-bottom: 24px;
+  }
+
+  .heading-new {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: 22px;
+    color: #2d2c2b;
+    text-align: center;
+    letter-spacing: -0.026em;
+    line-height: 1.25;
+    margin-bottom: 6px;
+  }
+
+  .screen-subtitle {
+    font-family: 'Comfortaa', cursive;
+    font-size: 12px;
+    color: rgba(45,44,43,0.6);
+    text-align: center;
+    line-height: 1.6;
+    margin-bottom: 24px;
+  }
+
+  .section-label {
+    font-family: 'Comfortaa', cursive;
+    font-size: 13px;
+    font-weight: 600;
+    color: #2d2c2b;
+    margin-bottom: 10px;
+  }
+
+  .section-label-new {
+    font-family: 'Comfortaa', cursive;
+    font-size: 15px;
+    font-weight: 500;
+    color: #2d2c2b;
+    margin-bottom: 10px;
+  }
+
+  .pill {
+    font-family: 'Comfortaa', cursive;
+    font-size: 13px;
+    font-weight: 400;
+    color: #2d2c2b;
+    background: #FFFFFF;
+    border: 2.5px solid rgba(128,128,128,0.35);
+    border-radius: 14px;
+    padding: 12px 14px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  .pill.selected {
+    background: #2E7D6B;
+    color: #FFFFFF;
+    border-color: #2E7D6B;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(46,125,107,0.4);
+  }
+
+  .pill.surprise {
+    border-style: dashed;
+    border-color: rgba(128,128,128,0.35);
+    color: rgba(45,44,43,0.6);
+    font-style: italic;
+  }
+
+  .pill.surprise.selected {
+    background: #2E7D6B;
+    color: #FFFFFF;
+    border-color: #2E7D6B;
+    border-style: solid;
+    font-style: normal;
+    font-weight: 600;
+  }
+
+  .pills-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .pills-stacked {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .name-input-mock {
+    width: 100%;
+    font-family: 'Comfortaa', cursive;
+    font-size: 13px;
+    color: rgba(45,44,43,0.5);
+    background: #FFFFFF;
+    border: 2.5px solid rgba(46,125,107,0.3);
+    border-radius: 14px;
+    padding: 12px 14px;
+    margin-bottom: 20px;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+  }
+
+  .name-helper-old {
+    font-family: 'Comfortaa', cursive;
+    font-size: 10px;
+    color: rgba(45,44,43,0.6);
+    line-height: 1.5;
+    margin-bottom: 8px;
+  }
+
+  .name-helper-new {
+    font-family: 'Comfortaa', cursive;
+    font-size: 11px;
+    color: rgba(45,44,43,0.6);
+    line-height: 1.5;
+    margin-bottom: 8px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .writing-goal-section { margin-bottom: 20px; }
+
+  .skip-link {
+    font-family: 'Comfortaa', cursive;
+    font-size: 11px;
+    color: rgba(45,44,43,0.6);
+    text-decoration: underline;
+    margin-bottom: 10px;
+    cursor: pointer;
+  }
+
+  .topic-pill {
+    font-family: 'Comfortaa', cursive;
+    font-size: 11px;
+    font-weight: 400;
+    color: #2d2c2b;
+    background: #FFFFFF;
+    border: 2px solid rgba(128,128,128,0.35);
+    border-radius: 12px;
+    padding: 8px 10px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+  }
+
+  .topic-pill.selected {
+    background: #2E7D6B;
+    color: #FFFFFF;
+    border-color: #2E7D6B;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(46,125,107,0.35);
+  }
+
+  .topics-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .cta-mock {
+    background: #2E7D6B;
+    color: #fff;
+    border-radius: 100px;
+    padding: 14px 24px;
+    font-family: 'Comfortaa', cursive;
+    font-size: 14px;
+    font-weight: 700;
+    text-align: center;
+    border: 2.5px solid rgba(46,125,107,0.8);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  }
+
+  .helper-text {
+    font-family: 'Comfortaa', cursive;
+    font-size: 11px;
+    color: rgba(45,44,43,0.6);
+    text-align: center;
+    margin-top: 10px;
+    font-weight: 500;
+  }
+
+  .concept-info { padding: 20px; }
+  .concept-name { font-size: 18px; font-weight: 600; color: #fff; margin-bottom: 8px; }
+  .concept-desc { font-size: 13px; line-height: 1.6; color: #aaa; margin-bottom: 16px; }
+
+  .changes-list {
+    background: #0f3460;
+    border-radius: 10px;
+    padding: 14px;
+    border-left: 3px solid #4CA894;
+  }
+
+  .changes-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #4CA894;
+    margin-bottom: 8px;
+  }
+
+  .changes-list ul { list-style: none; padding: 0; }
+
+  .changes-list li {
+    font-size: 12px;
+    color: #aaa;
+    line-height: 1.6;
+    padding: 2px 0;
+  }
+
+  .changes-list li::before { content: '+ '; color: #4CA894; font-weight: 700; }
+
+  .issues-list {
+    background: #0f3460;
+    border-radius: 10px;
+    padding: 14px;
+    border-left: 3px solid #D44A5E;
+  }
+
+  .issues-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #D44A5E;
+    margin-bottom: 8px;
+  }
+
+  .issues-list ul { list-style: none; padding: 0; }
+
+  .issues-list li {
+    font-size: 12px;
+    color: #aaa;
+    line-height: 1.6;
+    padding: 2px 0;
+  }
+
+  .issues-list li::before { content: '- '; color: #D44A5E; font-weight: 700; }
+
+  .instructions {
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: center;
+    padding: 32px;
+    background: #16213e;
+    border-radius: 12px;
+    border: 1px solid #2a2a4a;
+  }
+
+  .instructions p { color: #aaa; font-size: 14px; line-height: 1.6; }
+  .instructions strong { color: #fff; }
+
+  /* Callout for specific fixes */
+  .fix-callout {
+    background: rgba(76, 168, 148, 0.08);
+    border: 1px solid rgba(76, 168, 148, 0.2);
+    border-radius: 8px;
+    padding: 8px 12px;
+    margin-bottom: 12px;
+    font-family: 'Comfortaa', cursive;
+    font-size: 11px;
+    color: #4CA894;
+    text-align: center;
+  }
+
+  @media (max-width: 700px) {
+    .concepts-grid {
+      grid-template-columns: 1fr;
+      max-width: 420px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<h1>Setup Screen — Before / After</h1>
+<p class="page-subtitle">Screen 2 of 8 &nbsp;·&nbsp; Mabel iOS App &nbsp;·&nbsp; Stoic-inspired redesign with "Surprise me" pill</p>
+
+<div class="concepts-grid">
+
+  <!-- BEFORE -->
+  <div class="concept-card">
+    <div class="version-badge before">BEFORE</div>
+    <div class="phone-frame-wrapper">
+      <div class="phone-frame bg-white">
+        <div class="wordmark">mabel</div>
+
+        <div class="heading-old">Whose Story Are<br>We Telling?</div>
+
+        <div class="section-label">I'm capturing the story of...</div>
+        <div class="pills-grid">
+          <div class="pill selected">Myself</div>
+          <div class="pill">A Parent</div>
+          <div class="pill">A Grandparent</div>
+          <div class="pill">A Friend</div>
+          <div class="pill">Other</div>
+        </div>
+
+        <div class="section-label">What's their name?</div>
+        <div class="name-helper-old">Enter your name, or the name of the person whose story you're capturing.</div>
+        <div class="name-input-mock">Enter a name</div>
+
+        <div class="writing-goal-section">
+          <div class="section-label">Set a writing goal:</div>
+          <div class="pills-grid">
+            <div class="pill">1x week</div>
+            <div class="pill selected">2x week</div>
+            <div class="pill">3x week</div>
+            <div class="pill">No goal for now</div>
+          </div>
+        </div>
+
+        <div class="section-label">Topics of interest: <span style="font-weight:400; color:rgba(45,44,43,0.6); font-size:10px;">(pick up to 5)</span></div>
+        <div class="skip-link">I'll figure it out as I go</div>
+        <div class="topics-grid">
+          <div class="topic-pill selected">Childhood</div>
+          <div class="topic-pill selected">Family</div>
+          <div class="topic-pill">Immigration</div>
+          <div class="topic-pill">Career</div>
+          <div class="topic-pill">War / Service</div>
+          <div class="topic-pill">Education</div>
+          <div class="topic-pill">Faith</div>
+          <div class="topic-pill">Love</div>
+          <div class="topic-pill" style="grid-column: span 2;">Health / Overcoming Adversity</div>
+        </div>
+
+        <div class="cta-mock">Let's Start</div>
+        <div class="helper-text">2/5 topics selected</div>
+      </div>
+    </div>
+    <div class="concept-info">
+      <div class="concept-name">Before</div>
+      <div class="concept-desc">Current SetupView with Comfortaa heading, flat white background, 2-column relationship pills, writing goal section, underlined skip link, and hardcoded spacing.</div>
+      <div class="issues-list">
+        <div class="issues-label">Issues</div>
+        <ul>
+          <li>Heading uses Comfortaa — should be Nunito ExtraBold</li>
+          <li>No subtitle under heading</li>
+          <li>Flat white background — no visual flow from Welcome</li>
+          <li>Writing goal section not in STYLE_GUIDE</li>
+          <li>Underlined skip link breaks pill interaction pattern</li>
+          <li>Name subtext wraps to 2 lines</li>
+          <li>Hardcoded spacing values throughout</li>
+          <li>No accessibility labels</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- AFTER -->
+  <div class="concept-card after">
+    <div class="version-badge after">AFTER</div>
+    <div class="phone-frame-wrapper">
+      <div class="phone-frame bg-gradient">
+        <div class="wordmark">mabel</div>
+
+        <div class="heading-new">Whose Story Are<br>We Telling?</div>
+        <div class="screen-subtitle">Your answers help Mabel ask better questions.</div>
+
+        <div class="section-label-new">I'm capturing the story of...</div>
+        <div class="pills-stacked">
+          <div class="pill selected">Myself</div>
+          <div class="pill">A Parent</div>
+          <div class="pill">A Grandparent</div>
+          <div class="pill">A Friend</div>
+          <div class="pill">Other</div>
+        </div>
+
+        <div class="section-label-new">What's their name?</div>
+        <div class="name-helper-new" style="white-space: normal; font-size: 10.5px;">Enter your name, or the person whose story we're telling.</div>
+        <div class="name-input-mock">Enter a name</div>
+
+        <!-- No writing goal section -->
+
+        <div class="section-label-new">Topics of interest <span style="font-weight:400; color:rgba(45,44,43,0.6); font-size:11px;">(pick up to 5)</span></div>
+        <div class="topics-grid">
+          <div class="topic-pill selected">Childhood</div>
+          <div class="topic-pill selected">Family</div>
+          <div class="topic-pill">Immigration</div>
+          <div class="topic-pill">Career</div>
+          <div class="topic-pill">War / Service</div>
+          <div class="topic-pill">Education</div>
+          <div class="topic-pill">Faith</div>
+          <div class="topic-pill">Love</div>
+          <div class="topic-pill">Health / Adversity</div>
+          <div class="topic-pill">Surprise me</div>
+        </div>
+
+        <div class="cta-mock">Let's Start</div>
+        <div class="helper-text">2/5 topics selected</div>
+      </div>
+    </div>
+    <div class="concept-info">
+      <div class="concept-name">After</div>
+      <div class="concept-desc">Redesigned with Nunito heading, white→sage gradient, stacked relationship pills, "Surprise me" dashed pill, and single-line name helper text.</div>
+      <div class="changes-list">
+        <div class="changes-label">All Changes</div>
+        <ul>
+          <li>Heading → Nunito ExtraBold 28pt, centered</li>
+          <li>Added subtitle at 80% opacity</li>
+          <li>White→sage gradient background</li>
+          <li>Relationship pills → full-width stacked</li>
+          <li>Removed writing goal section</li>
+          <li>Name helper → new copy, single-line, minimumScaleFactor</li>
+          <li>Skip link → "Surprise me" pill (same style as topics)</li>
+          <li>All spacing → MabelSpacing tokens</li>
+          <li>Text inputs → mabelInputShadow tokens</li>
+          <li>Accessibility labels + hints throughout</li>
+          <li>Body extracted into subviews</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="instructions">
+  <p><strong>Code is implemented and builds successfully.</strong> Ready for your review.</p>
+</div>
+
+</body>
+</html>

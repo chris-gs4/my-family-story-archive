@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Mabel — Mascot, Icon & Wordmark Asset Specs</title>
+<style>
+  @page { size: A4; margin: 40px 48px; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+    color: #2d2c2b;
+    font-size: 13px;
+    line-height: 1.5;
+    padding: 48px;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  h1 {
+    font-size: 28px;
+    font-weight: 800;
+    margin-bottom: 4px;
+    color: #2E7D6B;
+  }
+  .tagline {
+    font-size: 14px;
+    color: #8b8b8b;
+    margin-bottom: 6px;
+  }
+  .date {
+    font-size: 11px;
+    color: #aaa;
+    margin-bottom: 32px;
+  }
+  h2 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #2d2c2b;
+    margin-top: 32px;
+    margin-bottom: 12px;
+    padding-bottom: 6px;
+    border-bottom: 2px solid #2E7D6B;
+  }
+  h3 {
+    font-size: 14px;
+    font-weight: 700;
+    color: #2E7D6B;
+    margin-top: 20px;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  p { margin-bottom: 10px; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 16px;
+    font-size: 12px;
+  }
+  th, td {
+    padding: 8px 12px;
+    text-align: left;
+    border-bottom: 1px solid #e8e0da;
+  }
+  th {
+    font-weight: 600;
+    color: #2E7D6B;
+    background: #f0faf7;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  td { color: #2d2c2b; }
+  .mono { font-family: 'SF Mono', Menlo, monospace; font-size: 11px; color: #666; }
+  .note {
+    background: #f8f4f2;
+    border-left: 3px solid #2E7D6B;
+    padding: 10px 14px;
+    margin: 12px 0;
+    font-size: 12px;
+    color: #555;
+  }
+  .note strong { color: #2d2c2b; }
+  .checklist { list-style: none; padding: 0; }
+  .checklist li {
+    padding: 6px 0 6px 24px;
+    position: relative;
+    font-size: 12px;
+  }
+  .checklist li::before {
+    content: "☐";
+    position: absolute;
+    left: 0;
+    color: #2E7D6B;
+    font-size: 14px;
+  }
+  .section-divider {
+    border: none;
+    border-top: 1px solid #e8e0da;
+    margin: 28px 0;
+  }
+  .color-swatch {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+    vertical-align: middle;
+    margin-right: 4px;
+    border: 1px solid rgba(0,0,0,0.1);
+  }
+  .page-break { page-break-before: always; }
+</style>
+</head>
+<body>
+
+<h1>Mabel — Asset Specifications</h1>
+<p class="tagline">Mascot, Icon & Wordmark export guide for the design uplift</p>
+<p class="date">Generated April 16, 2026 — Reference document for asset production</p>
+
+<!-- ============================================ -->
+<h2>1. MabelMascot — Full Body Character</h2>
+
+<p>The full-body mascot is the hero visual element. It appears at multiple sizes across the app, always loaded from a single <span class="mono">MabelMascot.imageset</span> asset and scaled down via <span class="mono">.resizable().scaledToFit()</span>.</p>
+
+<h3>Where It's Used</h3>
+<table>
+  <thead>
+    <tr><th>Screen</th><th>Display Size</th><th>Context</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Welcome (hero)</td><td>260pt</td><td>Centered hero, largest instance</td></tr>
+    <tr><td>Library (greeting header)</td><td>140pt</td><td>Left-aligned next to greeting text</td></tr>
+    <tr><td>My Stories (empty state)</td><td>80pt</td><td>Centered, with helper text below</td></tr>
+  </tbody>
+</table>
+
+<h3>Export Specifications</h3>
+<table>
+  <thead>
+    <tr><th>Scale</th><th>Minimum Width</th><th>Filename</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>@1x</td><td>260px</td><td class="mono">mabel-mascot.png</td></tr>
+    <tr><td>@2x</td><td>520px</td><td class="mono">mabel-mascot@2x.png</td></tr>
+    <tr><td>@3x</td><td>780px</td><td class="mono">mabel-mascot@3x.png</td></tr>
+  </tbody>
+</table>
+
+<div class="note">
+  <strong>Format:</strong> PNG with transparent background.<br>
+  <strong>Aspect ratio:</strong> Preserve the character's natural proportions — SwiftUI uses <span class="mono">.scaledToFit()</span> so it will letterbox within the frame.<br>
+  <strong>Rendering:</strong> <span class="mono">.renderingMode(.original)</span> — original colors are preserved, no tinting.<br>
+  <strong>Recommendation:</strong> Design at @3x (780px wide minimum) and export downscaled versions for @2x and @1x.
+</div>
+
+<h3>Destination Path</h3>
+<p class="mono">Mabel/Mabel/Assets.xcassets/MabelMascot.imageset/</p>
+
+<!-- ============================================ -->
+<hr class="section-divider">
+
+<h2>2. MabelIcon — Circular Head Crop</h2>
+
+<p>A cropped head/face version of the mascot, displayed inside the <span class="mono">MabelWordmarkLockup</span> component (icon + wordmark text) on screens 2–8. The image is clipped to a circle in code.</p>
+
+<h3>Where It's Used</h3>
+<table>
+  <thead>
+    <tr><th>Component</th><th>Display Size</th><th>Context</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>MabelWordmarkLockup</td><td>28pt circle</td><td>Top of Setup, RecordingSetup, Recording, ChapterReview, MyStories, Profile</td></tr>
+  </tbody>
+</table>
+
+<h3>Export Specifications</h3>
+<table>
+  <thead>
+    <tr><th>Scale</th><th>Size (px)</th><th>Filename</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>@1x</td><td>28 × 28</td><td class="mono">MabelIcon.png</td></tr>
+    <tr><td>@2x</td><td>56 × 56</td><td class="mono">MabelIcon@2x.png</td></tr>
+    <tr><td>@3x</td><td>84 × 84</td><td class="mono">MabelIcon@3x.png</td></tr>
+  </tbody>
+</table>
+
+<div class="note">
+  <strong>Format:</strong> PNG with transparent background.<br>
+  <strong>Shape:</strong> Export as a square — the circle clip is applied in code via <span class="mono">.clipShape(Circle())</span>.<br>
+  <strong>Content:</strong> Head/face crop of the mascot, centered within the square. Leave a small margin so the face doesn't touch the circle edge.<br>
+  <strong>Minimum source:</strong> 84px (the @3x size) — but 252px+ recommended for future-proofing.
+</div>
+
+<h3>Destination Path</h3>
+<p class="mono">Mabel/Mabel/Assets.xcassets/MabelIcon.imageset/</p>
+
+<!-- ============================================ -->
+<hr class="section-divider">
+
+<h2>3. AppIcon — Home Screen & App Store</h2>
+
+<p>The iOS app icon displayed on the home screen and in the App Store.</p>
+
+<h3>Export Specifications</h3>
+<table>
+  <thead>
+    <tr><th>Size</th><th>Format</th><th>Notes</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>1024 × 1024px</td><td>PNG</td><td>No transparency, no baked rounded corners</td></tr>
+  </tbody>
+</table>
+
+<div class="note">
+  <strong>No transparency:</strong> iOS requires opaque app icons — use a solid background color.<br>
+  <strong>No rounded corners:</strong> iOS applies the superellipse mask automatically.<br>
+  <strong>Background:</strong> Solid brand color or white — whichever showcases the mascot best.<br>
+  <strong>Content:</strong> Mascot head or simplified mark that reads well at 60×60pt (smallest home screen render).
+</div>
+
+<h3>Destination Path</h3>
+<p class="mono">Mabel/Mabel/Assets.xcassets/AppIcon.appiconset/</p>
+
+<!-- ============================================ -->
+<hr class="section-divider">
+
+<h2>4. MabelWordmark — Logo Text</h2>
+
+<p>The "Mabel" text logo, used at the top of every screen. This is an image asset, not rendered as a Text() view.</p>
+
+<h3>Where It's Used</h3>
+<table>
+  <thead>
+    <tr><th>Component</th><th>Display Height</th><th>Context</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>MabelWordmark</td><td>24pt</td><td>Standalone on Welcome and Library top bars</td></tr>
+    <tr><td>MabelWordmarkLockup</td><td>24pt (alongside 28pt icon)</td><td>Screens 2–8 top bars</td></tr>
+  </tbody>
+</table>
+
+<h3>Export Specifications</h3>
+<table>
+  <thead>
+    <tr><th>Scale</th><th>Height (px)</th><th>Filename</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>@1x</td><td>24px tall</td><td class="mono">mabel_type.png</td></tr>
+    <tr><td>@2x</td><td>48px tall</td><td class="mono">mabel_type@2x.png</td></tr>
+    <tr><td>@3x</td><td>72px tall</td><td class="mono">mabel_type@3x.png</td></tr>
+  </tbody>
+</table>
+
+<div class="note">
+  <strong>Format:</strong> PNG with transparent background.<br>
+  <strong>Rendering:</strong> <span class="mono">.renderingMode(.original)</span> — preserves original colors.<br>
+  <strong>Width:</strong> Flexible — determined by the text proportions. Height is the fixed dimension.<br>
+  <strong>Current state:</strong> Only @1x exists today. If redesigning, export all 3 scales.
+</div>
+
+<h3>Destination Path</h3>
+<p class="mono">Mabel/Mabel/Assets.xcassets/MabelWordmark.imageset/</p>
+
+<!-- ============================================ -->
+<div class="page-break"></div>
+
+<h2>5. Color Reference</h2>
+
+<p>Key brand colors the mascot should harmonize with:</p>
+
+<table>
+  <thead>
+    <tr><th>Token</th><th>Hex</th><th>Usage</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><span class="color-swatch" style="background:#FFFFFF;"></span> background</td><td class="mono">#FFFFFF</td><td>Screen backgrounds (mascot sits on white)</td></tr>
+    <tr><td><span class="color-swatch" style="background:#f8f4f2;"></span> backgroundAlt</td><td class="mono">#f8f4f2</td><td>Alternate sections, card input fills</td></tr>
+    <tr><td><span class="color-swatch" style="background:#2E7D6B;"></span> primary</td><td class="mono">#2E7D6B</td><td>CTAs, links, icons, section labels</td></tr>
+    <tr><td><span class="color-swatch" style="background:#f0faf7;"></span> primaryLight</td><td class="mono">#f0faf7</td><td>Icon circles, badge backgrounds</td></tr>
+    <tr><td><span class="color-swatch" style="background:#f9e269;"></span> accent</td><td class="mono">#f9e269</td><td>Decorative only — mascot glow, highlights</td></tr>
+    <tr><td><span class="color-swatch" style="background:#2d2c2b;"></span> text</td><td class="mono">#2d2c2b</td><td>All text</td></tr>
+    <tr><td><span class="color-swatch" style="background:#e8e0da;"></span> borderWarm</td><td class="mono">#e8e0da</td><td>Card borders</td></tr>
+    <tr><td><span class="color-swatch" style="background:#A3243B;"></span> burgundy</td><td class="mono">#A3243B</td><td>Recording state, destructive actions</td></tr>
+  </tbody>
+</table>
+
+<div class="note">
+  <strong>Banned colors:</strong> No orange (#ed7d3c), no old peach (#F3E0D2), no old teal (#1F7A6F), no pure black (#000000).
+</div>
+
+<!-- ============================================ -->
+<hr class="section-divider">
+
+<h2>6. Export Checklist</h2>
+
+<p>When the final mascot design is ready, export these files:</p>
+
+<h3>MabelMascot (Full Body)</h3>
+<ul class="checklist">
+  <li><span class="mono">mabel-mascot.png</span> — @1x, 260px wide minimum, transparent PNG</li>
+  <li><span class="mono">mabel-mascot@2x.png</span> — @2x, 520px wide, transparent PNG</li>
+  <li><span class="mono">mabel-mascot@3x.png</span> — @3x, 780px wide, transparent PNG</li>
+</ul>
+
+<h3>MabelIcon (Head Crop)</h3>
+<ul class="checklist">
+  <li><span class="mono">MabelIcon.png</span> — @1x, 28×28px, transparent PNG</li>
+  <li><span class="mono">MabelIcon@2x.png</span> — @2x, 56×56px, transparent PNG</li>
+  <li><span class="mono">MabelIcon@3x.png</span> — @3x, 84×84px, transparent PNG</li>
+</ul>
+
+<h3>AppIcon</h3>
+<ul class="checklist">
+  <li><span class="mono">AppIcon.png</span> — 1024×1024px, opaque PNG, no rounded corners</li>
+</ul>
+
+<h3>MabelWordmark (if redesigning)</h3>
+<ul class="checklist">
+  <li><span class="mono">mabel_type.png</span> — @1x, 24px tall, transparent PNG</li>
+  <li><span class="mono">mabel_type@2x.png</span> — @2x, 48px tall, transparent PNG</li>
+  <li><span class="mono">mabel_type@3x.png</span> — @3x, 72px tall, transparent PNG</li>
+</ul>
+
+<div class="note">
+  <strong>Total files:</strong> 7 minimum (3 mascot + 3 icon + 1 app icon), up to 13 if wordmark and icon also change.<br>
+  <strong>Delivery:</strong> Drop files into the corresponding <span class="mono">.imageset</span> directories and the asset swap takes ~30 seconds.
+</div>
+
+</body>
+</html>
