@@ -175,7 +175,7 @@ There is no "done" checkbox for this phase. The bar is: did Mabel help you captu
 These are loose ends from the branding cycle that will create cognitive load if left:
 
 - [ ] `DesignConceptPrototypes.swift` still contains Profile concepts from the last design cycle (scaffolding, not production). Delete or move to `Mabel/archive/`.
-- [ ] `Mabel/font-comparison/`, `Mabel/screenshots/`, `Mabel/updated_mocks/` are untracked branding exploration. Either commit to a `branding-paused` branch (so it's not lost when you return in Phase 4), or move to a `Mabel/scratch/` directory and `.gitignore` it. Don't leave it sitting untracked.
+- [x] `Mabel/font-comparison/`, `Mabel/screenshots/`, `Mabel/updated_mocks/stoic-app-onboarding-example/` parked on the `branding-paused` branch (commit `20b02c4`). `git checkout branding-paused` brings them back when Phase 4 resumes. (2026-05-04)
 - [ ] The OLD pixel-art `MabelMascot` asset is still in use. Per your direction, leave it. The Fiverr swap waits until Phase 4.
 
 ---
