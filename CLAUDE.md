@@ -8,13 +8,48 @@ Mabel is an AI memoir companion that helps people capture and preserve their lif
 **Native iOS app (SwiftUI)** — built and run via Xcode. No web version.
 
 ### Bash Commands
-```bash
-# Open the Xcode project
-open Mabel/Mabel.xcodeproj
 
-# Build & run via Xcode
-# Cmd+B to build, Cmd+R to run, Cmd+U to run tests
+Mabel can be developed entirely from the terminal — no Xcode/Cursor IDE required for the edit→build→run→log loop. Verified working on this machine 2026-05-04 (Xcode 26.4.1).
+
+```bash
+# Stable simulator UDID — iPhone 17 on iOS 26.4.1
+# (use UDID, NOT name — `name=iPhone 16e` resolves to OS:latest which fails to match)
+SIM_UDID=AFC0138C-9660-41A4-BD11-B36B5B582A5F
+APP_PATH="$HOME/Library/Developer/Xcode/DerivedData/Mabel-ffwzpcgvlfxjjnahsmjhrkvksflj/Build/Products/Debug-iphonesimulator/Mabel.app"
+BUNDLE_ID=com.mabel.app
+
+# Build (Debug, simulator)
+xcodebuild -project Mabel/Mabel.xcodeproj -scheme Mabel \
+  -destination "id=$SIM_UDID" -configuration Debug build
+
+# Boot simulator and show the GUI
+xcrun simctl boot "$SIM_UDID"
+open -a Simulator
+
+# Install + launch
+xcrun simctl install booted "$APP_PATH"
+xcrun simctl launch booted "$BUNDLE_ID"
+
+# Stream logs (run in a second terminal)
+xcrun simctl spawn booted log stream \
+  --predicate 'subsystem CONTAINS "Mabel" OR processImagePath CONTAINS "Mabel"'
+
+# Screenshot
+xcrun simctl io booted screenshot /tmp/mabel.png
+
+# Tests
+xcodebuild -project Mabel/Mabel.xcodeproj -scheme Mabel \
+  -destination "id=$SIM_UDID" test
+
+# List available simulators (run if the UDID above stops working — runtimes shift after Xcode updates)
+xcrun simctl list devices available | grep iPhone
 ```
+
+**When to crack Xcode open anyway:**
+- Adding new files to the project (`project.pbxproj` target membership)
+- Asset catalog edits (`.xcassets`)
+- Step-debugging with breakpoints
+- SwiftUI Previews
 
 ### Project Structure
 ```
