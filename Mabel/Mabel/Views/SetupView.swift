@@ -222,7 +222,6 @@ struct SetupView: View {
                             )
                     )
                     .mabelInputShadow(focused: isOtherFocused)
-                    .animation(MabelAnimation.focusTransition, value: isOtherFocused)
                     .padding(.top, MabelSpacing.xs)
                     .accessibilityLabel("Other relationship")
                     .accessibilityHint("Describe who this story is for")
@@ -265,7 +264,6 @@ struct SetupView: View {
                         )
                 )
                 .mabelInputShadow(focused: isNameFocused)
-                .animation(MabelAnimation.focusTransition, value: isNameFocused)
                 .accessibilityLabel("Name")
                 .accessibilityHint("Enter the name of the person whose story you're capturing")
         }
