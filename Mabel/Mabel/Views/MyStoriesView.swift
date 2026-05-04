@@ -1,10 +1,13 @@
 import SwiftUI
 
+private struct ReviewingChapter: Identifiable {
+    let id: Int  // chapter index in appState.chapters
+}
+
 struct MyStoriesView: View {
     @Environment(AppState.self) private var appState
     @State private var showProfile = false
-    @State private var showChapterReview = false
-    @State private var reviewingChapterIndex: Int = 0
+    @State private var reviewingChapter: ReviewingChapter?
 
     private var chaptersWithNarratives: [Chapter] {
         appState.chapters.filter { chapter in
@@ -72,8 +75,8 @@ struct MyStoriesView: View {
         .sheet(isPresented: $showProfile) {
             ProfileView()
         }
-        .sheet(isPresented: $showChapterReview) {
-            ChapterReviewView(chapterIndex: reviewingChapterIndex)
+        .sheet(item: $reviewingChapter) { reviewing in
+            ChapterReviewView(chapterIndex: reviewing.id)
         }
     }
 
@@ -162,8 +165,7 @@ struct MyStoriesView: View {
             // Review button for unapproved chapters with narratives
             if chapter.generatedNarrative != nil && !chapter.isApproved {
                 CTAButton(title: "REVIEW & APPROVE") {
-                    reviewingChapterIndex = chapter.id - 1
-                    showChapterReview = true
+                    reviewingChapter = ReviewingChapter(id: chapter.id - 1)
                 }
                 .padding(.top, MabelSpacing.xs)
             }
