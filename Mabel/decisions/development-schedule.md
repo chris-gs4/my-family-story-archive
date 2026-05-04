@@ -52,7 +52,7 @@ Before adding anything, confirm what already works in your hands:
 
 - [x] Run the app in the simulator with debug seed data (2026-05-04 — verified `xcodebuild` + `simctl` loop works end-to-end on iPhone 17 Pro / iOS 26.2)
 - [x] Open Chapter 3 → tap "REQUEST CHANGES" → type "Make it shorter and add more emotion" → "REGENERATE". Confirmed narrative changes — round-trip works end-to-end. (2026-05-04)
-- [ ] Disable simulator network → record a 5-second memory → note exactly what you see (or don't) when it fails. This drives Phase 1 scope.
+- [x] Disable network → record a memory → noted what happens. (2026-05-04 — see findings below.)
 - [ ] Open `RecordingSetupView` for a chapter with 1–2 prior memories → confirm AI-generated prompts reference earlier content. If they don't, the issue is prompt construction, not missing wiring.
 
 ### Findings journal
@@ -66,6 +66,11 @@ Before adding anything, confirm what already works in your hands:
   - **(b) Conflicting directives.** Same prompt also says *"Maintain all the original details and meaning from the source memories"* — directly conflicts with "shorter" feedback. When the user asks for shorter, "maintain all details" wins. Fix: weight feedback above detail preservation, OR detect length-related feedback and translate it into a target word/sentence count.
   - **(c) No length ceiling.** `max_tokens: 3000` is generous; "shorter" has no hard cap. Fix: when feedback contains length verbs (shorter/longer/concise), inject an explicit target like *"Aim for ~60% of the previous draft's length."*
   These also apply to `generateChapterNarrative` (line 148) which sets the original voice — the seeded data is 3rd person but a live recording with `relationship: "Myself"` should produce 1st person. Voice consistency needs to be a property of the chapter, not regenerated each call.
+- **2026-05-04 — Hero mic button on `RecordingSetupView` had no tap action (FIXED, commit `c7f52a5`).** The big green mic button at the top of every chapter recording screen was a pure visual `ZStack` with no `Button`/`NavigationLink`/`.onTapGesture`. The `.accessibilityHint("Double tap to start recording")` lied — there was no action. Tapping the mic did nothing; users were forced to pick a prompt card to record anything. Wrapped the ZStack in a `NavigationLink` with `prompt: nil` for free-form recording. **This is the kind of regression Phase 0 exists to find** — the UI looked complete but a critical interaction was inert.
+- **2026-05-04 — Network-off recording flow has BETTER error UX than the audit suggested.** Tested recording with Wi-Fi off:
+  - Audio capture works fine offline (correct — `AVAudioRecorder` is local).
+  - On Stop & Save, the memory enters `.failed` state. The `MemoryCard` in the list renders with a **red warning triangle**, the prompt text, the duration, and **retry + delete icons**. Data is preserved on disk; the user can retry when back online.
+  - **What's missing:** no `.alert()` or banner appears at the moment of failure to explicitly tell the user "transcription failed because you're offline." The user has to look at the list and decode the red triangle. This is what Phase 1.1 should add — not a from-scratch error system, but an explicit alert at the moment of failure to make it unmissable. The persistent failed-state UI in the list is already healthy.
 - **2026-05-04 — Pre-rebrand copy still in `WelcomeView`.** Welcome reads "Your AI-assisted ghost writer. Capture your stories and write a book for future generations. No typing, just talking." The current positioning is "Your memoir companion. Just talk — Mabel writes." Functionality-adjacent (it's the first thing the user sees). Decide in Phase 1 whether to fix now or hold for Phase 4 branding cycle.
 
 ---
