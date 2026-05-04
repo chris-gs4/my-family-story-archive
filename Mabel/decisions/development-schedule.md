@@ -62,6 +62,43 @@ Before adding anything, confirm what already works in your hands:
 
 ---
 
+## Phase 0.5 — Get Mabel on your iPhone (~1–2 hrs)
+
+The simulator can't fully test microphone behavior, audio interruptions (a phone call mid-recording), AVAudioSession state, or the iOS permission flow. For your "record real family stories" goal, you need the app on a real device. Best to do this BEFORE Phase 1 testing so the utility fixes (alerts, progress feedback) get exercised against real-device timing.
+
+**Decision: free Personal Team or paid Apple Developer Program?**
+- **Free (Personal Team) is sufficient for Phase 0.5–2 personal use.** 7-day provisioning expiry is fine since you'll rebuild every few days anyway. Microphone + local file I/O + OpenAI network all work.
+- **Pay the $99 only when you want family members on THEIR own phones** — that needs TestFlight, which needs the paid program. No need to pay before that trigger fires.
+
+### Setup with Personal Team (free)
+- [ ] Open `Mabel/Mabel.xcodeproj` in Xcode.
+- [ ] Select the `Mabel` target → **Signing & Capabilities** tab.
+- [ ] Under "Team," click the dropdown → **Add an Account…** → sign in with your Apple ID. Once signed in, pick "Christiano (Personal Team)" as the team.
+- [ ] If Xcode complains about bundle ID `com.mabel.app` already being taken, change it to something namespaced to you (e.g. `com.cgsqueff.mabel`). Personal Team can't share bundle IDs with anyone else's Personal Team.
+- [ ] Connect your iPhone via USB cable. Trust this Mac when prompted on the phone.
+- [ ] On the phone: **Settings → Privacy & Security → Developer Mode** → toggle ON, restart phone.
+- [ ] Back in Xcode: select your iPhone in the device picker (top toolbar, next to the scheme), then `Cmd+R` to build and install.
+- [ ] First launch on the phone: **Settings → General → VPN & Device Management** → tap your Apple ID → **Trust**.
+- [ ] Launch Mabel. Grant microphone permission when prompted.
+- [ ] Record a 30-second test memory in Chapter 1. Confirm: audio captures cleanly, transcription returns, narrative generates. This is the real eval of the entire pipeline.
+
+### Wi-Fi debugging (one-time setup, then no cable needed)
+- [ ] Window → Devices and Simulators → select your iPhone → check "Connect via network"
+- [ ] After this, you can deploy from terminal/Xcode without the cable as long as Mac and iPhone are on the same Wi-Fi.
+
+### Upgrade trigger to paid program
+Pay the $99 when you want any of:
+- Family members on their own phones (TestFlight distribution)
+- 1-year provisioning instead of 7-day rebuild cycle
+- Eventually, App Store submission (out of scope for personal use)
+
+### Device-only verification
+- [ ] Audio interruption test: start recording, then call yourself from another phone. Confirm Mabel handles the interruption gracefully (pauses or stops cleanly — current behavior unknown, possible Phase 1 bug).
+- [ ] Background test: start recording, lock the phone for 30s, unlock. Confirm recording state survives.
+- [ ] Storage test: record memory, force-quit Mabel from app switcher, relaunch. Confirm the memory is still there (already covered by Phase 1.4 verification, but worth doing on real device too).
+
+---
+
 ## Phase 1 — Make personal use safe (Weeks 1–2, ~10 hrs)
 
 Goal: you can record real family stories without losing data or staring at blank screens.
