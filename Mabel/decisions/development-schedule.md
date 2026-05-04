@@ -50,11 +50,15 @@ This plan is intentionally short and prioritized. Each phase is a self-contained
 
 Before adding anything, confirm what already works in your hands:
 
-- [ ] Run the app in the simulator with debug seed data
+- [x] Run the app in the simulator with debug seed data (2026-05-04 — verified `xcodebuild` + `simctl` loop works end-to-end on iPhone 17 Pro / iOS 26.2)
 - [ ] Open Chapter 3 → tap "REQUEST CHANGES" → type "Make it shorter" → "REGENERATE". Confirm narrative changes. (Plan agent says this is wired; verify.)
 - [ ] Disable simulator network → record a 5-second memory → note exactly what you see (or don't) when it fails. This drives Phase 1 scope.
 - [ ] Open `RecordingSetupView` for a chapter with 1–2 prior memories → confirm AI-generated prompts reference earlier content. If they don't, the issue is prompt construction, not missing wiring.
-- [ ] Journal the findings inline below this section as a sub-list. That list IS the verified Phase 1 backlog.
+
+### Findings journal
+
+- **2026-05-04 — `SetupView` text-field freeze (FIXED, commit `87160c2`).** Tapping the "Enter a name" TextField in Setup froze the entire app — scrolling and tapping stopped responding. Root cause confirmed via `sample` against the running process: 100% main-thread time in `_UIHostingView.layoutSubviews` → `CA::Layer::layout_and_display_if_needed`. SwiftUI was caught in an infinite layout loop because `.animation(MabelAnimation.focusTransition, value: isNameFocused)` wrapped the entire TextField, and keyboard auto-avoidance was concurrently moving the ScrollView. Fix: removed the `.animation()` modifier on the name field and the "Other" relationship field. Focus border color and shadow still change instantly. No other views in the codebase have the same pattern (verified by grep).
+- **2026-05-04 — Pre-rebrand copy still in `WelcomeView`.** Welcome reads "Your AI-assisted ghost writer. Capture your stories and write a book for future generations. No typing, just talking." The current positioning is "Your memoir companion. Just talk — Mabel writes." Functionality-adjacent (it's the first thing the user sees). Decide in Phase 1 whether to fix now or hold for Phase 4 branding cycle.
 
 ---
 
