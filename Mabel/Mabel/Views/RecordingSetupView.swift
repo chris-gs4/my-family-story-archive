@@ -291,28 +291,31 @@ struct RecordingSetupView: View {
                 .padding(.bottom, MabelSpacing.sectionGap)
 
             // Hero mic button — larger 100pt
-            ZStack {
-                Circle()
-                    .fill(Color.mabelPrimary.opacity(0.08))
-                    .frame(width: 140, height: 140)
-                    .scaleEffect(micPulse ? MabelAnimation.micPulseScale : 1.0)
-                    .opacity(micPulse ? MabelAnimation.micPulseOpacity : 1.0)
-                Circle()
-                    .fill(Color.mabelPrimary)
-                    .frame(width: 100, height: 100)
-                    .shadow(color: .mabelPrimary.opacity(0.3), radius: 14, x: 0, y: 6)
-                Image(systemName: "mic.fill")
-                    .font(.system(size: 36))
-                    .foregroundColor(.white)
-            }
-            .accessibilityLabel("Record a memory")
-            .accessibilityHint("Double tap to start recording")
-            .padding(.bottom, MabelSpacing.xxxl)
-            .onAppear {
-                withAnimation(MabelAnimation.micPulse) {
-                    micPulse = true
+            NavigationLink(value: RecordingDestination(chapterIndex: chapterIndex, prompt: nil)) {
+                ZStack {
+                    Circle()
+                        .fill(Color.mabelPrimary.opacity(0.08))
+                        .frame(width: 140, height: 140)
+                        .scaleEffect(micPulse ? MabelAnimation.micPulseScale : 1.0)
+                        .opacity(micPulse ? MabelAnimation.micPulseOpacity : 1.0)
+                    Circle()
+                        .fill(Color.mabelPrimary)
+                        .frame(width: 100, height: 100)
+                        .shadow(color: .mabelPrimary.opacity(0.3), radius: 14, x: 0, y: 6)
+                    Image(systemName: "mic.fill")
+                        .font(.system(size: 36))
+                        .foregroundColor(.white)
+                }
+                .accessibilityLabel("Record a memory")
+                .accessibilityHint("Double tap to start recording")
+                .onAppear {
+                    withAnimation(MabelAnimation.micPulse) {
+                        micPulse = true
+                    }
                 }
             }
+            .buttonStyle(.plain)
+            .padding(.bottom, MabelSpacing.xxxl)
 
             // Divider — "or pick a prompt"
             HStack(spacing: MabelSpacing.md) {
