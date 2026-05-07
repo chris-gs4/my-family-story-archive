@@ -8,6 +8,7 @@ struct MabelApp: App {
         WindowGroup {
             ContentView()
                 .environment(appState)
+                .preferredColorScheme(.light)
                 .task {
                     appState.processStuckTypedEntries()
                 }

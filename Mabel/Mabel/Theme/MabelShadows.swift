@@ -110,29 +110,19 @@ struct InputShadowModifier: ViewModifier {
 
     func body(content: Content) -> some View {
         let isDark = colorScheme == .dark
-        if focused {
-            content
-                .shadow(
-                    color: MabelColors.primary.opacity(0.3),
-                    radius: 10,
-                    x: 0,
-                    y: 0
-                )
-                .shadow(
-                    color: Color.black.opacity(isDark ? 0.25 : 0.1),
-                    radius: 6,
-                    x: 0,
-                    y: 3
-                )
-        } else {
-            content
-                .shadow(
-                    color: Color.black.opacity(isDark ? 0.25 : 0.1),
-                    radius: 6,
-                    x: 0,
-                    y: 3
-                )
-        }
+        content
+            .shadow(
+                color: focused ? MabelColors.primary.opacity(0.3) : Color.clear,
+                radius: focused ? 10 : 0,
+                x: 0,
+                y: 0
+            )
+            .shadow(
+                color: Color.black.opacity(isDark ? 0.25 : 0.1),
+                radius: 6,
+                x: 0,
+                y: 3
+            )
     }
 }
 

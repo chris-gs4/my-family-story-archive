@@ -74,6 +74,8 @@ Before adding anything, confirm what already works in your hands:
   - On Stop & Save, the memory enters `.failed` state. The `MemoryCard` in the list renders with a **red warning triangle**, the prompt text, the duration, and **retry + delete icons**. Data is preserved on disk; the user can retry when back online.
   - **What's missing:** no `.alert()` or banner appears at the moment of failure to explicitly tell the user "transcription failed because you're offline." The user has to look at the list and decode the red triangle. This is what Phase 1.1 should add — not a from-scratch error system, but an explicit alert at the moment of failure to make it unmissable. The persistent failed-state UI in the list is already healthy.
 - **2026-05-04 — Pre-rebrand copy still in `WelcomeView`.** Welcome reads "Your AI-assisted ghost writer. Capture your stories and write a book for future generations. No typing, just talking." The current positioning is "Your memoir companion. Just talk — Mabel writes." Functionality-adjacent (it's the first thing the user sees). Decide in Phase 1 whether to fix now or hold for Phase 4 branding cycle.
+- **2026-05-07 — Phase 0.5 device deploy: SetupView name field froze again on real iPhone (FIXED, MabelShadows.swift).** The `.animation()` fix on 2026-05-04 (commit `87160c2`) masked the symptom on the simulator but did NOT remove the underlying layout-loop trigger. On real-device timing, tapping the name field still froze the app. Root cause: `InputShadowModifier.body` returned a *different view-tree shape* depending on `focused` — `if focused { content.shadow().shadow() } else { content.shadow() }`. When `isNameFocused` flips, SwiftUI tears down one branch and rebuilds the other (a structural identity change, not just a property change), and concurrently the keyboard appears and the ScrollView auto-avoids — same conditions that drive the infinite layout pass. Fix: collapse the two branches into a single chain that always emits two `.shadow()` modifiers; toggle the glow shadow's color/radius (not its existence) via the `focused` flag (`Color.clear`, radius 0 when unfocused). View identity now stays stable. Same modifier was used by the "Other" relationship field, which is also fixed by the same change. **Generalizable lesson:** any focus- or state-driven `ViewModifier` whose `body` uses `if/else` to return different chains is a freeze risk on real device — prefer property interpolation over structural branching. Applies to all custom modifiers, not just shadows.
+- **2026-05-07 — Mabel had no dark-mode support; rendered illegibly on a phone in dark mode (RESOLVED for now via opt-out, MabelApp.swift).** On the user's iPhone (system dark mode) the Library screen showed white cards on a dark scaffolding with washed-out text — chapter title and "0 of 5 memories recorded" were nearly unreadable. Despite `Mabel/CLAUDE.md` claiming "all colors auto-switch light/dark," the actual `MabelColors` tokens are static hex values, not adaptive `UIColor.dynamicProvider` colors. Only `MabelShadows` reads `@Environment(\.colorScheme)`. Treating Mabel as light-only is consistent with current design; building proper dark-mode support is design work and Phase 4 territory. Decision: pin Mabel to light mode regardless of system setting via `.preferredColorScheme(.light)` on the root `WindowGroup` view. One-line opt-out, zero design work, user keeps system dark mode for everything else. Revisit during Phase 4 branding cycle to either build adaptive tokens or formally document "light mode only" as a product decision.
 
 ---
 
@@ -86,15 +88,15 @@ The simulator can't fully test microphone behavior, audio interruptions (a phone
 - **Pay the $99 only when you want family members on THEIR own phones** — that needs TestFlight, which needs the paid program. No need to pay before that trigger fires.
 
 ### Setup with Personal Team (free)
-- [ ] Open `Mabel/Mabel.xcodeproj` in Xcode.
-- [ ] Select the `Mabel` target → **Signing & Capabilities** tab.
-- [ ] Under "Team," click the dropdown → **Add an Account…** → sign in with your Apple ID. Once signed in, pick "Christiano (Personal Team)" as the team.
-- [ ] If Xcode complains about bundle ID `com.mabel.app` already being taken, change it to something namespaced to you (e.g. `com.cgsqueff.mabel`). Personal Team can't share bundle IDs with anyone else's Personal Team.
-- [ ] Connect your iPhone via USB cable. Trust this Mac when prompted on the phone.
-- [ ] On the phone: **Settings → Privacy & Security → Developer Mode** → toggle ON, restart phone.
-- [ ] Back in Xcode: select your iPhone in the device picker (top toolbar, next to the scheme), then `Cmd+R` to build and install.
-- [ ] First launch on the phone: **Settings → General → VPN & Device Management** → tap your Apple ID → **Trust**.
-- [ ] Launch Mabel. Grant microphone permission when prompted.
+- [x] Open `Mabel/Mabel.xcodeproj` in Xcode. (2026-05-07)
+- [x] Select the `Mabel` target → **Signing & Capabilities** tab. (2026-05-07)
+- [x] Under "Team," click the dropdown → **Add an Account…** → sign in with your Apple ID. Once signed in, pick "Christiano (Personal Team)" as the team. (2026-05-07 — Apple ID `cgsqueff@gmail.com` was already added)
+- [x] If Xcode complains about bundle ID `com.mabel.app` already being taken, change it to something namespaced to you (e.g. `com.cgsqueff.mabel`). Personal Team can't share bundle IDs with anyone else's Personal Team. (2026-05-07 — N/A, `com.mabel.app` was accepted by Personal Team)
+- [x] Connect your iPhone via USB cable. Trust this Mac when prompted on the phone. (2026-05-07)
+- [x] On the phone: **Settings → Privacy & Security → Developer Mode** → toggle ON, restart phone. (2026-05-07)
+- [x] Back in Xcode: select your iPhone in the device picker (top toolbar, next to the scheme), then `Cmd+R` to build and install. (2026-05-07)
+- [x] First launch on the phone: **Settings → General → VPN & Device Management** → tap your Apple ID → **Trust**. (2026-05-07)
+- [x] Launch Mabel. Grant microphone permission when prompted. (2026-05-07 — app launches; mic prompt fires on first record attempt, exercised below)
 - [ ] Record a 30-second test memory in Chapter 1. Confirm: audio captures cleanly, transcription returns, narrative generates. This is the real eval of the entire pipeline.
 
 ### Wi-Fi debugging (one-time setup, then no cable needed)
