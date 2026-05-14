@@ -3,6 +3,56 @@ import Foundation
 class OpenAIService {
     static let shared = OpenAIService()
 
+    /// Sentinel string the narrative prompts must return when the source transcript/memories
+    /// contain no substantive content. Used to prevent fabrication on garbage input.
+    static let noContentSentinel = "__NO_CONTENT__"
+
+    /// Known Whisper transcription artifacts. On silence, music, or non-speech audio,
+    /// Whisper confidently emits one of these phrases — its training data contained heavy
+    /// YouTube intro/outro content, so an empty clip often comes back as "Thank you for
+    /// watching." or similar. Treat any transcript that exactly matches one of these
+    /// (after normalization) as no-content so the length-floor downstream marks it failed.
+    private static let knownWhisperHallucinations: Set<String> = [
+        "thank you for watching",
+        "thank you for watching the video",
+        "thanks for watching",
+        "thanks for watching the video",
+        "thank you",
+        "thank you so much",
+        "thanks",
+        "please subscribe",
+        "please subscribe to the channel",
+        "like and subscribe",
+        "don't forget to like and subscribe",
+        "see you next time",
+        "see you in the next video",
+        "bye",
+        "bye bye",
+        "bye-bye",
+        "goodbye",
+        "subtitles by the amara.org community",
+        "subtitles by",
+        "music",
+        "[music]",
+        "you"
+    ]
+
+    /// Returns the empty string if `text` is dominated by a known Whisper hallucination
+    /// phrase, otherwise returns `text` unchanged. Empty output then trips the length-floor
+    /// in `StoryProcessingService` and the memory lands in `.failed` with friendly copy.
+    static func filterWhisperHallucination(_ text: String) -> String {
+        let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        let normalized = trimmed
+            .lowercased()
+            .trimmingCharacters(in: CharacterSet.punctuationCharacters.union(.whitespacesAndNewlines))
+        if normalized.isEmpty { return "" }
+        if knownWhisperHallucinations.contains(normalized) {
+            print("[Whisper] Filtered known hallucination: '\(trimmed.prefix(80))'")
+            return ""
+        }
+        return text
+    }
+
     private var apiKey: String {
         // Try to load from Config.plist first, then fall back to environment
         if let path = Bundle.main.path(forResource: "Config", ofType: "plist"),
@@ -45,6 +95,12 @@ class OpenAIService {
         body.append("Content-Disposition: form-data; name=\"model\"\r\n\r\n".data(using: .utf8)!)
         body.append("whisper-1\r\n".data(using: .utf8)!)
 
+        // Pin language to English so Whisper doesn't misdetect script on short/ambiguous
+        // clips (real-device test showed "test test test" coming back as Korean hangul).
+        body.append("--\(boundary)\r\n".data(using: .utf8)!)
+        body.append("Content-Disposition: form-data; name=\"language\"\r\n\r\n".data(using: .utf8)!)
+        body.append("en\r\n".data(using: .utf8)!)
+
         // Add audio file
         let audioData = try Data(contentsOf: fileURL)
         body.append("--\(boundary)\r\n".data(using: .utf8)!)
@@ -74,7 +130,7 @@ class OpenAIService {
         }
 
         let whisperResponse = try JSONDecoder().decode(WhisperResponse.self, from: data)
-        return whisperResponse.text
+        return Self.filterWhisperHallucination(whisperResponse.text)
     }
 
     // MARK: - Narrative Generation (GPT)
@@ -93,6 +149,8 @@ class OpenAIService {
         You are a ghostwriter helping someone write their memoir. Transform this voice recording transcript into a polished, first-person narrative paragraph suitable for a chapter about "\(chapterTopic)".
 
         The narrator's name is \(userName). Write in their voice — warm, personal, and vivid. Keep the original meaning and details but smooth out the language, remove filler words, and make it read like a published memoir.
+
+        Important: do not invent details, names, places, events, or relationships that are not present in the transcript. If the transcript is too short, off-topic, unintelligible, or contains no substantive memory content (e.g. a test recording, mic-check, silence, or background noise), respond with exactly `\(OpenAIService.noContentSentinel)` and nothing else. Do not attempt to write a memoir paragraph from non-substantive input.
         """
 
         let url = URL(string: "https://api.openai.com/v1/chat/completions")!
@@ -140,6 +198,10 @@ class OpenAIService {
             throw OpenAIError.noContent
         }
 
+        if content.trimmingCharacters(in: .whitespacesAndNewlines) == OpenAIService.noContentSentinel {
+            throw OpenAIError.noSubstantiveContent
+        }
+
         return content
     }
 
@@ -163,6 +225,8 @@ class OpenAIService {
         You are a ghostwriter helping someone write their memoir. You have 5 individual memory narratives from a chapter about "\(chapterTopic)". Combine them into a cohesive, flowing chapter narrative.
 
         The narrator's name is \(userName). Write in first person, warm and personal. Create smooth transitions between memories. The chapter should read like a polished memoir chapter — engaging, vivid, and emotionally resonant. Keep all the original details and meaning.
+
+        Important: do not invent details, names, places, events, or relationships that are not present in the source memories. If the source memories are empty, unintelligible, or contain no substantive content to combine, respond with exactly `\(OpenAIService.noContentSentinel)` and nothing else. Do not fabricate a chapter from non-substantive input.
         """
 
         let url = URL(string: "https://api.openai.com/v1/chat/completions")!
@@ -208,6 +272,10 @@ class OpenAIService {
         let chatResponse = try JSONDecoder().decode(ChatResponse.self, from: data)
         guard let content = chatResponse.choices.first?.message.content else {
             throw OpenAIError.noContent
+        }
+
+        if content.trimmingCharacters(in: .whitespacesAndNewlines) == OpenAIService.noContentSentinel {
+            throw OpenAIError.noSubstantiveContent
         }
 
         return content
@@ -389,6 +457,7 @@ enum OpenAIError: LocalizedError {
     case invalidResponse
     case apiError(statusCode: Int, message: String)
     case noContent
+    case noSubstantiveContent
     case timeout
 
     var errorDescription: String? {
@@ -401,6 +470,8 @@ enum OpenAIError: LocalizedError {
             return "OpenAI API error (\(statusCode)): \(message)"
         case .noContent:
             return "No content in OpenAI response."
+        case .noSubstantiveContent:
+            return "Transcript contained no substantive memory content."
         case .timeout:
             return "Request timed out. Check your connection and try again."
         }

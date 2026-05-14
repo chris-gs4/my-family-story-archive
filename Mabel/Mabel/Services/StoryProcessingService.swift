@@ -6,6 +6,24 @@ class StoryProcessingService {
 
     private let openAI = OpenAIService.shared
 
+    /// Minimum word count for a transcript/typed entry to be considered substantive enough
+    /// to send to GPT-4o. Below this we mark `.failed` and skip the API call to prevent
+    /// the model from fabricating a memory out of "test test" / mic-checks / silence.
+    private static let minWordCount = 8
+    private static let minCharCount = 40
+
+    /// User-facing copy when a recording has no substantive content.
+    private static let audioNoContentMessage = "We couldn't hear a memory in that recording. Try again with a bit more detail?"
+    /// User-facing copy when a typed entry has no substantive content.
+    private static let typedNoContentMessage = "That entry was too short to write up. Add a bit more detail and try again?"
+
+    /// Returns true if the given text is too short to send to the narrative generator.
+    private static func isTooShort(_ text: String) -> Bool {
+        let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        let wordCount = trimmed.split(whereSeparator: { $0.isWhitespace }).count
+        return wordCount < minWordCount || trimmed.count < minCharCount
+    }
+
     func processMemory(
         memoryID: UUID,
         chapterIndex: Int,
@@ -25,6 +43,19 @@ class StoryProcessingService {
 
             appState.updateMemory(chapterIndex: chapterIndex, memoryID: memoryID) { memory in
                 memory.transcript = transcript
+            }
+
+            // Step 1.5: Length-floor guard — skip narrative generation on transcripts too
+            // short to be a real memory. Prevents GPT-4o from fabricating content on
+            // mic-checks, silence, or noise. Belt-and-braces alongside the prompt-level
+            // refusal clause in OpenAIService.generateNarrative.
+            if Self.isTooShort(transcript) {
+                print("Skipped narrative for memory \(memoryID): transcript too short — '\(transcript.prefix(60))'")
+                appState.updateMemory(chapterIndex: chapterIndex, memoryID: memoryID) { memory in
+                    memory.state = .failed
+                    memory.errorMessage = Self.audioNoContentMessage
+                }
+                return
             }
 
             // Step 2: Generate narrative from transcript
@@ -59,6 +90,12 @@ class StoryProcessingService {
 
             print("Successfully processed memory \(memoryID)")
 
+        } catch OpenAIError.noSubstantiveContent {
+            print("Model returned no-content sentinel for memory \(memoryID)")
+            appState.updateMemory(chapterIndex: chapterIndex, memoryID: memoryID) { memory in
+                memory.state = .failed
+                memory.errorMessage = Self.audioNoContentMessage
+            }
         } catch {
             print("Failed to process memory \(memoryID): \(error.localizedDescription)")
             appState.updateMemory(chapterIndex: chapterIndex, memoryID: memoryID) { memory in
@@ -79,6 +116,17 @@ class StoryProcessingService {
     ) async {
         appState.updateMemory(chapterIndex: chapterIndex, memoryID: memoryID) { memory in
             memory.state = .processing
+        }
+
+        // Length-floor guard before the API call. Same rationale as the audio path —
+        // prevents GPT-4o from fabricating a memory out of a one-word "test" entry.
+        if Self.isTooShort(text) {
+            print("Skipped narrative for typed memory \(memoryID): entry too short — '\(text.prefix(60))'")
+            appState.updateMemory(chapterIndex: chapterIndex, memoryID: memoryID) { memory in
+                memory.state = .failed
+                memory.errorMessage = Self.typedNoContentMessage
+            }
+            return
         }
 
         do {
@@ -113,6 +161,12 @@ class StoryProcessingService {
 
             print("Successfully processed typed memory \(memoryID)")
 
+        } catch OpenAIError.noSubstantiveContent {
+            print("Model returned no-content sentinel for typed memory \(memoryID)")
+            appState.updateMemory(chapterIndex: chapterIndex, memoryID: memoryID) { memory in
+                memory.state = .failed
+                memory.errorMessage = Self.typedNoContentMessage
+            }
         } catch {
             print("Failed to process typed memory \(memoryID): \(error.localizedDescription)")
             appState.updateMemory(chapterIndex: chapterIndex, memoryID: memoryID) { memory in
