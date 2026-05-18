@@ -146,11 +146,11 @@ class OpenAIService {
         }
 
         let systemPrompt = """
-        You are a ghostwriter helping someone write their memoir. Transform this voice recording transcript into a polished, first-person narrative paragraph suitable for a chapter about "\(chapterTopic)".
+        You are a ghostwriter helping someone write their memoir. Transform this voice recording transcript into a polished, first-person narrative paragraph for the memoir.
 
-        The narrator's name is \(userName). Write in their voice — warm, personal, and vivid. Keep the original meaning and details but smooth out the language, remove filler words, and make it read like a published memoir.
+        The narrator's name is \(userName). This memory belongs to a chapter loosely themed around "\(chapterTopic)" — that is context, not a constraint. The narrator's memory may sit at the edge of the chapter's theme, touch on adjacent people, places, or small moments, or focus on someone other than the narrator. Write the memory they actually shared, in their voice — warm, personal, and vivid. Smooth the language, remove filler words, and make it read like a published memoir paragraph. Do not invent details, names, places, events, or relationships that are not present in the transcript.
 
-        Important: do not invent details, names, places, events, or relationships that are not present in the transcript. If the transcript is too short, off-topic, unintelligible, or contains no substantive memory content (e.g. a test recording, mic-check, silence, or background noise), respond with exactly `\(OpenAIService.noContentSentinel)` and nothing else. Do not attempt to write a memoir paragraph from non-substantive input.
+        Refusal rule (use sparingly): respond with exactly `\(OpenAIService.noContentSentinel)` and nothing else ONLY when the transcript is clearly non-substantive — a mic-check or test recording ("test test"), filler-only audio ("uh", "um"), a Whisper hallucination ("Thank you for watching", "Please subscribe"), or just a handful of unrelated words with no recognisable memory. Any coherent shared memory — a neighbor, a teacher, an object, a feeling, a brief observed moment, a person other than the narrator — counts as substantive. When in doubt, write the paragraph.
         """
 
         let url = URL(string: "https://api.openai.com/v1/chat/completions")!
@@ -311,11 +311,11 @@ class OpenAIService {
         }.joined(separator: "\n\n")
 
         let systemPrompt = """
-        You are a ghostwriter helping someone write their memoir. You have 5 individual memory narratives from a chapter about "\(chapterTopic)". Combine them into a cohesive, flowing chapter narrative.
+        You are a ghostwriter helping someone write their memoir. You have 5 individual memory narratives from a chapter loosely themed around "\(chapterTopic)". Combine them into a cohesive, flowing chapter narrative.
 
-        The narrator's name is \(userName). Write in first person, warm and personal. Create smooth transitions between memories. The chapter should read like a polished memoir chapter — engaging, vivid, and emotionally resonant. Keep all the original details and meaning.
+        The narrator's name is \(userName). Write in first person, warm and personal. Create smooth transitions between memories. The chapter should read like a polished memoir chapter — engaging, vivid, and emotionally resonant. Keep all the original details and meaning, even when individual memories sit at the edge of the chapter's theme. Do not invent details, names, places, events, or relationships that are not present in the source memories.
 
-        Important: do not invent details, names, places, events, or relationships that are not present in the source memories. If the source memories are empty, unintelligible, or contain no substantive content to combine, respond with exactly `\(OpenAIService.noContentSentinel)` and nothing else. Do not fabricate a chapter from non-substantive input.
+        Refusal rule (use sparingly): respond with exactly `\(OpenAIService.noContentSentinel)` and nothing else ONLY when every source memory is unmistakably non-substantive (empty, mic-check noise, Whisper hallucinations, or unrelated filler). If even one or two memories contain coherent content, write the chapter around what's there.
         """
 
         let url = URL(string: "https://api.openai.com/v1/chat/completions")!
