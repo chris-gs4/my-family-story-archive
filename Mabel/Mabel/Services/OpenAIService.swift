@@ -205,6 +205,95 @@ class OpenAIService {
         return content
     }
 
+    // MARK: - Memory Title
+
+    /// Generates a short evocative title (3–5 words) for a finished memory narrative.
+    /// Non-blocking from the caller's perspective — failures should be swallowed and the
+    /// memory card falls back to the existing 60-char narrative derivation.
+    func generateMemoryTitle(narrative: String) async throws -> String {
+        guard !apiKey.isEmpty else {
+            throw OpenAIError.missingAPIKey
+        }
+
+        let trimmedNarrative = narrative.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmedNarrative.isEmpty else {
+            throw OpenAIError.noContent
+        }
+
+        let systemPrompt = """
+        Generate a 3–5 word evocative title for this memoir memory paragraph. Title only, no quotes, no period, no trailing punctuation. Use title case. The title should feel like a chapter heading in a memoir — specific, warm, and concrete (reference a person, place, or object from the memory when natural).
+
+        Examples of the style:
+        - Summer at the Swimming Hole
+        - Mother's Sunday Pancakes
+        - Mrs. Hollis and the Butterscotch
+        - The Farmhouse Porch
+        - Grandpa's Workshop
+
+        Respond with the title and nothing else.
+        """
+
+        let url = URL(string: "https://api.openai.com/v1/chat/completions")!
+        var request = URLRequest(url: url)
+        request.timeoutInterval = 30
+        request.httpMethod = "POST"
+        request.setValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        let requestBody: [String: Any] = [
+            "model": "gpt-4o-mini",
+            "messages": [
+                ["role": "system", "content": systemPrompt],
+                ["role": "user", "content": trimmedNarrative]
+            ],
+            "temperature": 0.7,
+            "max_tokens": 30
+        ]
+
+        request.httpBody = try JSONSerialization.data(withJSONObject: requestBody)
+
+        let (data, response) = try await performRequest(request)
+
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw OpenAIError.invalidResponse
+        }
+
+        guard httpResponse.statusCode == 200 else {
+            let errorBody = String(data: data, encoding: .utf8) ?? "Unknown error"
+            throw OpenAIError.apiError(statusCode: httpResponse.statusCode, message: errorBody)
+        }
+
+        struct ChatResponse: Codable {
+            struct Choice: Codable {
+                struct Message: Codable {
+                    let content: String
+                }
+                let message: Message
+            }
+            let choices: [Choice]
+        }
+
+        let chatResponse = try JSONDecoder().decode(ChatResponse.self, from: data)
+        guard let raw = chatResponse.choices.first?.message.content else {
+            throw OpenAIError.noContent
+        }
+
+        // Strip wrapping quotes, surrounding whitespace, and a trailing period the model
+        // sometimes adds despite the prompt's instructions. Keep internal punctuation
+        // (apostrophes, ampersands, commas) intact.
+        let stripped = raw
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .trimmingCharacters(in: CharacterSet(charactersIn: "\"'“”‘’"))
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        let cleaned = stripped.hasSuffix(".") ? String(stripped.dropLast()) : stripped
+
+        guard !cleaned.isEmpty else {
+            throw OpenAIError.noContent
+        }
+
+        return cleaned
+    }
+
     // MARK: - Combined Chapter Narrative
 
     func generateChapterNarrative(

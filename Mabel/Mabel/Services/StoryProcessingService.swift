@@ -24,6 +24,29 @@ class StoryProcessingService {
         return wordCount < minWordCount || trimmed.count < minCharCount
     }
 
+    /// Fires a non-blocking GPT-4o-mini call to derive a 3–5 word evocative title from a
+    /// completed narrative, then persists it onto the memory. Failures are swallowed —
+    /// `MemoryCard` falls back to the 60-char narrative derivation when `generatedTitle`
+    /// stays nil. Cost is ~$0.0001/memory; called once per completed memory narrative.
+    private func generateTitleInBackground(
+        narrative: String,
+        memoryID: UUID,
+        chapterIndex: Int,
+        appState: AppState
+    ) {
+        Task {
+            do {
+                let title = try await openAI.generateMemoryTitle(narrative: narrative)
+                appState.updateMemory(chapterIndex: chapterIndex, memoryID: memoryID) { memory in
+                    memory.generatedTitle = title
+                }
+                print("Generated title for memory \(memoryID): '\(title)'")
+            } catch {
+                print("Title generation failed for memory \(memoryID): \(error.localizedDescription) — falling back to narrative derivation")
+            }
+        }
+    }
+
     func processMemory(
         memoryID: UUID,
         chapterIndex: Int,
@@ -70,6 +93,16 @@ class StoryProcessingService {
                 memory.narrativeText = narrative
                 memory.state = .processed
             }
+
+            // Kick off the 3–5 word title in the background. Runs in parallel with the
+            // chapter-narrative generation below; the memory card updates whenever the
+            // title resolves. Failures fall back silently to derivation.
+            generateTitleInBackground(
+                narrative: narrative,
+                memoryID: memoryID,
+                chapterIndex: chapterIndex,
+                appState: appState
+            )
 
             // Step 3: Check if all memories are processed — if so, generate combined chapter narrative
             let updatedChapter = appState.chapters[chapterIndex]
@@ -141,6 +174,13 @@ class StoryProcessingService {
                 memory.narrativeText = narrative
                 memory.state = .processed
             }
+
+            generateTitleInBackground(
+                narrative: narrative,
+                memoryID: memoryID,
+                chapterIndex: chapterIndex,
+                appState: appState
+            )
 
             // Check for chapter completion
             let updatedChapter = appState.chapters[chapterIndex]

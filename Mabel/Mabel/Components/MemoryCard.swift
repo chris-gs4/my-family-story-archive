@@ -35,6 +35,9 @@ struct MemoryCard: View {
         if let prompt = memory.promptUsed, !prompt.isEmpty {
             return prompt
         }
+        if let generated = memory.generatedTitle, !generated.isEmpty {
+            return generated
+        }
         if let narrative = memory.narrativeText, !narrative.isEmpty {
             return MemoryCard.derivedTitle(from: narrative)
         }
@@ -44,9 +47,10 @@ struct MemoryCard: View {
         return "Memory \(index + 1)"
     }
 
-    /// Title fallback for free-form (no-prompt) memories once a narrative exists.
-    /// Truncates at a word boundary near ~60 chars so the card reads like a chapter
-    /// excerpt instead of "Memory 2". Replaced in Phase 2 by a GPT-generated title.
+    /// Title fallback for free-form memories when the GPT-generated title is not yet
+    /// available (still in flight, or the title call failed). Truncates the narrative
+    /// at a word boundary near ~60 chars. Phase 1.6 added `generatedTitle` which takes
+    /// precedence above; this remains as the second-tier fallback.
     private static func derivedTitle(from text: String) -> String {
         let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
         let maxChars = 60
