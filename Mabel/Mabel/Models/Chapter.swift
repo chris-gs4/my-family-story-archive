@@ -15,6 +15,14 @@ struct Chapter: Identifiable, Codable {
         memories.filter { $0.state == .submitted || $0.state == .processing || $0.state == .processed }.count
     }
 
+    /// Denominator for "X / Y" badge and progress-bar displays. Equals memoriesPerChapter
+    /// (5) for chapters still under the threshold, but flexes upward when the user has
+    /// recorded bonus memories so the fraction reads "6/6" instead of the visually-broken
+    /// "6/5". Pairs with the always-on recording UI from Phase 1.8.
+    var displayTargetCount: Int {
+        max(completedMemoryCount, Self.memoriesPerChapter)
+    }
+
     var isCompleted: Bool {
         completedMemoryCount >= Self.memoriesPerChapter && generatedNarrative != nil && isApproved
     }

@@ -89,13 +89,13 @@ struct RecordingView: View {
 
                             Spacer()
 
-                            Text("\(chapter.completedMemoryCount)/\(Chapter.memoriesPerChapter)")
+                            Text("\(chapter.completedMemoryCount)/\(chapter.displayTargetCount)")
                                 .font(MabelTypography.badge())
                                 .foregroundColor(.mabelPrimary)
                         }
 
                         ProgressBar(
-                            progress: min(1.0, Double(chapter.completedMemoryCount) / Double(Chapter.memoriesPerChapter)),
+                            progress: Double(chapter.completedMemoryCount) / Double(chapter.displayTargetCount),
                             height: 6
                         )
                     }

@@ -45,11 +45,11 @@ struct RecordingSetupView: View {
                             .padding(.top, MabelSpacing.sectionGap)
 
                         ProgressBar(
-                            progress: min(1.0, Double(chapter.completedMemoryCount) / Double(Chapter.memoriesPerChapter)),
+                            progress: Double(chapter.completedMemoryCount) / Double(chapter.displayTargetCount),
                             height: 6
                         )
                         .padding(.bottom, MabelSpacing.xxxl)
-                        .accessibilityLabel("Chapter progress: \(chapter.completedMemoryCount) of \(Chapter.memoriesPerChapter)")
+                        .accessibilityLabel("Chapter progress: \(chapter.completedMemoryCount) of \(chapter.displayTargetCount)")
 
                         recordingUI
 
@@ -161,12 +161,12 @@ struct RecordingSetupView: View {
                         .foregroundColor(.mabelPrimary)
                 }
 
-                Text("\(chapter.completedMemoryCount)/\(Chapter.memoriesPerChapter)")
+                Text("\(chapter.completedMemoryCount)/\(chapter.displayTargetCount)")
                     .font(MabelTypography.badge())
                     .foregroundColor(.mabelPrimary)
             }
             .accessibilityElement(children: .combine)
-            .accessibilityLabel("Chapter \(chapter.id), \(chapter.title). \(chapter.completedMemoryCount) of \(Chapter.memoriesPerChapter) memories recorded\(chapter.isApproved ? ". Chapter approved." : "")")
+            .accessibilityLabel("Chapter \(chapter.id), \(chapter.title). \(chapter.completedMemoryCount) of \(chapter.displayTargetCount) memories recorded\(chapter.isApproved ? ". Chapter approved." : "")")
         }
         .padding(.bottom, MabelSpacing.tightGap)
     }

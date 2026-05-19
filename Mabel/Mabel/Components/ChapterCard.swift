@@ -53,13 +53,13 @@ struct ChapterCard: View {
             } else if chapter.isReadyForReview {
                 StatusBadge(text: "Ready for review", icon: "circle.fill", color: .orange)
             } else if chapter.completedMemoryCount > 0 {
-                StatusBadge(text: "\(chapter.completedMemoryCount)/5", icon: "circle.lefthalf.filled", color: .mabelGold)
+                StatusBadge(text: "\(chapter.completedMemoryCount)/\(chapter.displayTargetCount)", icon: "circle.lefthalf.filled", color: .mabelGold)
             }
 
             // Mini progress bar for in-progress chapters
             if chapter.completedMemoryCount > 0 && !chapter.isApproved {
                 ProgressBar(
-                    progress: min(1.0, Double(chapter.completedMemoryCount) / Double(Chapter.memoriesPerChapter)),
+                    progress: Double(chapter.completedMemoryCount) / Double(chapter.displayTargetCount),
                     height: 3
                 )
             }

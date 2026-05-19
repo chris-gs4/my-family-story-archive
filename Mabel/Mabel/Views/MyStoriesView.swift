@@ -140,12 +140,13 @@ struct MyStoriesView: View {
                 }
             }
 
-            // Narrative text
+            // Narrative text — rendered with book-style typography: justified alignment,
+            // automatic hyphenation (reduces "rivers" on narrow phone columns), 16pt
+            // Comfortaa (the design system's actual body minimum — helper() at 14pt was
+            // too small for an extended read). See MyStoriesView.bookStyle(_:).
             if let narrative = chapter.generatedNarrative {
-                Text(narrative)
-                    .font(MabelTypography.helper())
-                    .foregroundColor(.mabelText)
-                    .lineSpacing(6)
+                Text(MyStoriesView.bookStyle(narrative))
+                    .frame(maxWidth: .infinity, alignment: .leading)
             }
 
             // Individual memory narratives if no combined chapter narrative
@@ -153,10 +154,8 @@ struct MyStoriesView: View {
             if chapter.generatedNarrative == nil {
                 ForEach(processedMemories) { memory in
                     if let text = memory.narrativeText {
-                        Text(text)
-                            .font(MabelTypography.helper())
-                            .foregroundColor(.mabelText)
-                            .lineSpacing(6)
+                        Text(MyStoriesView.bookStyle(text))
+                            .frame(maxWidth: .infinity, alignment: .leading)
                             .padding(.bottom, MabelSpacing.tightGap)
                     }
                 }
@@ -181,6 +180,31 @@ struct MyStoriesView: View {
                 .strokeBorder(Color.mabelBorderWarm, lineWidth: MabelSpacing.borderCard)
         )
         .mabelCardShadow()
+    }
+
+    // MARK: - Book-style typography
+    //
+    // Wraps a chapter / memory narrative in an `AttributedString` carrying a paragraph
+    // style with `.justified` alignment, automatic hyphenation, generous line spacing,
+    // and inter-paragraph breathing room. `Text` doesn't expose justified alignment
+    // through `.multilineTextAlignment`, so the NSAttributedString detour is the
+    // shortest path. Hyphenation matters: justified text on a phone-width column
+    // produces ugly "rivers" of whitespace without it.
+
+    static func bookStyle(_ text: String) -> AttributedString {
+        let attributed = NSMutableAttributedString(string: text)
+        let style = NSMutableParagraphStyle()
+        style.alignment = .justified
+        style.lineSpacing = 6
+        style.paragraphSpacing = 14
+        style.hyphenationFactor = 1.0
+
+        let range = NSRange(location: 0, length: attributed.length)
+        attributed.addAttribute(.paragraphStyle, value: style, range: range)
+        attributed.addAttribute(.font, value: UIFont.comfortaa(16, weight: .regular), range: range)
+        attributed.addAttribute(.foregroundColor, value: UIColor(Color.mabelText), range: range)
+
+        return AttributedString(attributed)
     }
 }
 
