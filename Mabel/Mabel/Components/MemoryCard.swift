@@ -6,6 +6,12 @@ struct MemoryCard: View {
     let onDelete: () -> Void
     let onRetry: () -> Void
 
+    @State private var isExpanded: Bool = false
+
+    private var isExpandable: Bool {
+        memory.state == .processed && (memory.narrativeText?.isEmpty == false)
+    }
+
     private var stateIcon: some View {
         Group {
             switch memory.state {
@@ -78,10 +84,17 @@ struct MemoryCard: View {
     }
 
     private var previewText: String? {
+        // For failed memories, prefer the human-readable errorMessage. The hallucination
+        // filter and length floor null out the transcript, which used to leave the card
+        // with no informative subtitle.
+        if memory.state == .failed {
+            if let err = memory.errorMessage, !err.isEmpty {
+                return err
+            }
+        }
         let text = memory.narrativeText ?? memory.transcript ?? memory.typedEntry
         guard let text, !text.isEmpty else { return nil }
-        if text.count <= 120 { return text }
-        return String(text.prefix(120)) + "..."
+        return text
     }
 
     var body: some View {
@@ -106,12 +119,25 @@ struct MemoryCard: View {
                     Text(preview)
                         .font(.comfortaa(12, weight: .regular))
                         .foregroundColor(.mabelSubtle)
-                        .lineLimit(3)
+                        .lineLimit(isExpanded ? nil : 3)
                         .padding(.top, 2)
                 }
-            }
 
-            Spacer()
+                if isExpandable {
+                    Text(isExpanded ? "Show less" : "Read full memory")
+                        .font(.comfortaa(11, weight: .semiBold))
+                        .foregroundColor(.mabelPrimary)
+                        .padding(.top, 4)
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .contentShape(Rectangle())
+            .onTapGesture {
+                guard isExpandable else { return }
+                withAnimation(MabelAnimation.cardTap) {
+                    isExpanded.toggle()
+                }
+            }
 
             VStack(spacing: 8) {
                 if memory.state == .failed {

@@ -33,28 +33,33 @@ struct RecordingSetupView: View {
                 topBar
 
                 // MARK: - Scrollable Content
+                //
+                // Phase 1.8 layout: chapter badge + progress on top, then the recording UI
+                // (hero mic + prompts + write) is ALWAYS visible, never replaced — even on a
+                // 5/5 approved chapter, so the user can record a bonus memory. The memory
+                // list sits below the mic, and chapter status (processing / failure / ready /
+                // approved CTAs) appends at the bottom once the chapter has reached 5+.
                 ScrollView(showsIndicators: false) {
                     VStack(spacing: 0) {
-                        // Chapter badge — compact row
                         chapterBadge
                             .padding(.top, MabelSpacing.sectionGap)
 
                         ProgressBar(
-                            progress: Double(chapter.completedMemoryCount) / Double(Chapter.memoriesPerChapter),
+                            progress: min(1.0, Double(chapter.completedMemoryCount) / Double(Chapter.memoriesPerChapter)),
                             height: 6
                         )
                         .padding(.bottom, MabelSpacing.xxxl)
                         .accessibilityLabel("Chapter progress: \(chapter.completedMemoryCount) of \(Chapter.memoriesPerChapter)")
 
-                        // MARK: - Memory List
+                        recordingUI
+
                         if !displayableMemories.isEmpty {
                             memoryList
+                                .padding(.top, MabelSpacing.sectionGap)
                         }
 
                         if chapter.completedMemoryCount >= Chapter.memoriesPerChapter {
-                            chapterCompleteView
-                        } else {
-                            recordingUI
+                            chapterStatusSection
                         }
 
                         Spacer().frame(height: MabelSpacing.bottomSafe)
@@ -187,9 +192,13 @@ struct RecordingSetupView: View {
         }
     }
 
-    // MARK: - Chapter Complete View
+    // MARK: - Chapter Status Section
+    //
+    // Phase 1.8: this is no longer a full-screen replacement for the recording UI.
+    // It's an appendage that sits below the memory list when the chapter has reached
+    // 5+ memories, showing processing/failure banners + ready-to-review/approved CTAs.
 
-    private var chapterCompleteView: some View {
+    private var chapterStatusSection: some View {
         VStack(spacing: MabelSpacing.cardPaddingContent) {
             if chapter.memories.contains(where: { $0.state == .processing }) {
                 HStack(spacing: MabelSpacing.pillPadV) {

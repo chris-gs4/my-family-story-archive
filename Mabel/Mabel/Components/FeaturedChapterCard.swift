@@ -18,7 +18,7 @@ struct FeaturedChapterCard: View {
                 .foregroundColor(.mabelSubtle)
 
             ProgressBar(
-                progress: Double(chapter.completedMemoryCount) / Double(Chapter.memoriesPerChapter),
+                progress: min(1.0, Double(chapter.completedMemoryCount) / Double(Chapter.memoriesPerChapter)),
                 height: 6
             )
             .padding(.bottom, 4)

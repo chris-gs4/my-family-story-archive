@@ -59,7 +59,7 @@ struct ChapterCard: View {
             // Mini progress bar for in-progress chapters
             if chapter.completedMemoryCount > 0 && !chapter.isApproved {
                 ProgressBar(
-                    progress: Double(chapter.completedMemoryCount) / Double(Chapter.memoriesPerChapter),
+                    progress: min(1.0, Double(chapter.completedMemoryCount) / Double(Chapter.memoriesPerChapter)),
                     height: 3
                 )
             }

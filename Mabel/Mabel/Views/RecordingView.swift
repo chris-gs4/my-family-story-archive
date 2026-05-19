@@ -95,7 +95,7 @@ struct RecordingView: View {
                         }
 
                         ProgressBar(
-                            progress: Double(chapter.completedMemoryCount) / Double(Chapter.memoriesPerChapter),
+                            progress: min(1.0, Double(chapter.completedMemoryCount) / Double(Chapter.memoriesPerChapter)),
                             height: 6
                         )
                     }

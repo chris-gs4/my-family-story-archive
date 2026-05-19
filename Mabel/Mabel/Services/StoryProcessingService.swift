@@ -104,11 +104,15 @@ class StoryProcessingService {
                 appState: appState
             )
 
-            // Step 3: Check if all memories are processed — if so, generate combined chapter narrative
+            // Step 3: Check if all memories are processed — if so, generate combined chapter narrative.
+            // Phase 1.8: approval is sticky. Once the user approves a chapter, additional
+            // memories appear in the list as "bonus" entries but DO NOT regenerate the
+            // published narrative. Without this guard, every post-approval recording would
+            // overwrite the narrative via `updateNarrative()`, which also clears `isApproved`.
             let updatedChapter = appState.chapters[chapterIndex]
             let processedMemories = updatedChapter.memories.filter { $0.state == .processed }
 
-            if processedMemories.count >= Chapter.memoriesPerChapter {
+            if processedMemories.count >= Chapter.memoriesPerChapter && !updatedChapter.isApproved {
                 let memoryNarratives = processedMemories.compactMap { $0.narrativeText }
                 if memoryNarratives.count >= Chapter.memoriesPerChapter {
                     let chapterNarrative = try await openAI.generateChapterNarrative(
@@ -182,11 +186,12 @@ class StoryProcessingService {
                 appState: appState
             )
 
-            // Check for chapter completion
+            // Check for chapter completion. Phase 1.8: same sticky-approval guard as the
+            // audio path — see processMemory for the rationale.
             let updatedChapter = appState.chapters[chapterIndex]
             let processedMemories = updatedChapter.memories.filter { $0.state == .processed }
 
-            if processedMemories.count >= Chapter.memoriesPerChapter {
+            if processedMemories.count >= Chapter.memoriesPerChapter && !updatedChapter.isApproved {
                 let memoryNarratives = processedMemories.compactMap { $0.narrativeText }
                 if memoryNarratives.count >= Chapter.memoriesPerChapter {
                     let chapterNarrative = try await openAI.generateChapterNarrative(
