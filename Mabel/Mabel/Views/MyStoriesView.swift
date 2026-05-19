@@ -195,8 +195,8 @@ struct MyStoriesView: View {
         let attributed = NSMutableAttributedString(string: text)
         let style = NSMutableParagraphStyle()
         style.alignment = .justified
-        style.lineSpacing = 6
-        style.paragraphSpacing = 14
+        style.lineSpacing = 10
+        style.paragraphSpacing = 18
         style.hyphenationFactor = 1.0
 
         let range = NSRange(location: 0, length: attributed.length)
