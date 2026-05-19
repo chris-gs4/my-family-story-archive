@@ -155,12 +155,18 @@ struct RecordingSetupView: View {
 
                 Spacer()
 
+                if chapter.isApproved {
+                    Image(systemName: "checkmark.seal.fill")
+                        .font(.system(size: 14))
+                        .foregroundColor(.mabelPrimary)
+                }
+
                 Text("\(chapter.completedMemoryCount)/\(Chapter.memoriesPerChapter)")
                     .font(MabelTypography.badge())
                     .foregroundColor(.mabelPrimary)
             }
             .accessibilityElement(children: .combine)
-            .accessibilityLabel("Chapter \(chapter.id), \(chapter.title). \(chapter.completedMemoryCount) of \(Chapter.memoriesPerChapter) memories recorded")
+            .accessibilityLabel("Chapter \(chapter.id), \(chapter.title). \(chapter.completedMemoryCount) of \(Chapter.memoriesPerChapter) memories recorded\(chapter.isApproved ? ". Chapter approved." : "")")
         }
         .padding(.bottom, MabelSpacing.tightGap)
     }

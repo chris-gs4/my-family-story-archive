@@ -47,6 +47,42 @@ class StoryProcessingService {
         }
     }
 
+    /// One-shot backfill for memories recorded before Phase 1.6, when AI titles didn't
+    /// exist. Walks every chapter, finds processed memories with a narrative but no
+    /// `generatedTitle`, and queues background title generation for each. Safe to call
+    /// repeatedly — already-titled memories are skipped. Sequential rather than
+    /// concurrent so we don't hammer the OpenAI rate limit on app launch.
+    func backfillMissingTitles(appState: AppState) {
+        let candidates: [(chapterIndex: Int, memoryID: UUID, narrative: String)] = appState.chapters
+            .enumerated()
+            .flatMap { chapterIndex, chapter in
+                chapter.memories.compactMap { memory -> (Int, UUID, String)? in
+                    guard memory.state == .processed,
+                          let narrative = memory.narrativeText, !narrative.isEmpty,
+                          memory.generatedTitle == nil || memory.generatedTitle?.isEmpty == true
+                    else { return nil }
+                    return (chapterIndex, memory.id, narrative)
+                }
+            }
+
+        guard !candidates.isEmpty else { return }
+        print("Title backfill: queuing \(candidates.count) memor\(candidates.count == 1 ? "y" : "ies") without generatedTitle")
+
+        Task {
+            for candidate in candidates {
+                do {
+                    let title = try await openAI.generateMemoryTitle(narrative: candidate.narrative)
+                    appState.updateMemory(chapterIndex: candidate.chapterIndex, memoryID: candidate.memoryID) { memory in
+                        memory.generatedTitle = title
+                    }
+                    print("Backfilled title for memory \(candidate.memoryID): '\(title)'")
+                } catch {
+                    print("Backfill title failed for memory \(candidate.memoryID): \(error.localizedDescription)")
+                }
+            }
+        }
+    }
+
     func processMemory(
         memoryID: UUID,
         chapterIndex: Int,
@@ -104,15 +140,16 @@ class StoryProcessingService {
                 appState: appState
             )
 
-            // Step 3: Check if all memories are processed — if so, generate combined chapter narrative.
-            // Phase 1.8: approval is sticky. Once the user approves a chapter, additional
-            // memories appear in the list as "bonus" entries but DO NOT regenerate the
-            // published narrative. Without this guard, every post-approval recording would
-            // overwrite the narrative via `updateNarrative()`, which also clears `isApproved`.
+            // Step 3: regenerate the chapter narrative once the chapter has reached the
+            // 5-memory threshold OR whenever a bonus memory is added to a chapter that
+            // already has a narrative. `updateNarrative()` revokes `isApproved`, so adding
+            // a bonus to an approved chapter sends it back to the review flow with the new
+            // memory woven in. This is the e-book/audiobook integrity rule: the published
+            // narrative always includes every recorded memory.
             let updatedChapter = appState.chapters[chapterIndex]
             let processedMemories = updatedChapter.memories.filter { $0.state == .processed }
 
-            if processedMemories.count >= Chapter.memoriesPerChapter && !updatedChapter.isApproved {
+            if processedMemories.count >= Chapter.memoriesPerChapter {
                 let memoryNarratives = processedMemories.compactMap { $0.narrativeText }
                 if memoryNarratives.count >= Chapter.memoriesPerChapter {
                     let chapterNarrative = try await openAI.generateChapterNarrative(
@@ -186,12 +223,14 @@ class StoryProcessingService {
                 appState: appState
             )
 
-            // Check for chapter completion. Phase 1.8: same sticky-approval guard as the
-            // audio path — see processMemory for the rationale.
+            // Check for chapter completion. Mirrors processMemory above — bonus memories
+            // regenerate the chapter narrative so the published story always includes every
+            // recorded memory; approval is revoked via `updateNarrative` and the user
+            // re-reviews.
             let updatedChapter = appState.chapters[chapterIndex]
             let processedMemories = updatedChapter.memories.filter { $0.state == .processed }
 
-            if processedMemories.count >= Chapter.memoriesPerChapter && !updatedChapter.isApproved {
+            if processedMemories.count >= Chapter.memoriesPerChapter {
                 let memoryNarratives = processedMemories.compactMap { $0.narrativeText }
                 if memoryNarratives.count >= Chapter.memoriesPerChapter {
                     let chapterNarrative = try await openAI.generateChapterNarrative(

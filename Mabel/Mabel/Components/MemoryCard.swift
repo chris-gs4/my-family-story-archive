@@ -38,11 +38,16 @@ struct MemoryCard: View {
     }
 
     private var title: String {
-        if let prompt = memory.promptUsed, !prompt.isEmpty {
-            return prompt
-        }
+        // The AI-generated 3–5 word title wins over the prompt text — even on
+        // prompt-driven recordings, a long prompt like "What adventures did you
+        // and your siblings…" is uglier than "Backyard Blanket Fortress".
+        // promptUsed remains the fallback for memories recorded before Phase 1.6
+        // (no generatedTitle yet, until the launch backfill catches them).
         if let generated = memory.generatedTitle, !generated.isEmpty {
             return generated
+        }
+        if let prompt = memory.promptUsed, !prompt.isEmpty {
+            return prompt
         }
         if let narrative = memory.narrativeText, !narrative.isEmpty {
             return MemoryCard.derivedTitle(from: narrative)

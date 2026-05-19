@@ -11,6 +11,7 @@ struct MabelApp: App {
                 .preferredColorScheme(.light)
                 .task {
                     appState.processStuckTypedEntries()
+                    StoryProcessingService.shared.backfillMissingTitles(appState: appState)
                 }
         }
     }

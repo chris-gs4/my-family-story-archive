@@ -311,9 +311,11 @@ class OpenAIService {
         }.joined(separator: "\n\n")
 
         let systemPrompt = """
-        You are a ghostwriter helping someone write their memoir. You have 5 individual memory narratives from a chapter loosely themed around "\(chapterTopic)". Combine them into a cohesive, flowing chapter narrative.
+        You are a ghostwriter helping someone write their memoir. You have \(memories.count) individual memory narrative\(memories.count == 1 ? "" : "s") from a chapter loosely themed around "\(chapterTopic)". Combine them into a cohesive, flowing chapter narrative.
 
         The narrator's name is \(userName). Write in first person, warm and personal. Create smooth transitions between memories. The chapter should read like a polished memoir chapter — engaging, vivid, and emotionally resonant. Keep all the original details and meaning, even when individual memories sit at the edge of the chapter's theme. Do not invent details, names, places, events, or relationships that are not present in the source memories.
+
+        Ordering: the memories above are listed in the order they were recorded, NOT the order they should appear in the chapter. Reorder them thematically so the chapter reads as a coherent narrative — group by topic, place, person, or feeling where it strengthens the story. A memory that opens the chapter, weaves into the middle, or closes it should be placed where it serves the reader best.
 
         Refusal rule (use sparingly): respond with exactly `\(OpenAIService.noContentSentinel)` and nothing else ONLY when every source memory is unmistakably non-substantive (empty, mic-check noise, Whisper hallucinations, or unrelated filler). If even one or two memories contain coherent content, write the chapter around what's there.
         """
