@@ -12,6 +12,9 @@ struct RecordingSetupView: View {
     @State private var memoryToDelete: Memory? = nil
     @State private var showDeleteConfirmation = false
     @State private var micPulse = false
+    @State private var showCaptureToast = false
+    @State private var lastSeenMemoryCount: Int? = nil
+    @State private var captureToastDismissTask: Task<Void, Never>? = nil
 
     private var chapter: Chapter {
         guard chapterIndex >= 0, chapterIndex < appState.chapters.count else {
@@ -39,32 +42,46 @@ struct RecordingSetupView: View {
                 // 5/5 approved chapter, so the user can record a bonus memory. The memory
                 // list sits below the mic, and chapter status (processing / failure / ready /
                 // approved CTAs) appends at the bottom once the chapter has reached 5+.
-                ScrollView(showsIndicators: false) {
-                    VStack(spacing: 0) {
-                        chapterBadge
-                            .padding(.top, MabelSpacing.sectionGap)
-
-                        ProgressBar(
-                            progress: Double(chapter.completedMemoryCount) / Double(chapter.displayTargetCount),
-                            height: 6
-                        )
-                        .padding(.bottom, MabelSpacing.xxxl)
-                        .accessibilityLabel("Chapter progress: \(chapter.completedMemoryCount) of \(chapter.displayTargetCount)")
-
-                        recordingUI
-
-                        if !displayableMemories.isEmpty {
-                            memoryList
+                //
+                // Phase 1.1: a "Memory captured" toast (`capturedToast`) is overlaid on top
+                // of the ScrollView so post-save confirmation stays visible regardless of
+                // scroll position when the user returns from RecordingView.
+                ZStack(alignment: .top) {
+                    ScrollView(showsIndicators: false) {
+                        VStack(spacing: 0) {
+                            chapterBadge
                                 .padding(.top, MabelSpacing.sectionGap)
-                        }
 
-                        if chapter.completedMemoryCount >= Chapter.memoriesPerChapter {
-                            chapterStatusSection
-                        }
+                            ProgressBar(
+                                progress: Double(chapter.completedMemoryCount) / Double(chapter.displayTargetCount),
+                                height: 6
+                            )
+                            .padding(.bottom, MabelSpacing.xxxl)
+                            .accessibilityLabel("Chapter progress: \(chapter.completedMemoryCount) of \(chapter.displayTargetCount)")
 
-                        Spacer().frame(height: MabelSpacing.bottomSafe)
+                            recordingUI
+
+                            if !displayableMemories.isEmpty {
+                                memoryList
+                                    .padding(.top, MabelSpacing.sectionGap)
+                            }
+
+                            if chapter.completedMemoryCount >= Chapter.memoriesPerChapter {
+                                chapterStatusSection
+                            }
+
+                            Spacer().frame(height: MabelSpacing.bottomSafe)
+                        }
+                        .screenPadding()
                     }
-                    .screenPadding()
+
+                    if showCaptureToast {
+                        capturedToast
+                            .padding(.horizontal, MabelSpacing.screenPadH)
+                            .padding(.top, MabelSpacing.tightGap)
+                            .transition(.opacity.combined(with: .move(edge: .top)))
+                            .zIndex(1)
+                    }
                 }
             }
         }
@@ -102,9 +119,68 @@ struct RecordingSetupView: View {
                 await loadPrompts()
             }
         }
+        .onAppear {
+            if lastSeenMemoryCount == nil {
+                lastSeenMemoryCount = chapter.memories.count
+            }
+        }
         .onChange(of: appState.chapters[chapterIndex].generatedNarrative) { oldValue, newValue in
             if oldValue == nil, newValue != nil, !appState.chapters[chapterIndex].isApproved {
                 showChapterReview = true
+            }
+        }
+        .onChange(of: chapter.memories.count) { _, newValue in
+            guard let last = lastSeenMemoryCount else {
+                lastSeenMemoryCount = newValue
+                return
+            }
+            if newValue > last {
+                triggerCaptureToast()
+            }
+            lastSeenMemoryCount = newValue
+        }
+    }
+
+    // MARK: - Captured Toast (Phase 1.1)
+    //
+    // Subtle inline pill at the top of the screen, shown for ~4s after a new
+    // memory is added. 4s (rather than 2.5s) accounts for the navigation pop
+    // animation — when the user records via RecordingView, the toast triggers
+    // while RecordingSetupView is still pushed-down in the stack, so it needs
+    // to outlast the dismiss transition and still be visible when the user
+    // lands back here.
+    private var capturedToast: some View {
+        HStack(spacing: MabelSpacing.tightGap) {
+            Image(systemName: "checkmark.circle.fill")
+                .font(.system(size: 14))
+                .foregroundColor(.mabelPrimary)
+            Text("Memory captured — Mabel is writing it up")
+                .font(MabelTypography.helper())
+                .foregroundColor(.mabelText)
+        }
+        .padding(.horizontal, MabelSpacing.md)
+        .padding(.vertical, MabelSpacing.tightGap)
+        .background(
+            Capsule()
+                .fill(Color.mabelPrimaryLight)
+        )
+        .overlay(
+            Capsule()
+                .strokeBorder(Color.mabelPrimary.opacity(0.25), lineWidth: 1)
+        )
+        .accessibilityLabel("Memory captured. Mabel is writing it up.")
+    }
+
+    private func triggerCaptureToast() {
+        captureToastDismissTask?.cancel()
+        withAnimation(.easeOut(duration: 0.3)) {
+            showCaptureToast = true
+        }
+        captureToastDismissTask = Task { @MainActor in
+            try? await Task.sleep(nanoseconds: 4_000_000_000)
+            guard !Task.isCancelled else { return }
+            withAnimation(.easeOut(duration: 0.3)) {
+                showCaptureToast = false
             }
         }
     }

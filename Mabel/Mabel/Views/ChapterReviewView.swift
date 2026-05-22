@@ -96,22 +96,9 @@ struct ChapterReviewView: View {
                                 .lineSpacing(6)
                         }
 
-                        // Error message
-                        if let error = errorMessage {
-                            HStack(spacing: MabelSpacing.tightGap) {
-                                Image(systemName: "exclamationmark.triangle.fill")
-                                    .foregroundColor(.mabelBurgundy)
-                                Text(error)
-                                    .font(MabelTypography.smallLabel())
-                                    .foregroundColor(.mabelBurgundy)
-                            }
-                            .padding(MabelSpacing.md)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .background(
-                                RoundedRectangle(cornerRadius: MabelSpacing.cornerRadiusBadge)
-                                    .fill(Color.mabelBurgundy.opacity(0.08))
-                            )
-                        }
+                        // Phase 1.1: regeneration errors were inline here and easy
+                        // to miss while scrolling a long narrative. Promoted to
+                        // `.alert()` at the view level — see modifier below.
                     }
                     .cardPadding()
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -200,6 +187,20 @@ struct ChapterReviewView: View {
             Color.mabelBackground
                 .ignoresSafeArea(.all, edges: .all)
         )
+        .alert(
+            "Couldn't regenerate chapter",
+            isPresented: Binding(
+                get: { errorMessage != nil },
+                set: { if !$0 { errorMessage = nil } }
+            )
+        ) {
+            Button("Try again") {
+                regenerateNarrative()
+            }
+            Button("Dismiss", role: .cancel) { }
+        } message: {
+            Text(errorMessage ?? "")
+        }
     }
 
     private func regenerateNarrative() {

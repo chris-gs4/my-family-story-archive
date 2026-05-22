@@ -15,6 +15,8 @@ struct RecordingView: View {
     @State private var isProcessing = false
     @State private var showWriteBox = false
     @State private var typedEntry = ""
+    @State private var showSaveErrorAlert = false
+    @State private var saveErrorMessage = ""
 
     private let boilerplateLines = [
         "Mabel is listening...",
@@ -290,6 +292,16 @@ struct RecordingView: View {
             Color.mabelBackground
                 .ignoresSafeArea(.all, edges: .all)
         )
+        .alert("Couldn't save your memory", isPresented: $showSaveErrorAlert) {
+            Button("Try again") {
+                clearRecording()
+            }
+            Button("Discard", role: .destructive) {
+                dismiss()
+            }
+        } message: {
+            Text(saveErrorMessage)
+        }
         .toolbar(.hidden, for: .navigationBar)
         .onDisappear {
             if recorder.isRecording || recorder.isPaused {
@@ -330,34 +342,37 @@ struct RecordingView: View {
     }
 
     private func saveMemory() {
+        guard hasStartedOnce, !isProcessing else { return }
         isProcessing = true
 
-        // Stop recording and get the file
         let result = recorder.stopRecording()
+
+        guard let result else {
+            isProcessing = false
+            saveErrorMessage = "We couldn't save your audio file. Your recording may not have been captured — try again, or write your memory instead."
+            showSaveErrorAlert = true
+            return
+        }
 
         let memory = Memory(
             promptUsed: prompt,
-            audioFileName: result?.fileName,
+            audioFileName: result.fileName,
             state: .submitted,
             duration: TimeInterval(recorder.elapsedSeconds),
             createdAt: Date()
         )
-
         appState.addMemory(chapterIndex: chapterIndex, memory: memory)
 
-        // Start async processing if we have an audio file
-        if let audioURL = result?.url {
-            let memoryID = memory.id
-            Task {
-                await StoryProcessingService.shared.processMemory(
-                    memoryID: memoryID,
-                    chapterIndex: chapterIndex,
-                    audioURL: audioURL,
-                    chapter: chapter,
-                    userName: appState.userProfile?.displayName ?? "Narrator",
-                    appState: appState
-                )
-            }
+        let memoryID = memory.id
+        Task {
+            await StoryProcessingService.shared.processMemory(
+                memoryID: memoryID,
+                chapterIndex: chapterIndex,
+                audioURL: result.url,
+                chapter: chapter,
+                userName: appState.userProfile?.displayName ?? "Narrator",
+                appState: appState
+            )
         }
 
         dismiss()
