@@ -93,7 +93,7 @@ struct ChapterReviewView: View {
                             Text(narrative)
                                 .font(MabelTypography.helper())
                                 .foregroundColor(.mabelText)
-                                .lineSpacing(6)
+                                .lineSpacing(10)
                         }
 
                         // Phase 1.1: regeneration errors were inline here and easy

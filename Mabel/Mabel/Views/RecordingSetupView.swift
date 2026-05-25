@@ -15,6 +15,7 @@ struct RecordingSetupView: View {
     @State private var showCaptureToast = false
     @State private var lastSeenMemoryCount: Int? = nil
     @State private var captureToastDismissTask: Task<Void, Never>? = nil
+    @State private var toastDotPulse = false
 
     private var chapter: Chapter {
         guard chapterIndex >= 0, chapterIndex < appState.chapters.count else {
@@ -141,34 +142,62 @@ struct RecordingSetupView: View {
         }
     }
 
-    // MARK: - Captured Toast (Phase 1.1)
+    // MARK: - Captured Toast (Phase 1.1 / polished in 1.1.5)
     //
-    // Subtle inline pill at the top of the screen, shown for ~4s after a new
-    // memory is added. 4s (rather than 2.5s) accounts for the navigation pop
-    // animation — when the user records via RecordingView, the toast triggers
-    // while RecordingSetupView is still pushed-down in the stack, so it needs
-    // to outlast the dismiss transition and still be visible when the user
-    // lands back here.
+    // Dark capsule, white text, animated gold dot. The pulsing dot encodes
+    // "still processing" without words; the dark fill maximises figure-ground
+    // contrast against the white screen so the toast registers pre-attentively.
+    //
+    // Shown for ~4s after a new memory is added. 4s (rather than 2.5s) accounts
+    // for the navigation pop animation — when the user records via
+    // RecordingView, the toast triggers while RecordingSetupView is still
+    // pushed-down in the stack, so it needs to outlast the dismiss transition
+    // and still be visible when the user lands back here.
     private var capturedToast: some View {
-        HStack(spacing: MabelSpacing.tightGap) {
-            Image(systemName: "checkmark.circle.fill")
-                .font(.system(size: 14))
-                .foregroundColor(.mabelPrimary)
-            Text("Memory captured — Mabel is writing it up")
+        HStack(spacing: MabelSpacing.md) {
+            toastPulsingDot
+
+            Text("Memory captured")
+                .font(MabelTypography.badge())
+                .foregroundColor(.white)
+            + Text("  ·  ")
                 .font(MabelTypography.helper())
-                .foregroundColor(.mabelText)
+                .foregroundColor(.white.opacity(0.5))
+            + Text("Writing it up…")
+                .font(MabelTypography.helper())
+                .foregroundColor(.white.opacity(0.85))
+
+            Spacer(minLength: 0)
         }
-        .padding(.horizontal, MabelSpacing.md)
-        .padding(.vertical, MabelSpacing.tightGap)
+        .padding(.horizontal, MabelSpacing.lg)
+        .padding(.vertical, MabelSpacing.md)
         .background(
             Capsule()
-                .fill(Color.mabelPrimaryLight)
+                .fill(Color.mabelText)
         )
-        .overlay(
-            Capsule()
-                .strokeBorder(Color.mabelPrimary.opacity(0.25), lineWidth: 1)
-        )
+        .mabelCardShadow()
         .accessibilityLabel("Memory captured. Mabel is writing it up.")
+    }
+
+    private var toastPulsingDot: some View {
+        ZStack {
+            Circle()
+                .fill(Color.mabelAccent.opacity(0.35))
+                .frame(width: 16, height: 16)
+                .scaleEffect(toastDotPulse ? 1.0 : 0.6)
+                .opacity(toastDotPulse ? 0.0 : 0.9)
+            Circle()
+                .fill(Color.mabelAccent)
+                .frame(width: 8, height: 8)
+        }
+        .onAppear {
+            withAnimation(.easeInOut(duration: 1.2).repeatForever(autoreverses: false)) {
+                toastDotPulse = true
+            }
+        }
+        .onDisappear {
+            toastDotPulse = false
+        }
     }
 
     private func triggerCaptureToast() {
