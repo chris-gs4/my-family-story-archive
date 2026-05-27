@@ -2,6 +2,11 @@ import SwiftUI
 
 private struct ReviewingChapter: Identifiable {
     let id: Int  // chapter index in appState.chapters
+    /// Phase 1.9 follow-up: skip the in-sheet REQUEST CHANGES button when
+    /// the user already explicitly chose to request changes on an approved
+    /// chapter from MyStoriesView. The sheet opens with the feedback field
+    /// visible and auto-scrolls to it.
+    let openInFeedbackMode: Bool
 }
 
 struct MyStoriesView: View {
@@ -76,7 +81,10 @@ struct MyStoriesView: View {
             ProfileView()
         }
         .sheet(item: $reviewingChapter) { reviewing in
-            ChapterReviewView(chapterIndex: reviewing.id)
+            ChapterReviewView(
+                chapterIndex: reviewing.id,
+                openInFeedbackMode: reviewing.openInFeedbackMode
+            )
         }
     }
 
@@ -161,12 +169,30 @@ struct MyStoriesView: View {
                 }
             }
 
-            // Review button for unapproved chapters with narratives
-            if chapter.generatedNarrative != nil && !chapter.isApproved {
-                CTAButton(title: "REVIEW & APPROVE") {
-                    reviewingChapter = ReviewingChapter(id: chapter.id - 1)
+            // Review entry — varies by approval state.
+            // Phase 1.9: approved chapters previously had no entry back into
+            // ChapterReviewView; the user had to record a bonus memory to
+            // revoke approval and reach REQUEST CHANGES. Now an explicit
+            // SecondaryButton opens the same sheet, and ChapterReviewView
+            // hides the APPROVE CTA when the chapter is already approved.
+            if chapter.generatedNarrative != nil {
+                if chapter.isApproved {
+                    SecondaryButton(title: "REQUEST CHANGES") {
+                        reviewingChapter = ReviewingChapter(
+                            id: chapter.id - 1,
+                            openInFeedbackMode: true
+                        )
+                    }
+                    .padding(.top, MabelSpacing.xs)
+                } else {
+                    CTAButton(title: "REVIEW & APPROVE") {
+                        reviewingChapter = ReviewingChapter(
+                            id: chapter.id - 1,
+                            openInFeedbackMode: false
+                        )
+                    }
+                    .padding(.top, MabelSpacing.xs)
                 }
-                .padding(.top, MabelSpacing.xs)
             }
         }
         .cardPadding()

@@ -6,10 +6,25 @@ struct ChapterReviewView: View {
 
     let chapterIndex: Int
 
+    /// When `true`, the sheet opens with the feedback field already visible
+    /// (and auto-scrolls to it). Set by callers that already represent the
+    /// "I want to request changes" intent — e.g. MyStoriesView's REQUEST
+    /// CHANGES button on an already-approved chapter, where re-clicking
+    /// REQUEST CHANGES inside the sheet would be a redundant second tap.
+    let openInFeedbackMode: Bool
+
     @State private var feedback = ""
     @State private var isRegenerating = false
-    @State private var showFeedbackField = false
+    @State private var showFeedbackField: Bool
     @State private var errorMessage: String?
+
+    private let feedbackSectionID = "chapterReviewFeedbackSection"
+
+    init(chapterIndex: Int, openInFeedbackMode: Bool = false) {
+        self.chapterIndex = chapterIndex
+        self.openInFeedbackMode = openInFeedbackMode
+        self._showFeedbackField = State(initialValue: openInFeedbackMode)
+    }
 
     private var chapter: Chapter {
         guard chapterIndex >= 0, chapterIndex < appState.chapters.count else {
@@ -53,6 +68,11 @@ struct ChapterReviewView: View {
             .padding(.bottom, MabelSpacing.tightGap)
 
             // Scrollable content
+            // ScrollViewReader gives us a proxy so we can scrollTo the
+            // feedback section when it appears — otherwise the user lands
+            // at the top of a long narrative and has to scroll to find the
+            // input field (Phase 1.9 follow-up, surfaced 2026-05-27).
+            ScrollViewReader { proxy in
             ScrollView(showsIndicators: false) {
                 VStack(alignment: .leading, spacing: 0) {
                     // Chapter badge + status
@@ -135,12 +155,37 @@ struct ChapterReviewView: View {
                                 .foregroundColor(.mabelSubtle)
                         }
                         .padding(.bottom, MabelSpacing.xl)
+                        .id(feedbackSectionID)
                     }
 
                     Spacer().frame(height: MabelSpacing.cardPaddingContent)
                 }
                 .screenPadding()
             }
+            .onAppear {
+                // Sheet just opened in feedback mode (came from MyStories'
+                // approved-chapter REQUEST CHANGES). Wait one beat for the
+                // sheet's slide-up animation to settle, then bring the
+                // feedback section to the top of the visible area.
+                guard openInFeedbackMode else { return }
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
+                    withAnimation(.easeOut(duration: 0.25)) {
+                        proxy.scrollTo(feedbackSectionID, anchor: .top)
+                    }
+                }
+            }
+            .onChange(of: showFeedbackField) { _, isNowVisible in
+                // Covers the draft-chapter path: user tapped REQUEST CHANGES
+                // inside the sheet, field appeared at the bottom of the
+                // narrative, scroll there so they don't have to hunt.
+                guard isNowVisible else { return }
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    withAnimation(.easeOut(duration: 0.25)) {
+                        proxy.scrollTo(feedbackSectionID, anchor: .top)
+                    }
+                }
+            }
+            } // end ScrollViewReader
 
             // Bottom actions
             VStack(spacing: MabelSpacing.pillPadV) {
@@ -163,10 +208,35 @@ struct ChapterReviewView: View {
                         regenerateNarrative()
                     }
 
-                    Button(action: { showFeedbackField = false; feedback = "" }) {
+                    Button(action: {
+                        // Phase 1.9 follow-up: when the sheet was opened
+                        // directly in feedback mode (from MyStories' REQUEST
+                        // CHANGES on an approved chapter), Cancel should
+                        // dismiss the sheet entirely — toggling back to the
+                        // default state would just show another REQUEST
+                        // CHANGES button, leaving the user circling. For the
+                        // draft-chapter path, Cancel still reverts to the
+                        // APPROVE + REQUEST CHANGES default.
+                        if openInFeedbackMode {
+                            dismiss()
+                        } else {
+                            showFeedbackField = false
+                            feedback = ""
+                        }
+                    }) {
                         Text("Cancel")
                             .font(MabelTypography.helper())
                             .foregroundColor(.mabelSubtle)
+                    }
+                } else if chapter.isApproved {
+                    // Phase 1.9: re-entry from MyStoriesView for an already-approved
+                    // chapter. The APPROVE CTA is a no-op here, so hide it; only
+                    // REQUEST CHANGES is meaningful. Dismiss is via the X in the
+                    // header. Tapping REQUEST CHANGES → feedback → REGENERATE will
+                    // revoke approval through `updateNarrative()` and put the
+                    // chapter back into the draft flow until re-approved.
+                    CTAButton(title: "REQUEST CHANGES", isDisabled: isRegenerating) {
+                        showFeedbackField = true
                     }
                 } else {
                     CTAButton(title: "APPROVE CHAPTER", isDisabled: isRegenerating) {

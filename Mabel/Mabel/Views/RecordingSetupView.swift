@@ -28,6 +28,10 @@ struct RecordingSetupView: View {
         chapter.memories.filter { $0.state != .notStarted }
     }
 
+    private var hasProcessingMemory: Bool {
+        chapter.memories.contains(where: { $0.state == .processing })
+    }
+
     var body: some View {
         ZStack {
             Color.mabelBackground.ignoresSafeArea()
@@ -44,44 +48,58 @@ struct RecordingSetupView: View {
                 // list sits below the mic, and chapter status (processing / failure / ready /
                 // approved CTAs) appends at the bottom once the chapter has reached 5+.
                 //
-                // Phase 1.1: a "Memory captured" toast (`capturedToast`) is overlaid on top
-                // of the ScrollView so post-save confirmation stays visible regardless of
-                // scroll position when the user returns from RecordingView.
-                ZStack(alignment: .top) {
-                    ScrollView(showsIndicators: false) {
-                        VStack(spacing: 0) {
-                            chapterBadge
+                // Phase 1.1 capture toast is attached as a top safe-area inset on this
+                // ScrollView (see `.safeAreaInset(edge: .top)` below). `safeAreaInset` is
+                // the iOS-15+ canonical pattern for "transient banner above scroll content":
+                // it reserves vertical space for the toast inside the ScrollView's safe area
+                // so the chapter badge moves down by exactly the inset height when the toast
+                // is visible. Previously the toast was either an overlay (covering content)
+                // or a VStack sibling (SwiftUI failed to reserve the sibling space cleanly
+                // before the slide-from-top transition completed) — both produced overlap.
+                ScrollView(showsIndicators: false) {
+                    VStack(spacing: 0) {
+                        chapterBadge
+                            .padding(.top, MabelSpacing.sectionGap)
+
+                        ProgressBar(
+                            progress: Double(chapter.completedMemoryCount) / Double(chapter.displayTargetCount),
+                            height: 6
+                        )
+                        .padding(.bottom, MabelSpacing.xxxl)
+                        .accessibilityLabel("Chapter progress: \(chapter.completedMemoryCount) of \(chapter.displayTargetCount)")
+
+                        recordingUI
+
+                        if !displayableMemories.isEmpty {
+                            memoryList
                                 .padding(.top, MabelSpacing.sectionGap)
-
-                            ProgressBar(
-                                progress: Double(chapter.completedMemoryCount) / Double(chapter.displayTargetCount),
-                                height: 6
-                            )
-                            .padding(.bottom, MabelSpacing.xxxl)
-                            .accessibilityLabel("Chapter progress: \(chapter.completedMemoryCount) of \(chapter.displayTargetCount)")
-
-                            recordingUI
-
-                            if !displayableMemories.isEmpty {
-                                memoryList
-                                    .padding(.top, MabelSpacing.sectionGap)
-                            }
-
-                            if chapter.completedMemoryCount >= Chapter.memoriesPerChapter {
-                                chapterStatusSection
-                            }
-
-                            Spacer().frame(height: MabelSpacing.bottomSafe)
                         }
-                        .screenPadding()
-                    }
 
+                        // Phase 1.2: surface the processing banner at the top of the
+                        // memory list whenever any memory is in flight, not only when
+                        // 5/5 is reached. The chapterStatusSection's copy of this
+                        // banner was removed to prevent double-rendering.
+                        if hasProcessingMemory {
+                            processingBanner
+                                .padding(.top, MabelSpacing.elementGap)
+                        }
+
+                        if chapter.completedMemoryCount >= Chapter.memoriesPerChapter {
+                            chapterStatusSection
+                        }
+
+                        Spacer().frame(height: MabelSpacing.bottomSafe)
+                    }
+                    .screenPadding()
+                }
+                .safeAreaInset(edge: .top, spacing: 0) {
                     if showCaptureToast {
                         capturedToast
                             .padding(.horizontal, MabelSpacing.screenPadH)
-                            .padding(.top, MabelSpacing.tightGap)
-                            .transition(.opacity.combined(with: .move(edge: .top)))
-                            .zIndex(1)
+                            .padding(.vertical, MabelSpacing.tightGap)
+                            .frame(maxWidth: .infinity)
+                            .background(Color.mabelBackground)
+                            .transition(.move(edge: .top).combined(with: .opacity))
                     }
                 }
             }
@@ -303,6 +321,31 @@ struct RecordingSetupView: View {
         }
     }
 
+    // MARK: - Processing Banner (Phase 1.2)
+    //
+    // Visible whenever any memory is in `.processing`. Sits above the chapter
+    // status section so the user always has a top-of-list signal that work is
+    // in flight — not just when 5/5 is reached. Per-card spinners in
+    // `MemoryCard` handle the row-level signal; this banner handles the
+    // chapter-level one.
+
+    private var processingBanner: some View {
+        HStack(spacing: MabelSpacing.pillPadV) {
+            ProgressView()
+                .tint(.mabelPrimary)
+            Text("Processing your memories...")
+                .font(MabelTypography.helper())
+                .foregroundColor(.mabelSubtle)
+        }
+        .padding(MabelSpacing.inputPadV)
+        .frame(maxWidth: .infinity)
+        .background(
+            RoundedRectangle(cornerRadius: MabelSpacing.cornerRadiusBadge)
+                .fill(Color.mabelSurface.opacity(0.9))
+        )
+        .accessibilityLabel("Mabel is processing your memories.")
+    }
+
     // MARK: - Chapter Status Section
     //
     // Phase 1.8: this is no longer a full-screen replacement for the recording UI.
@@ -311,21 +354,9 @@ struct RecordingSetupView: View {
 
     private var chapterStatusSection: some View {
         VStack(spacing: MabelSpacing.cardPaddingContent) {
-            if chapter.memories.contains(where: { $0.state == .processing }) {
-                HStack(spacing: MabelSpacing.pillPadV) {
-                    ProgressView()
-                        .tint(.mabelPrimary)
-                    Text("Processing your memories...")
-                        .font(MabelTypography.helper())
-                        .foregroundColor(.mabelSubtle)
-                }
-                .padding(MabelSpacing.inputPadV)
-                .frame(maxWidth: .infinity)
-                .background(
-                    RoundedRectangle(cornerRadius: MabelSpacing.cornerRadiusBadge)
-                        .fill(Color.mabelSurface.opacity(0.9))
-                )
-            }
+            // Phase 1.2: the processing banner now lives above the memory list
+            // (rendered from `body` whenever `hasProcessingMemory` is true), so
+            // it's not duplicated here.
 
             if let failedMemory = chapter.memories.first(where: { $0.state == .failed }) {
                 HStack(spacing: MabelSpacing.pillPadV) {
